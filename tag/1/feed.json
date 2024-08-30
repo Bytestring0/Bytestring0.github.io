@@ -9,7 +9,7 @@
             "url": "http://example.com/2024/08/30/1/",
             "title": "1",
             "date_published": "2024-08-30T03:49:51.000Z",
-            "content_html": "<figure class=\"highlight plaintext\"><table><tr><td class=\"gutter\"><pre><span class=\"line\">1</span><br></pre></td><td class=\"code\"><pre><span class=\"line\">cout&lt;&lt;hello world!</span><br></pre></td></tr></table></figure>",
+            "content_html": "<p><figure class=\"highlight plaintext\"><table><tr><td class=\"gutter\"><pre><span class=\"line\">1</span><br></pre></td><td class=\"code\"><pre><span class=\"line\">cout&lt;&lt;hello world!</span><br></pre></td></tr></table></figure></p>\n",
             "tags": [
                 "1"
             ]
