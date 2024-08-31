@@ -1,25 +1,27 @@
 {
     "version": "https://jsonfeed.org/version/1",
-    "title": "博客搭建中",
-    "description": "",
-    "home_page_url": "http://example.com",
+    "title": null,
+    "subtitle": "",
+    "icon": "https://bytestring0.github.io/assets/favicon.ico",
+    "description": "闲聊",
+    "home_page_url": "https://bytestring0.github.io",
     "items": [
         {
-            "id": "http://example.com/2024/08/30/1/",
-            "url": "http://example.com/2024/08/30/1/",
-            "title": "1",
-            "date_published": "2024-08-30T03:49:51.000Z",
-            "content_html": "<p><figure class=\"highlight plaintext\"><table><tr><td class=\"gutter\"><pre><span class=\"line\">1</span><br></pre></td><td class=\"code\"><pre><span class=\"line\">cout&lt;&lt;hello world!</span><br></pre></td></tr></table></figure></p>\n",
+            "id": "https://bytestring0.github.io/2024/08/31/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/",
+            "url": "https://bytestring0.github.io/2024/08/31/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/",
+            "title": "有趣的图片api",
+            "date_published": "2024-08-31T05:15:54.000Z",
+            "content_html": "<h3 id=\"这里有一些有趣的图片api\"><a class=\"anchor\" href=\"#这里有一些有趣的图片api\">#</a> 这里有一些有趣的图片 api</h3>\n<p>随机猫猫动图</p>\n<p><img loading=\"lazy\" data-src=\"http://edgecats.net/\" alt=\"\" /></p>\n",
             "tags": [
-                "1"
+                "有趣的东西"
             ]
         },
         {
-            "id": "http://example.com/2024/08/29/hello-world/",
-            "url": "http://example.com/2024/08/29/hello-world/",
-            "title": "Hello World",
-            "date_published": "2024-08-29T06:40:49.836Z",
-            "content_html": "<p>Welcome to <a href=\"https://hexo.io/\">Hexo</a>! This is your very first post. Check <a href=\"https://hexo.io/docs/\">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href=\"https://hexo.io/docs/troubleshooting.html\">troubleshooting</a> or you can ask me on <a href=\"https://github.com/hexojs/hexo/issues\">GitHub</a>.</p>\n<h2 id=\"quick-start\"><a class=\"anchor\" href=\"#quick-start\">#</a> Quick Start</h2>\n<h3 id=\"create-a-new-post\"><a class=\"anchor\" href=\"#create-a-new-post\">#</a> Create a new post</h3>\n<p><figure class=\"highlight bash\"><table><tr><td class=\"gutter\"><pre><span class=\"line\">1</span><br></pre></td><td class=\"code\"><pre><span class=\"line\">$ hexo new <span class=\"string\">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure></p>\n<p>More info: <a href=\"https://hexo.io/docs/writing.html\">Writing</a></p>\n<h3 id=\"run-server\"><a class=\"anchor\" href=\"#run-server\">#</a> Run server</h3>\n<p><figure class=\"highlight bash\"><table><tr><td class=\"gutter\"><pre><span class=\"line\">1</span><br></pre></td><td class=\"code\"><pre><span class=\"line\">$ hexo server</span><br></pre></td></tr></table></figure></p>\n<p>More info: <a href=\"https://hexo.io/docs/server.html\">Server</a></p>\n<h3 id=\"generate-static-files\"><a class=\"anchor\" href=\"#generate-static-files\">#</a> Generate static files</h3>\n<p><figure class=\"highlight bash\"><table><tr><td class=\"gutter\"><pre><span class=\"line\">1</span><br></pre></td><td class=\"code\"><pre><span class=\"line\">$ hexo generate</span><br></pre></td></tr></table></figure></p>\n<p>More info: <a href=\"https://hexo.io/docs/generating.html\">Generating</a></p>\n<h3 id=\"deploy-to-remote-sites\"><a class=\"anchor\" href=\"#deploy-to-remote-sites\">#</a> Deploy to remote sites</h3>\n<p><figure class=\"highlight bash\"><table><tr><td class=\"gutter\"><pre><span class=\"line\">1</span><br></pre></td><td class=\"code\"><pre><span class=\"line\">$ hexo deploy</span><br></pre></td></tr></table></figure></p>\n<p>More info: <a href=\"https://hexo.io/docs/one-command-deployment.html\">Deployment</a></p>\n",
+            "id": "https://bytestring0.github.io/2024/08/31/Markdown%E5%AD%A6%E4%B9%A0/",
+            "url": "https://bytestring0.github.io/2024/08/31/Markdown%E5%AD%A6%E4%B9%A0/",
+            "title": "Markdown学习",
+            "date_published": "2024-08-31T03:56:16.000Z",
+            "content_html": "<blockquote>\n<p>高高兴兴心血来潮建个博客玩玩，hexo 博客要使用 markdown 书写，所以要重新练习一下 md 了，这里记一下学习笔记。</p>\n</blockquote>\n<h1 id=\"一-标题\"><a class=\"anchor\" href=\"#一-标题\">#</a> 一、标题</h1>\n<p>标题非常简单，有几个 #就是几级标题。</p>\n<figure class=\"highlight markdown\"><figcaption data-lang=\"markdown\"></figcaption><table><tr><td data-num=\"1\"></td><td><pre><span class=\"token title important\"><span class=\"token punctuation\">#</span> 一级标题</span></pre></td></tr><tr><td data-num=\"2\"></td><td><pre><span class=\"token title important\"><span class=\"token punctuation\">##</span> 二级标题</span></pre></td></tr><tr><td data-num=\"3\"></td><td><pre><span class=\"token title important\"><span class=\"token punctuation\">###</span> 以此类推</span></pre></td></tr></table></figure><h1 id=\"二-字体\"><a class=\"anchor\" href=\"#二-字体\">#</a> 二、字体</h1>\n<p>单星号是<em>斜体</em>，双星号是<strong>粗体</strong>，三星号是<em><strong>粗斜体</strong></em></p>\n<figure class=\"highlight markdown\"><figcaption data-lang=\"markdown\"></figcaption><table><tr><td data-num=\"1\"></td><td><pre><span class=\"token italic\"><span class=\"token punctuation\">*</span><span class=\"token content\">斜体</span><span class=\"token punctuation\">*</span></span></pre></td></tr><tr><td data-num=\"2\"></td><td><pre><span class=\"token bold\"><span class=\"token punctuation\">**</span><span class=\"token content\">粗体</span><span class=\"token punctuation\">**</span></span></pre></td></tr><tr><td data-num=\"3\"></td><td><pre><span class=\"token bold\"><span class=\"token punctuation\">**</span><span class=\"token content\"><span class=\"token italic\"><span class=\"token punctuation\">*</span><span class=\"token content\">粗斜体</span><span class=\"token punctuation\">*</span></span></span><span class=\"token punctuation\">**</span></span></pre></td></tr></table></figure><h1 id=\"三-引用\"><a class=\"anchor\" href=\"#三-引用\">#</a> 三、引用</h1>\n<p>使用 <code>&gt;</code>  进行引用。</p>\n<blockquote>\n<p>引用</p>\n<blockquote>\n<p>嵌套引用</p>\n</blockquote>\n</blockquote>\n<figure class=\"highlight markdown\"><figcaption data-lang=\"markdown\"></figcaption><table><tr><td data-num=\"1\"></td><td><pre><span class=\"token blockquote punctuation\">></span>引用  </pre></td></tr><tr><td data-num=\"2\"></td><td><pre><span class=\"token blockquote punctuation\">>></span>嵌套引用</pre></td></tr></table></figure><h1 id=\"四-链接\"><a class=\"anchor\" href=\"#四-链接\">#</a> 四、链接</h1>\n<p><code>[链接名称](链接地址)</code> <br />\n 或者 <code>&lt;链接地址&gt;</code></p>\n<p><a href=\"https://Bytestring0.github.io\">我的主页</a></p>\n<p><a href=\"https://Bytestring0.github.io\">https://Bytestring0.github.io</a></p>\n<h1 id=\"五-图片\"><a class=\"anchor\" href=\"#五-图片\">#</a> 五、图片</h1>\n<h3 id=\"图片的用法\"><a class=\"anchor\" href=\"#图片的用法\">#</a> 图片的用法</h3>\n<p><code>![图片描述（可写可不写）](图片地址)</code></p>\n<h3 id=\"图片的位置\"><a class=\"anchor\" href=\"#图片的位置\">#</a> 图片的位置</h3>\n<p>在 url 尾部添加位置标识</p>\n<p><code>![图片描述](https://api.suyanw.cn/api/mao#pic_left)</code> <br />\n<img loading=\"lazy\" data-src=\"https://api.suyanw.cn/api/mao#pic_left\" alt=\"图片描述（可写可不写）\" /></p>\n<p><code>![图片描述](https://api.suyanw.cn/api/mao#pic_right)</code> <br />\n<img loading=\"lazy\" data-src=\"https://api.suyanw.cn/api/mao#pic_right\" alt=\"图片描述（可写可不写）\" /></p>\n",
             "tags": []
         }
     ]

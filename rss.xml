@@ -1,41 +1,63 @@
 <?xml version="1.0"?>
 <rss version="2.0">
     <channel>
-        <title>博客搭建中</title>
-        <link>http://example.com</link>
-        <description></description>
+        <title></title>
+        <subtitle></subtitle>
+        <icon>https://bytestring0.github.io/assets/favicon.ico</icon>
+        <link>https://bytestring0.github.io</link>
+        <author>
+          <name>Bytestring</name>
+        </author>
+        <description>闲聊</description>
         <language>en</language>
-        <pubDate>Fri, 30 Aug 2024 11:49:51 +0800</pubDate>
-        <lastBuildDate>Fri, 30 Aug 2024 11:49:51 +0800</lastBuildDate>
-        <category>1</category>
+        <pubDate>Sat, 31 Aug 2024 13:15:54 +0800</pubDate>
+        <lastBuildDate>Sat, 31 Aug 2024 13:15:54 +0800</lastBuildDate>
+        <category term="none" />
         <item>
-            <guid isPermalink="true">http://example.com/2024/08/30/1/</guid>
-            <title>1</title>
-            <link>http://example.com/2024/08/30/1/</link>
-            <category>1</category>
-            <pubDate>Fri, 30 Aug 2024 11:49:51 +0800</pubDate>
-            <description><![CDATA[ &lt;p&gt;&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;cout&amp;lt;&amp;lt;hello world!&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+            <guid isPermalink="true">https://bytestring0.github.io/2024/08/31/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</guid>
+            <title>有趣的图片api</title>
+            <link>https://bytestring0.github.io/2024/08/31/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</link>
+            <category term="有趣的东西" scheme="https://bytestring0.github.io/categories/fun/" />
+            <pubDate>Sat, 31 Aug 2024 13:15:54 +0800</pubDate>
+            <description><![CDATA[ &lt;h3 id=&#34;这里有一些有趣的图片api&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#这里有一些有趣的图片api&#34;&gt;#&lt;/a&gt; 这里有一些有趣的图片 api&lt;/h3&gt;
+&lt;p&gt;随机猫猫动图&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;http://edgecats.net/&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
  ]]></description>
         </item>
         <item>
-            <guid isPermalink="true">http://example.com/2024/08/29/hello-world/</guid>
-            <title>Hello World</title>
-            <link>http://example.com/2024/08/29/hello-world/</link>
-            <pubDate>Thu, 29 Aug 2024 14:40:49 +0800</pubDate>
-            <description><![CDATA[ &lt;p&gt;Welcome to &lt;a href=&#34;https://hexo.io/&#34;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&#34;https://hexo.io/docs/&#34;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&#34;https://hexo.io/docs/troubleshooting.html&#34;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&#34;https://github.com/hexojs/hexo/issues&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;quick-start&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#quick-start&#34;&gt;#&lt;/a&gt; Quick Start&lt;/h2&gt;
-&lt;h3 id=&#34;create-a-new-post&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#create-a-new-post&#34;&gt;#&lt;/a&gt; Create a new post&lt;/h3&gt;
-&lt;p&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;$ hexo new &lt;span class=&#34;string&#34;&gt;&amp;quot;My New Post&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;More info: &lt;a href=&#34;https://hexo.io/docs/writing.html&#34;&gt;Writing&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&#34;run-server&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#run-server&#34;&gt;#&lt;/a&gt; Run server&lt;/h3&gt;
-&lt;p&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;$ hexo server&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;More info: &lt;a href=&#34;https://hexo.io/docs/server.html&#34;&gt;Server&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&#34;generate-static-files&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#generate-static-files&#34;&gt;#&lt;/a&gt; Generate static files&lt;/h3&gt;
-&lt;p&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;$ hexo generate&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;More info: &lt;a href=&#34;https://hexo.io/docs/generating.html&#34;&gt;Generating&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&#34;deploy-to-remote-sites&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#deploy-to-remote-sites&#34;&gt;#&lt;/a&gt; Deploy to remote sites&lt;/h3&gt;
-&lt;p&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;$ hexo deploy&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;More info: &lt;a href=&#34;https://hexo.io/docs/one-command-deployment.html&#34;&gt;Deployment&lt;/a&gt;&lt;/p&gt;
+            <guid isPermalink="true">https://bytestring0.github.io/2024/08/31/Markdown%E5%AD%A6%E4%B9%A0/</guid>
+            <title>Markdown学习</title>
+            <link>https://bytestring0.github.io/2024/08/31/Markdown%E5%AD%A6%E4%B9%A0/</link>
+            <pubDate>Sat, 31 Aug 2024 11:56:16 +0800</pubDate>
+            <description><![CDATA[ &lt;blockquote&gt;
+&lt;p&gt;高高兴兴心血来潮建个博客玩玩，hexo 博客要使用 markdown 书写，所以要重新练习一下 md 了，这里记一下学习笔记。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&#34;一-标题&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#一-标题&#34;&gt;#&lt;/a&gt; 一、标题&lt;/h1&gt;
+&lt;p&gt;标题非常简单，有几个 #就是几级标题。&lt;/p&gt;
+&lt;figure class=&#34;highlight markdown&#34;&gt;&lt;figcaption data-lang=&#34;markdown&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token title important&#34;&gt;&lt;span class=&#34;token punctuation&#34;&gt;#&lt;/span&gt; 一级标题&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token title important&#34;&gt;&lt;span class=&#34;token punctuation&#34;&gt;##&lt;/span&gt; 二级标题&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token title important&#34;&gt;&lt;span class=&#34;token punctuation&#34;&gt;###&lt;/span&gt; 以此类推&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;h1 id=&#34;二-字体&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#二-字体&#34;&gt;#&lt;/a&gt; 二、字体&lt;/h1&gt;
+&lt;p&gt;单星号是&lt;em&gt;斜体&lt;/em&gt;，双星号是&lt;strong&gt;粗体&lt;/strong&gt;，三星号是&lt;em&gt;&lt;strong&gt;粗斜体&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;figure class=&#34;highlight markdown&#34;&gt;&lt;figcaption data-lang=&#34;markdown&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token italic&#34;&gt;&lt;span class=&#34;token punctuation&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;token content&#34;&gt;斜体&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;*&lt;/span&gt;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token bold&#34;&gt;&lt;span class=&#34;token punctuation&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;token content&#34;&gt;粗体&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;**&lt;/span&gt;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;3&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token bold&#34;&gt;&lt;span class=&#34;token punctuation&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;token content&#34;&gt;&lt;span class=&#34;token italic&#34;&gt;&lt;span class=&#34;token punctuation&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;token content&#34;&gt;粗斜体&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;*&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;token punctuation&#34;&gt;**&lt;/span&gt;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;h1 id=&#34;三-引用&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#三-引用&#34;&gt;#&lt;/a&gt; 三、引用&lt;/h1&gt;
+&lt;p&gt;使用 &lt;code&gt;&amp;gt;&lt;/code&gt;  进行引用。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;引用&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;嵌套引用&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&#34;highlight markdown&#34;&gt;&lt;figcaption data-lang=&#34;markdown&#34;&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td data-num=&#34;1&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token blockquote punctuation&#34;&gt;&gt;&lt;/span&gt;引用  &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td data-num=&#34;2&#34;&gt;&lt;/td&gt;&lt;td&gt;&lt;pre&gt;&lt;span class=&#34;token blockquote punctuation&#34;&gt;&gt;&gt;&lt;/span&gt;嵌套引用&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;h1 id=&#34;四-链接&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#四-链接&#34;&gt;#&lt;/a&gt; 四、链接&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;[链接名称](链接地址)&lt;/code&gt; &lt;br /&gt;
+ 或者 &lt;code&gt;&amp;lt;链接地址&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://Bytestring0.github.io&#34;&gt;我的主页&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://Bytestring0.github.io&#34;&gt;https://Bytestring0.github.io&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&#34;五-图片&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#五-图片&#34;&gt;#&lt;/a&gt; 五、图片&lt;/h1&gt;
+&lt;h3 id=&#34;图片的用法&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#图片的用法&#34;&gt;#&lt;/a&gt; 图片的用法&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;![图片描述（可写可不写）](图片地址)&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;图片的位置&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#图片的位置&#34;&gt;#&lt;/a&gt; 图片的位置&lt;/h3&gt;
+&lt;p&gt;在 url 尾部添加位置标识&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;![图片描述](https://api.suyanw.cn/api/mao#pic_left)&lt;/code&gt; &lt;br /&gt;
+&lt;img loading=&#34;lazy&#34; data-src=&#34;https://api.suyanw.cn/api/mao#pic_left&#34; alt=&#34;图片描述（可写可不写）&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;![图片描述](https://api.suyanw.cn/api/mao#pic_right)&lt;/code&gt; &lt;br /&gt;
+&lt;img loading=&#34;lazy&#34; data-src=&#34;https://api.suyanw.cn/api/mao#pic_right&#34; alt=&#34;图片描述（可写可不写）&#34; /&gt;&lt;/p&gt;
  ]]></description>
         </item>
     </channel>
