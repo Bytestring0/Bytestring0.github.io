@@ -111,13 +111,15 @@ const mobileNonHomeBannerClass = !isHomePage ? "mobile-hide-banner" : "";
 
 // 计算主内容区域位置，考虑手机端非首页时banner被隐藏
 // 当默认模式为 banner 时，使用banner高度；否则使用顶栏高度
-const mainPanelTop = siteConfig.wallpaperMode.defaultMode === "banner"
-	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
-	: "5.5rem";
+const mainPanelTop =
+	siteConfig.wallpaperMode.defaultMode === "banner"
+		? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
+		: "5.5rem";
 const mobileNonHomeMainTop = !isHomePage ? "5.5rem" : mainPanelTop;
 
 // 当默认模式不是 banner 时，主内容区域应该始终从顶栏下面开始
-const finalMainPanelTop = siteConfig.wallpaperMode.defaultMode === "banner" ? mainPanelTop : "5.5rem";
+const finalMainPanelTop =
+	siteConfig.wallpaperMode.defaultMode === "banner" ? mainPanelTop : "5.5rem";
 
 // 检查侧边栏是否启用，动态调整网格布局
 // 全局启用状态
@@ -133,41 +135,72 @@ const desktopShowSidebar =
 	globalSidebarEnabled && widgetManager.shouldShowSidebar("desktop");
 
 // 动态网格布局类名 - 根据侧边栏位置调整列宽
+const tenColumnTemplateClass =
+	"md:[grid-template-columns:minmax(0,_1fr)_clamp(14rem,_20vw,_19rem)_repeat(6,minmax(0,_1fr))_minmax(0,_1fr)_minmax(0,_1fr)]";
+
 const gridCols = `
-	${mobileShowSidebar ? "grid-cols-1" : "grid-cols-1"}
-	${tabletShowSidebar ? (sidebarPosition === "right" ? "md:grid-cols-[1fr_17.5rem]" : "md:grid-cols-[17.5rem_1fr]") : "md:grid-cols-1"}
-	${desktopShowSidebar ? (sidebarPosition === "right" ? "lg:grid-cols-[1fr_17.5rem]" : "lg:grid-cols-[17.5rem_1fr]") : "lg:grid-cols-1"}
+    grid-cols-1
+    ${tenColumnTemplateClass}
 `
 	.trim()
 	.replace(/\s+/g, " ");
 
 // 侧边栏容器类名 - 根据位置调整grid-column
 const sidebarClass = `
-	mb-4 row-start-2 row-end-3 col-span-2 onload-animation
-	${mobileShowSidebar ? "block" : "hidden"}
-	${tabletShowSidebar ? `md:block md:row-start-1 md:row-end-2 md:max-w-[17.5rem] ${sidebarPosition === "right" ? "md:col-start-2 md:col-end-3" : "md:col-start-1 md:col-end-2"}` : "md:hidden"}
-	${desktopShowSidebar ? `lg:block lg:row-start-1 lg:row-end-2 lg:max-w-[17.5rem] ${sidebarPosition === "right" ? "lg:col-start-2 lg:col-end-3" : "lg:col-start-1 lg:col-end-2"}` : "lg:hidden"}
+    mb-4 row-start-2 row-end-3 col-span-full onload-animation
+    ${mobileShowSidebar ? "block" : "hidden"}
+    ${
+			tabletShowSidebar
+				? `md:block md:row-start-1 md:row-end-2 md:max-w-[17.5rem] ${
+						sidebarPosition === "right"
+							? "md:col-start-9 md:col-end-10"
+							: "md:col-start-2 md:col-end-3"
+					}`
+				: "md:hidden"
+		}
+    ${
+			desktopShowSidebar
+				? `lg:block lg:row-start-1 lg:row-end-2 lg:max-w-[17.5rem] ${
+						sidebarPosition === "right"
+							? "lg:col-start-9 lg:col-end-10"
+							: "lg:col-start-2 lg:col-end-3"
+					}`
+				: "lg:hidden"
+		}
 `
 	.trim()
 	.replace(/\s+/g, " ");
 
 // 主内容区域类名 - 根据侧边栏位置调整grid-column
 const mainContentClass = `
-	transition-swup-fade overflow-hidden w-full
-	${mobileShowSidebar ? "col-span-2" : "col-span-1"}
-	${tabletShowSidebar ? `${sidebarPosition === "right" ? "md:col-start-1 md:col-end-2" : "md:col-start-2 md:col-end-3"}` : "md:col-span-1"}
-	${desktopShowSidebar ? `${sidebarPosition === "right" ? "lg:col-start-1 lg:col-end-2" : "lg:col-start-2 lg:col-end-3"}` : "lg:col-span-1"}
+    transition-swup-fade overflow-hidden w-full col-span-full
+    ${
+			tabletShowSidebar
+				? `${"md:col-start-3 md:col-end-9"}`
+				: "md:col-start-2 md:col-end-10"
+		}
+    ${
+			desktopShowSidebar
+				? `${"lg:col-start-3 lg:col-end-10"}`
+				: "lg:col-start-2 lg:col-end-9"
+		}
 `
 	.trim()
 	.replace(/\s+/g, " ");
 
 // 检查是否应该启用半透明效果（当默认模式为 fullscreen 时）
-const shouldEnableTransparency = siteConfig.wallpaperMode.defaultMode === "fullscreen";
+const shouldEnableTransparency =
+	siteConfig.wallpaperMode.defaultMode === "fullscreen";
 
 // 为组件添加半透明效果的CSS类
 const transparentClass = shouldEnableTransparency
 	? "wallpaper-transparent"
 	: "";
+
+const tocTranslate =
+	sidebarPosition === "right" ? "var(--toc-gap)" : "calc(var(--toc-gap) * -1)";
+
+const tocPositionClass = sidebarPosition === "right" ? "left-0" : "right-0";
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug}>
@@ -295,8 +328,8 @@ const transparentClass = shouldEnableTransparency
 
 <!-- Navbar -->
 <slot slot="head" name="head"></slot>
-<div id="top-row" class="z-50 pointer-events-none relative transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto" class:list={[""]}>
-    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+<div id="top-row" class="z-50 pointer-events-none relative transition-all duration-700 max-w-[var(--page-width)] px-2 md:px-4 mx-auto grid grid-cols-1 gap-2 md:gap-4" class:list={[tenColumnTemplateClass]}>
+    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all col-span-full md:col-start-2 md:col-end-10">
         <Navbar></Navbar>
     </div>
 </div>
@@ -369,7 +402,6 @@ const transparentClass = shouldEnableTransparency
                 />
             </div>
     )}
-    
     <!-- Home page text overlay -->
     {siteConfig.banner.homeText?.enable && (
         <div class={`banner-text-overlay absolute inset-0 z-20 flex items-center justify-center ${!showHomeText ? 'hidden' : ''}`}>
@@ -492,7 +524,7 @@ const transparentClass = shouldEnableTransparency
                 </div>
             </main>
 
-            <div class="footer col-span-2 onload-animation block lg:hidden">
+            <div class="footer col-span-full md:col-start-3 md:col-end-9 onload-animation block lg:hidden">
                 <Footer></Footer>
             </div>
         </div>
@@ -502,14 +534,14 @@ const transparentClass = shouldEnableTransparency
 </div>
 
 <!-- The things that should be under the banner, only the TOC for now -->
-<div class="absolute w-full z-0 hidden 2xl:block">
+<div class="absolute w-full z-40 hidden 2xl:block pointer-events-none">
     <div class="relative max-w-[var(--page-width)] mx-auto">
         <!-- TOC component -->
-        {siteConfig.toc.enable && <div id="toc-wrapper" class:list={["hidden lg:block transition absolute top-0 w-[var(--toc-width)] items-center",
-            sidebarLayoutConfig.position === "right" ? "-left-[var(--toc-width)]" : "-right-[var(--toc-width)]",
+        {siteConfig.toc.enable && <div id="toc-wrapper" class:list={["hidden lg:block transition absolute top-0 w-[var(--toc-width)] pointer-events-auto",
+            tocPositionClass,
             {"toc-hide": siteConfig.wallpaperMode.defaultMode === "banner"}]}
         >
-            <div id="toc-inner-wrapper" class="fixed top-14 w-[var(--toc-width)] h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar">
+            <div id="toc-inner-wrapper" class="fixed top-14 w-[var(--toc-width)] h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar" style={`transform: translateX(${tocTranslate});`}>
                 <div id="toc" class="w-full h-full transition-swup-fade ">       
                     <TOC headings={headings}></TOC>
                 </div>

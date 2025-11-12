@@ -3,7 +3,7 @@ title: 有趣的图片api
 published: 2024-08-31
 description: 一些有意思的图片API.
 tags: [fun]
-category: 
+category: 无
 licenseName: "Unlicensed"
 author: bytestring
 draft: false

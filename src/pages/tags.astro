@@ -1,0 +1,35 @@
+---
+import ButtonTag from "../components/control/ButtonTag.astro";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+import { getTagList } from "../utils/content-utils";
+import { getTagUrl } from "../utils/url-utils";
+
+const tagList = await getTagList();
+const tagCount = tagList.length;
+---
+
+<MainGridLayout title={i18n(I18nKey.tags)} description={i18n(I18nKey.tags)}>
+    <section class="card-base px-8 py-6 flex flex-col gap-6">
+        <header class="flex flex-col gap-1">
+            <h1 class="text-2xl font-bold text-75 transition">{i18n(I18nKey.tags)}</h1>
+            <p class="text-sm text-50 transition">
+                {tagCount} {i18n(I18nKey.tags)}
+            </p>
+        </header>
+
+        {tagList.length === 0 ? (
+            <p class="text-50 text-sm transition">{i18n(I18nKey.noTags)}</p>
+        ) : (
+            <div class="flex flex-wrap gap-3">
+                {tagList.map((tag) => (
+                    <ButtonTag href={getTagUrl(tag.name)} label={`View posts tagged ${tag.name}`}>
+                        <span class="font-medium">#{tag.name}</span>
+                        <span class="ml-2 text-xs text-50 transition">({tag.count})</span>
+                    </ButtonTag>
+                ))}
+            </div>
+        )}
+    </section>
+</MainGridLayout>

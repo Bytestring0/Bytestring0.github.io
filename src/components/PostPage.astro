@@ -1,8 +1,8 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getPostUrlBySlug } from "@utils/url-utils";
-import PostCard from "./PostCard.astro";
 import { siteConfig } from "../config";
+import PostCard from "./PostCard.astro";
 
 const { page } = Astro.props;
 
@@ -34,12 +34,19 @@ const interval = 50;
 </div>
 
 <script>
+  const MAX_TRY_COUNT = 10;
+  let tryCount = 0;
   // 动态布局切换脚本
   function initLayout() {
     // 延迟执行以确保DOM已完全加载
     setTimeout(() => {
       const postListContainer = document.getElementById("post-list-container");
-      if (!postListContainer) {
+      if (!postListContainer && tryCount < MAX_TRY_COUNT) {
+        tryCount++;
+        if (tryCount >= MAX_TRY_COUNT) {
+          console.error("post-list-container not found after maximum retries.");
+          return;
+        }
         console.warn("post-list-container not found, retrying...");
         // 如果找不到容器，延迟重试
         setTimeout(initLayout, 100);
@@ -48,7 +55,7 @@ const interval = 50;
 
       // 从localStorage读取用户偏好
       const savedLayout = localStorage.getItem("postListLayout");
-      const defaultLayout = postListContainer.getAttribute("data-default-layout") || "list";
+      const defaultLayout = postListContainer?.getAttribute("data-default-layout") || "list";
       const currentLayout = savedLayout || defaultLayout;
 
       console.log("Initializing layout:", { savedLayout, defaultLayout, currentLayout });
@@ -59,7 +66,7 @@ const interval = 50;
         updatePostListLayout(currentLayout);
       } else {
         // 移动端：只添加初始化标记，不更改布局（CSS已处理）
-        postListContainer.classList.add("js-initialized");
+        postListContainer?.classList.add("js-initialized");
       }
       
       // 发布布局初始化事件

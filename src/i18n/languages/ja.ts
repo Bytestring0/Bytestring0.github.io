@@ -23,6 +23,7 @@ export const ja: Translation = {
 	[Key.untitled]: "無題",
 	[Key.uncategorized]: "未分類",
 	[Key.noTags]: "タグなし",
+	[Key.noCategories]: "カテゴリなし",
 
 	[Key.wordCount]: "語",
 	[Key.wordsCount]: "語",
@@ -161,7 +162,8 @@ export const ja: Translation = {
 	[Key.atomHowToUse]:
 		"Feedly、Inoreaderまたは他のAtomリーダーを使用してこのサイトを購読することを推奨します。",
 	[Key.atomCopied]: "Atomリンクがクリップボードにコピーされました！",
-	[Key.atomCopyFailed]: "コピーに失敗しました。手動でリンクをコピーしてください",
+	[Key.atomCopyFailed]:
+		"コピーに失敗しました。手動でリンクをコピーしてください",
 
 	// スキルページ
 	[Key.skills]: "スキル",

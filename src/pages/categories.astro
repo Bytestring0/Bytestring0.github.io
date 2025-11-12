@@ -1,0 +1,33 @@
+---
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+import { getCategoryList } from "../utils/content-utils";
+
+const categories = await getCategoryList();
+const categoryCount = categories.length;
+---
+
+<MainGridLayout title={i18n(I18nKey.categories)} description={i18n(I18nKey.categories)}>
+    <section class="card-base px-8 py-6 flex flex-col gap-6">
+        <header class="flex flex-col gap-1">
+            <h1 class="text-2xl font-bold text-75 transition">{i18n(I18nKey.categories)}</h1>
+            <p class="text-sm text-50 transition">
+                {categoryCount} {i18n(I18nKey.categories)}
+            </p>
+        </header>
+
+        {categories.length === 0 ? (
+            <p class="text-50 text-sm transition">{i18n(I18nKey.noCategories)}</p>
+        ) : (
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {categories.map((category) => (
+                    <a href={category.url} class="card-base px-5 py-4 flex items-center justify-between hover:translate-y-[-2px] transition-all" aria-label={`View posts in ${category.name}`}>
+                        <span class="font-medium text-75 transition">{category.name}</span>
+                        <span class="text-sm text-50 transition">{category.count}</span>
+                    </a>
+                ))}
+            </div>
+        )}
+    </section>
+</MainGridLayout>
