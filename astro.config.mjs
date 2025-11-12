@@ -29,6 +29,7 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 export default defineConfig({
 	site: "https://bytestring.top",
 
+	base: "/",
 	trailingSlash: "always",
 	integrations: [
 		tailwind({
