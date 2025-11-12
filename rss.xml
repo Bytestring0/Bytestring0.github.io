@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring&apos;s Blog</title><description>Welcome to my blog!</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>STM32学习之GPIO（一）</title><link>https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8Bgpio%E4%B8%80/</link><guid isPermaLink="true">https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8Bgpio%E4%B8%80/</guid><description>介绍单片机的GPIO.</description><pubDate>Tue, 11 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;什么是GPIO&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring&apos;s Blog</title><description>Welcome to my blog!</description><link>https://bytestring0.github.io/</link><language>zh_CN</language><item><title>STM32学习之GPIO（一）</title><link>https://bytestring0.github.io/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8Bgpio%E4%B8%80/</link><guid isPermaLink="true">https://bytestring0.github.io/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8Bgpio%E4%B8%80/</guid><description>介绍单片机的GPIO.</description><pubDate>Tue, 11 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;什么是GPIO&lt;/h1&gt;
 &lt;p&gt;GPIO（General Purpose Input Output）是通用输入输出口。字面意思就是说芯片的这个引脚可以用于输入和输出。GPIO是单片机编程的核心之一，我们正是通过GPIO使得芯片可以和外界互动。比如有一个正极连接电源，负极连接单片机PA1的LED，我们可以通过编程让PA1输出低电平来点亮这个LED。&lt;/p&gt;
 &lt;h1&gt;STM32的GPIO&lt;/h1&gt;
 &lt;p&gt;STM32的外设在使用时需要进行初始化，GPIO初始化有三个要素，分别是引脚（Pin），模式（Mode）和速度（Speed）。&lt;br /&gt;
@@ -257,7 +257,7 @@ GPIO_Init(GPIOA, &amp;amp;gpioDef);
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>STM32学习之简单介绍STM32（零）</title><link>https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8Dstm32%E9%9B%B6/</link><guid isPermaLink="true">https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8Dstm32%E9%9B%B6/</guid><description>介绍一下单片机和STM32.</description><pubDate>Mon, 10 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;单片机是什么&lt;/h1&gt;
+</content:encoded></item><item><title>STM32学习之简单介绍STM32（零）</title><link>https://bytestring0.github.io/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8Dstm32%E9%9B%B6/</link><guid isPermaLink="true">https://bytestring0.github.io/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8Dstm32%E9%9B%B6/</guid><description>介绍一下单片机和STM32.</description><pubDate>Mon, 10 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;单片机是什么&lt;/h1&gt;
 &lt;p&gt;单片机是一种微控制器（MCU），我们可以通过编程，往其中下载程序的方式控制芯片的特定功能引脚，从而控制外围执行器（屏幕、电机等）。STM32就是一种代表性的单片机。我们使用C语言进行编程，再将程序文件烧录进芯片的程序存储器里，让芯片按照程序指定的方式运行。&lt;/p&gt;
 &lt;h1&gt;认识STM32&lt;/h1&gt;
 &lt;p&gt;STM32是意法半导体推出的一种单片机，一般具体到型号，比如STM32F103C8T6，该型号表明这是一款Cortex-M3内核的有48脚且程序空间容量为64KB的单片机。
@@ -267,7 +267,7 @@ GPIO_Init(GPIOA, &amp;amp;gpioDef);
 &lt;a href=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d5140aa.png&quot;&gt;&lt;img src=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d5140aa.png&quot; alt=&quot;v2-c831328330e77e8fceaed58b97c3e1e9_r.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;h1&gt;STM32的片上资源&lt;/h1&gt;
 &lt;p&gt;&lt;a href=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d525fcb.png&quot;&gt;&lt;img src=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d525fcb.png&quot; alt=&quot;3243597-20230718205357471-678861497.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
-</content:encoded></item><item><title>数学物理方法之分离变量法</title><link>https://bytestring.top/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</guid><description>pde.</description><pubDate>Wed, 05 Nov 2025 21:28:08 GMT</pubDate><content:encoded>&lt;p&gt;!!我的天呐数学物理方法大人，吓哭了!!&lt;/p&gt;
+</content:encoded></item><item><title>数学物理方法之分离变量法</title><link>https://bytestring0.github.io/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</link><guid isPermaLink="true">https://bytestring0.github.io/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</guid><description>pde.</description><pubDate>Wed, 05 Nov 2025 21:28:08 GMT</pubDate><content:encoded>&lt;p&gt;!!我的天呐数学物理方法大人，吓哭了!!&lt;/p&gt;
 &lt;h1&gt;弦振动问题求解&lt;/h1&gt;
 &lt;p&gt;$$
 \begin{aligned}
@@ -388,7 +388,7 @@ c_n &amp;amp;= \frac{2}{L}\int_0^L \phi(x)\cos(\frac{n\pi}{L}x)\mathrm{d}x
 \end{aligned}
 $$
 这就是热传导问题的解。&lt;/p&gt;
-</content:encoded></item><item><title>关于Latex</title><link>https://bytestring.top/posts/markdown/%E5%85%B3%E4%BA%8Elatex/</link><guid isPermaLink="true">https://bytestring.top/posts/markdown/%E5%85%B3%E4%BA%8Elatex/</guid><description>About Latex.</description><pubDate>Tue, 04 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>关于Latex</title><link>https://bytestring0.github.io/posts/markdown/%E5%85%B3%E4%BA%8Elatex/</link><guid isPermaLink="true">https://bytestring0.github.io/posts/markdown/%E5%85%B3%E4%BA%8Elatex/</guid><description>About Latex.</description><pubDate>Tue, 04 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;可以使用Latex在Markdown里嵌入公式&lt;br /&gt;
 &lt;s&gt;写一半发现Shokax好像不太支持行内公式，改成块级公式吧&lt;/s&gt;&lt;br /&gt;
 &lt;s&gt;可以非常粗暴地在layout.pug里加入katex支持来做到行内公式渲染&lt;/s&gt;&lt;br /&gt;
@@ -534,7 +534,7 @@ $$&lt;/p&gt;
     0 &amp;amp; \text{otherwise}
 \end{cases}
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>有趣的图片api</title><link>https://bytestring.top/posts/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</link><guid isPermaLink="true">https://bytestring.top/posts/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</guid><description>一些有意思的图片API.</description><pubDate>Sat, 31 Aug 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;这里有一些有趣的图片api&lt;/h1&gt;
+</content:encoded></item><item><title>有趣的图片api</title><link>https://bytestring0.github.io/posts/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</link><guid isPermaLink="true">https://bytestring0.github.io/posts/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</guid><description>一些有意思的图片API.</description><pubDate>Sat, 31 Aug 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;这里有一些有趣的图片api&lt;/h1&gt;
 &lt;h2&gt;随机猫猫动图（点击可切换）&lt;/h2&gt;
 &lt;p&gt;&amp;lt;div id=&quot;maomao1&quot; style=&quot;
 background-size:contain;
@@ -624,7 +624,7 @@ el.style.backgroundImage = &lt;code&gt;url(${url})&lt;/code&gt;;
 &lt;p&gt;// 初始化
 initPicture2(&quot;https://cataas.com/cat/&quot;, &quot;maomao2&quot;);
 &amp;lt;/script&amp;gt;&lt;/p&gt;
-</content:encoded></item><item><title>Markdown学习</title><link>https://bytestring.top/posts/markdown/markdown%E5%AD%A6%E4%B9%A0/</link><guid isPermaLink="true">https://bytestring.top/posts/markdown/markdown%E5%AD%A6%E4%B9%A0/</guid><description>A brief intro to md.</description><pubDate>Sat, 31 Aug 2024 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>Markdown学习</title><link>https://bytestring0.github.io/posts/markdown/markdown%E5%AD%A6%E4%B9%A0/</link><guid isPermaLink="true">https://bytestring0.github.io/posts/markdown/markdown%E5%AD%A6%E4%B9%A0/</guid><description>A brief intro to md.</description><pubDate>Sat, 31 Aug 2024 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;心血来潮建个博客玩玩，hexo博客要使用markdown书写，所以要重新练习一下md了，这里记一下学习笔记。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h1&gt;一、标题&lt;/h1&gt;
