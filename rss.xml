@@ -1,0 +1,840 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring&apos;s Blog</title><description>Welcome to my blog!</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>STM32学习之GPIO（一）</title><link>https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8Bgpio%E4%B8%80/</link><guid isPermaLink="true">https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8Bgpio%E4%B8%80/</guid><description>介绍单片机的GPIO.</description><pubDate>Tue, 11 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;什么是GPIO&lt;/h1&gt;
+&lt;p&gt;GPIO（General Purpose Input Output）是通用输入输出口。字面意思就是说芯片的这个引脚可以用于输入和输出。GPIO是单片机编程的核心之一，我们正是通过GPIO使得芯片可以和外界互动。比如有一个正极连接电源，负极连接单片机PA1的LED，我们可以通过编程让PA1输出低电平来点亮这个LED。&lt;/p&gt;
+&lt;h1&gt;STM32的GPIO&lt;/h1&gt;
+&lt;p&gt;STM32的外设在使用时需要进行初始化，GPIO初始化有三个要素，分别是引脚（Pin），模式（Mode）和速度（Speed）。&lt;br /&gt;
+其中Speed不用特别在意，因为在初学时基本遇不到对引脚速度敏感的场合。&lt;br /&gt;
+STM32的GPIO被分成了ABC...等组，每组中有特定的引脚数字，这就是引脚。&lt;br /&gt;
+打开&lt;code&gt;stm32f10x_gpio.h&lt;/code&gt;文件中的&lt;code&gt;GPIO_InitTypeDef&lt;/code&gt;，如下所示。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/** 
+  * @brief  GPIO Init structure definition  
+  */
+typedef struct
+{
+  uint16_t GPIO_Pin;             /*!&amp;lt; Specifies the GPIO pins to be configured.
+                                      This parameter can be any value of @ref GPIO_pins_define */
+
+  GPIOSpeed_TypeDef GPIO_Speed;  /*!&amp;lt; Specifies the speed for the selected pins.
+                                      This parameter can be a value of @ref GPIOSpeed_TypeDef */
+
+  GPIOMode_TypeDef GPIO_Mode;    /*!&amp;lt; Specifies the operating mode for the selected pins.
+                                      This parameter can be a value of @ref GPIOMode_TypeDef */
+}GPIO_InitTypeDef;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个结构体就是STM32的初始化结构体，再打开同一文件下的&lt;code&gt;GPIOMode_TypeDef&lt;/code&gt;，如下所示&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/** 
+  * @brief  Configuration Mode enumeration  
+  */
+
+typedef enum
+{ GPIO_Mode_AIN = 0x0, //模拟输入，配合ADC使用
+  GPIO_Mode_IN_FLOATING = 0x04, //悬空输入，不接上下拉电阻，可避免多GPIO并联信号问题
+  GPIO_Mode_IPD = 0x28, //下拉输入，接入下拉电阻，默认为低电平
+  GPIO_Mode_IPU = 0x48, //上拉输入，接入上拉电阻，默认为高电平
+  GPIO_Mode_Out_OD = 0x14, //开漏输出，写入1时输出高阻态，可以实现数电中的“线与”功能
+  GPIO_Mode_Out_PP = 0x10, //推挽输出，具有输出和输入电流的能力
+  GPIO_Mode_AF_OD = 0x1C, //复用开漏，结合复用功能使用
+  GPIO_Mode_AF_PP = 0x18 //复用推挽，结合复用功能使用
+}GPIOMode_TypeDef;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这是GPIO模式的枚举量，后面的地址涉及寄存器相关知识，想了解的话可以看&lt;a href=&quot;https://www.cnblogs.com/hazy1k/p/18365645&quot;&gt;GPIO介绍&lt;/a&gt;。&lt;/p&gt;
+&lt;h1&gt;STM32的时钟&lt;/h1&gt;
+&lt;p&gt;在了解了GPIO初始化结构体并对GPIO进行初始化后，我们还是控制不了这个GPIO的，这是因为这个GPIO还处于休眠状态。在初始化之前，我们需要叫醒GPIO，也就是开启时钟。&lt;br /&gt;
+下面是一张STM32的时钟树，虽然看起来很复杂，但实际上确实很复杂，不过我们只需要看我们需要用到的部分就好了。&lt;br /&gt;
+&lt;img src=&quot;https://youke1.picui.cn/s1/2025/11/11/69132c90890ec.png&quot; alt=&quot;05-RCC-clock-tree.png&quot; /&gt;
+观察最小系统板的接线图可以发现系统的&lt;code&gt;OSC_OUT&lt;/code&gt;和&lt;code&gt;OSC_IN&lt;/code&gt;被接在了一个8MHz的晶振上，也就是说这个&lt;code&gt;HSE OSC&lt;/code&gt;的频率是8Hz，然后经过一系列倍频操作变成了&lt;code&gt;SYSCLK&lt;/code&gt;，可以发现这就是系统的核心频率。不过好在这个频率已经在启动文件中被默认设置为了72MHz，这使得我们不用非常在意这个时钟是哪来的（具体可以看&lt;code&gt;system_stm32f10x.c&lt;/code&gt;文件中的&lt;code&gt;SetSysClock()&lt;/code&gt;）。只有在时钟的脉冲下单片机才可以运行指令，时钟决定了STM32执行指令的速度。&lt;br /&gt;
+现在知道了有时钟这么一回事，但是打开谁的时钟呢。我们查看时钟树，发现并没有GPIO。这是因为GPIO被挂在了APB2这条总线上。文件&lt;code&gt;stm32f10x_rcc.c&lt;/code&gt;定义了相关时钟设置的函数，其中有一条函数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+/**
+  * @brief  Enables or disables the High Speed APB (APB2) peripheral clock.
+  * @param  RCC_APB2Periph: specifies the APB2 peripheral to gates its clock.
+  *   This parameter can be any combination of the following values:
+  *     @arg RCC_APB2Periph_AFIO, RCC_APB2Periph_GPIOA, RCC_APB2Periph_GPIOB,
+  *          RCC_APB2Periph_GPIOC, RCC_APB2Periph_GPIOD, RCC_APB2Periph_GPIOE,
+  *          RCC_APB2Periph_GPIOF, RCC_APB2Periph_GPIOG, RCC_APB2Periph_ADC1,
+  *          RCC_APB2Periph_ADC2, RCC_APB2Periph_TIM1, RCC_APB2Periph_SPI1,
+  *          RCC_APB2Periph_TIM8, RCC_APB2Periph_USART1, RCC_APB2Periph_ADC3,
+  *          RCC_APB2Periph_TIM15, RCC_APB2Periph_TIM16, RCC_APB2Periph_TIM17,
+  *          RCC_APB2Periph_TIM9, RCC_APB2Periph_TIM10, RCC_APB2Periph_TIM11     
+  * @param  NewState: new state of the specified peripheral clock.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void RCC_APB2PeriphClockCmd(uint32_t RCC_APB2Periph, FunctionalState NewState)
+{
+  /* Check the parameters */
+  assert_param(IS_RCC_APB2_PERIPH(RCC_APB2Periph));
+  assert_param(IS_FUNCTIONAL_STATE(NewState));
+  if (NewState != DISABLE)
+  {
+    RCC-&amp;gt;APB2ENR |= RCC_APB2Periph;
+  }
+  else
+  {
+    RCC-&amp;gt;APB2ENR &amp;amp;= ~RCC_APB2Periph;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在函数的参数部分，我们可以看见&lt;code&gt;RCC_APB2Periph&lt;/code&gt;这个参数的可选值有所有的GPIO和一些ADC、定时器啥的。当我们需要使用对应功能时，我们就需要使用这个函数，第一个参数填需要的外设，第二个参数填&lt;code&gt;ENABLE&lt;/code&gt;。&lt;/p&gt;
+&lt;h1&gt;点亮一盏LED灯&lt;/h1&gt;
+&lt;p&gt;在学习完上面的理论后，我们就可以开始我们的第一个&lt;code&gt;Hello World&lt;/code&gt;程序——点亮一盏LED灯（假设我们使用PA1）。&lt;br /&gt;
+首先，我们需要开启时钟&lt;code&gt;RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);&lt;/code&gt;&lt;br /&gt;
+然后对我们需要控制的引脚进行初始化&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;GPIO_InitTypeDef gpioDef;    
+gpioDef.GPIO_Mode = GPIO_Mode_Out_PP;
+gpioDef.GPIO_Pin = GPIO_Pin_1;
+gpioDef.GPIO_Speed = GPIO_Speed_10MHz;
+GPIO_Init(GPIOA, &amp;amp;gpioDef);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后就可以写入这个GPIO了&lt;code&gt;GPIO_WriteBit(GPIOA, GPIO_Pin_1, (BitAction)0);&lt;/code&gt;&lt;br /&gt;
+我们一般把主程序写进一个&lt;code&gt;While&lt;/code&gt;循环中，&lt;code&gt;main&lt;/code&gt;函数如下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;int main()
+{
+    GPIO_InitTypeDef gpioDef;
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    gpioDef.GPIO_Mode = GPIO_Mode_Out_PP;
+    gpioDef.GPIO_Pin = GPIO_Pin_1;
+    gpioDef.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_Init(GPIOA, &amp;amp;gpioDef);
+
+    while (1)
+    {
+        GPIO_WriteBit(GPIOA, GPIO_Pin_1, Bit_RESET);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将LED的正极连上电源，串联一个电阻，再将负极连接PA1，烧录程序，就可以看到LED点亮了。&lt;/p&gt;
+&lt;h2&gt;软件延时&lt;/h2&gt;
+&lt;p&gt;我们只需要简单修改就可以让点亮变为闪烁。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    uint8_t LEDflag = 0;
+    GPIO_InitTypeDef gpioDef;
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    gpioDef.GPIO_Mode = GPIO_Mode_Out_PP;
+    gpioDef.GPIO_Pin = GPIO_Pin_1;
+    gpioDef.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_Init(GPIOA, &amp;amp;gpioDef);
+    while (1)
+    {
+        if (LEDflag)
+        {
+            GPIO_WriteBit(GPIOA, GPIO_Pin_1, Bit_SET);
+            LEDflag = 0;
+        }
+        else{
+            GPIO_WriteBit(GPIOA, GPIO_Pin_1, Bit_RESET);
+            LEDflag = 1;
+        }
+        
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是这样会有一个问题，IO口的电平翻转速度太快了导致观察不到，所以我们要想办法进行延时，最朴素的想法是让单片机进行一些无意义的占位运算，“浪费”掉这些时间。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;void delay(int x)
+    {
+        for (int i = 0; i &amp;lt; x; i++)
+        {
+            for (int j = 0; j &amp;lt; 1000; j++)
+                __NOP();
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    uint8_t LEDflag = 0;
+    GPIO_InitTypeDef gpioDef;
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    gpioDef.GPIO_Mode = GPIO_Mode_Out_PP;
+    gpioDef.GPIO_Pin = GPIO_Pin_1;
+    gpioDef.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_Init(GPIOA, &amp;amp;gpioDef);
+    while (1)
+    {
+        if (LEDflag)
+        {
+            GPIO_WriteBit(GPIOA, GPIO_Pin_1, Bit_SET);
+            LEDflag = 0;
+        }
+        else{
+            GPIO_WriteBit(GPIOA, GPIO_Pin_1, Bit_RESET);
+            LEDflag = 1;
+        }
+        delay(5000);
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样实现的延时不仅不精确，而且会阻塞程序，之后我们会使用定时器来改进它。&lt;/p&gt;
+&lt;h1&gt;按键输入与消抖&lt;/h1&gt;
+&lt;p&gt;通过将Mode改为输入就可以实现检测输入信号，程序比较简单，就不讲解了&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    GPIO_InitTypeDef gpioDef;
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    gpioDef.GPIO_Mode = GPIO_Mode_Out_PP;
+    gpioDef.GPIO_Pin = GPIO_Pin_1;
+    gpioDef.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_Init(GPIOA, &amp;amp;gpioDef);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+    gpioDef.GPIO_Mode = GPIO_Mode_IPU;
+    gpioDef.GPIO_Pin = GPIO_Pin_1;
+    gpioDef.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_Init(GPIOB, &amp;amp;gpioDef);
+    while(1)
+    {
+        if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == Bit_RESET)
+        {
+            GPIO_ResetBits(GPIOA, GPIO_Pin_1);
+        }
+        else
+        {
+            GPIO_SetBits(GPIOA, GPIO_Pin_1);
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;对于机械按键，我们需要进行消抖，原理是当按下按键时，电平会在一个小的时间内抖动，所以我们需要滤过这段时间，直到松手为止，代码如下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    if (GPIO_ReadInputDataBit(Key_Port, pin) == 0)
+    {
+        delay(5); // 简单去抖
+        if (GPIO_ReadInputDataBit(Key_Port, pin) == 0)
+        {
+            while (GPIO_ReadInputDataBit(Key_Port, pin) == 0)
+                ;
+            // logic
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;流水灯&lt;/h2&gt;
+&lt;p&gt;既然有了按键，又有了LED，当然要写一个流水灯了。&lt;br /&gt;
+当按下&lt;code&gt;Key1&lt;/code&gt;时关启流水灯，按下&lt;code&gt;Key2&lt;/code&gt;时反转流水灯方向。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;uint8_t key_pressed(uint16_t pin)//按键处理函数
+{
+    if (GPIO_ReadInputDataBit(Key_Port, pin) == 0)
+    {
+        delay(5); // 简单去抖
+        if (GPIO_ReadInputDataBit(Key_Port, pin) == 0)
+        {
+            while (GPIO_ReadInputDataBit(Key_Port, pin) == 0)
+                ;
+            return 1;
+        }
+    }
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;int main() //主程序
+{
+    uint8_t FlowingLEDflag = 0;
+    uint8_t dir = 1;
+    GPIO_InitTypeDef gpioDef;
+    RCC_APB2PeriphClockCmd(LED_RCC, ENABLE);
+    gpioDef.GPIO_Mode = GPIO_Mode_Out_PP;
+    for(int i=0; i&amp;lt;3; i++)
+    {
+        gpioDef.GPIO_Pin |= ledPins[i];
+    }
+    gpioDef.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_Init(LED_Port, &amp;amp;gpioDef);
+    RCC_APB2PeriphClockCmd(Key_RCC, ENABLE);
+    gpioDef.GPIO_Mode = GPIO_Mode_IPU;
+    gpioDef.GPIO_Pin = Key1 | Key2;
+    gpioDef.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_Init(Key_Port, &amp;amp;gpioDef);
+    GPIO_SetBits(LED_Port, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3);
+    while(1)
+    {
+        if(key_pressed(Key1))
+        {
+            FlowingLEDflag = 1 - FlowingLEDflag;
+        }
+        if(key_pressed(Key2))
+        {
+            dir = -dir;
+        }
+        if(FlowingLEDflag == 1)
+        {
+            static int8_t currentLED = 0;
+            GPIO_ResetBits(LED_Port, ledPins[currentLED]);
+            delay(5000);
+            GPIO_SetBits(LED_Port, ledPins[currentLED]);
+            currentLED += dir;
+            if(currentLED &amp;gt; 2) currentLED = 0;
+            if(currentLED &amp;lt; 0) currentLED = 2;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>STM32学习之简单介绍STM32（零）</title><link>https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8Dstm32%E9%9B%B6/</link><guid isPermaLink="true">https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8Dstm32%E9%9B%B6/</guid><description>介绍一下单片机和STM32.</description><pubDate>Mon, 10 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;单片机是什么&lt;/h1&gt;
+&lt;p&gt;单片机是一种微控制器（MCU），我们可以通过编程，往其中下载程序的方式控制芯片的特定功能引脚，从而控制外围执行器（屏幕、电机等）。STM32就是一种代表性的单片机。我们使用C语言进行编程，再将程序文件烧录进芯片的程序存储器里，让芯片按照程序指定的方式运行。&lt;/p&gt;
+&lt;h1&gt;认识STM32&lt;/h1&gt;
+&lt;p&gt;STM32是意法半导体推出的一种单片机，一般具体到型号，比如STM32F103C8T6，该型号表明这是一款Cortex-M3内核的有48脚且程序空间容量为64KB的单片机。
+我们可以简单计算一下，如果将芯片的主频设置为72MHz，那么一个时钟周期就是1/72M = 0.0138 us，可以近似认为单片机执行一条指令就需要这么久，每秒可以处理72M个指令，可见单片机的处理时间尺度是很小的，所以我们才要考虑按键消抖等扰动。
+而对于64KB的程序空间，可以存下65536个8bit的变量，可以使用的空间是有限的!!之前打蓝某杯就被这点坑了!!，需要注意。
+关于STM32的命名规则可以参考下图
+&lt;a href=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d5140aa.png&quot;&gt;&lt;img src=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d5140aa.png&quot; alt=&quot;v2-c831328330e77e8fceaed58b97c3e1e9_r.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;STM32的片上资源&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d525fcb.png&quot;&gt;&lt;img src=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d525fcb.png&quot; alt=&quot;3243597-20230718205357471-678861497.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>数学物理方法之分离变量法</title><link>https://bytestring.top/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</guid><description>pde.</description><pubDate>Wed, 05 Nov 2025 21:28:08 GMT</pubDate><content:encoded>&lt;p&gt;!!我的天呐数学物理方法大人，吓哭了!!&lt;/p&gt;
+&lt;h1&gt;弦振动问题求解&lt;/h1&gt;
+&lt;p&gt;$$
+\begin{aligned}
+\left{
+\begin{aligned}
+\frac{\partial^2 u}{\partial t^2} &amp;amp;= a^2\frac{\partial^2u}{\partial x^2} &amp;amp; &amp;amp;(0\lt x \lt L,t\gt 0) &amp;amp;(1) \
+u\vert_{t=0} &amp;amp;= \phi(x), \frac{\partial u}{\partial t}\vert_{t=0}  = \psi(x) &amp;amp;&amp;amp; (0\le x \le L) &amp;amp;(2)\
+u\vert_{x=0} &amp;amp; = 0, u\vert_{x=L} = 0 &amp;amp;&amp;amp; (t&amp;gt;0) &amp;amp;(3)
+\end{aligned}
+\right.
+\end{aligned}
+$$
+其中$\phi(x)$和$\psi(x)$为已知函数，分别代表弦的初始位移与初始速度。&lt;br /&gt;
+分离变量法的思路在于将$u(x,t)$变为两函数之积，分别考虑两个函数的导数，这样就将偏微分方程（PDE）问题变为常微分（ODE）方程问题。
+具体来说，我们可以令$u(x,t)=X(x)T(t)$，再将函数带入到（1）式。
+$$
+\begin{align*}
+X(x)T^{\prime\prime}(t) &amp;amp;= a^2X^{\prime\prime}(x)T(t)\
+\frac{T^{\prime\prime}(t)}{a^2T(t)} &amp;amp;= \frac{X^{\prime\prime}(x)}{X(x)} &amp;amp;(4)
+\end{align*}
+$$
+左边是只和$t$有关的函数，而右边是只和$x$有关的函数，所以一定有
+$$
+\frac{T^{\prime\prime}(t)}{a^2T(t)}= \frac{X^{\prime\prime}(x)}{X(x)}= constant = -\lambda
+$$
+我们设这一常数为$-\lambda$,带入到（4）式中，我们有如下两个方程
+$$
+\begin{aligned}
+\left{
+\begin{aligned}
+T^{\prime\prime}(t)+\lambda a^2T(t) &amp;amp;= 0 &amp;amp; (5)\
+X^{\prime\prime}(x)+\lambda X(x) &amp;amp;= 0 &amp;amp;(6)
+\end{aligned}
+\right.
+\end{aligned}
+$$
+这就是常微分方程中的特征方程和特征值问题，对于（6）式，由特征方程$x^2+\lambda=0$获得如下解
+$$
+\begin{aligned}
+X(x) &amp;amp;= A\cosh(kx)+B\sinh(kx) &amp;amp; \lambda &amp;lt; 0 \
+X(x) &amp;amp;= Ax+B &amp;amp; \lambda = 0 \
+X(x) &amp;amp;= A\cos(kx) + B\sin(kx) &amp;amp; \lambda &amp;gt; 0
+\end{aligned}
+$$
+其中$k=\sqrt{\vert\lambda\vert}$。
+现在让我们分别来考虑每个解。对于每个解$X(x)$，都应该满足边界条件（3）式。
+将（3）式带入 $ X(x) = A\cosh(kx)+B\sinh(kx) $ ，解得 $ A=0,B=0,X(x)=0 $ ，这是一个平凡解，舍去。
+将（3）式带入 $ X(x) = Ax+B $ ，解得 $ A=0,B=0,X(x)=0 $，这也是一个平凡解，舍去。
+将（3）式带入 $ X(x) = A\cos(kx) + B\sin(kx) $，得 $ kL=n\pi,\lambda =k^2=(\dfrac{n\pi}{L})^2,X_n(x) = B_n\sin(\dfrac{n\pi}{L}x) $，这正是我们需要的解。
+接着考察（5）式，（5）式也是一个特征方程问题，同理可得
+$$
+T_n(t) = C_n\cos(\frac{na\pi}{L}t) + D_n\sin(\frac{na\pi}{L}t)
+$$
+所以有
+$$
+\begin{aligned}
+u_n(x,t) &amp;amp;= X_n(x)T_n(t) \
+&amp;amp;= [C_n\cos(\frac{na\pi}{L}t) + D_n\sin(\frac{na\pi}{L}t)]B_n\sin(\dfrac{n\pi}{L}x) \
+&amp;amp;= [C_n\cos(\frac{na\pi}{L}t) + D_n\sin(\frac{na\pi}{L}t)]\sin(\dfrac{n\pi}{L}x)
+\end{aligned}
+$$
+但是这个解可能不满足式（2）中所给的任意函数的条件，由线性方程的性质可以得到，若 $u_n(x,t)$ 是方程的解，那么 $\displaystyle\sum u_i(x,t)$ 也是方程的解，所以我们可以利用傅里叶级数的知识，将所有方程的解叠加起来，并让这个叠加后的解满足任意函数的条件。
+具体来说，令 $u(x,t) = \displaystyle\sum_{n=1}^\infty u_n(x,t) =  \displaystyle\sum_{n=1}^\infty [C_n\cos(\frac{na\pi}{L}t) + D_n\sin(\frac{na\pi}{L}t)]\sin(\dfrac{n\pi}{L}x) $，将式（5）带入得到
+$$
+\begin{aligned}
+\phi(x) = u(x,0) &amp;amp;= \displaystyle\sum_{n=1}^\infty C_n\sin(\dfrac{n\pi}{L}x) \
+\frac{2}{L}\int_0^L\phi(x)\sin(\dfrac{n\pi}{L}x)\mathrm{d}x &amp;amp;= C_n \
+\psi(x) = \frac{\partial u}{\partial t}\vert_{t=0} &amp;amp;=  \displaystyle\sum_{n=1}^\infty D_n\frac{na\pi}{L}\sin(\dfrac{n\pi}{L}x) \
+\frac{2}{na\pi}\int_0^L\psi(x)\sin(\dfrac{n\pi}{L}x)\mathrm{d}x &amp;amp;= D_n
+\end{aligned}
+$$
+综上
+$$
+u(x,t) = \sum_{n=1}^\infty [\frac{2}{L}\int_0^L\phi(x)\sin(\dfrac{n\pi}{L}x)\mathrm{d}x\cos(\frac{na\pi}{L}t) + \frac{2}{na\pi}\int_0^L\psi(x)\sin(\dfrac{n\pi}{L}x)\mathrm{d}x\sin(\frac{na\pi}{L}t)]\sin(\dfrac{n\pi}{L}x)
+$$&lt;/p&gt;
+&lt;h1&gt;热传导问题求解&lt;/h1&gt;
+&lt;p&gt;$$
+\begin{aligned}
+\left{
+\begin{aligned}
+\frac{\partial u}{\partial t} &amp;amp;= a^2\frac{\partial^2u}{\partial x^2} &amp;amp; &amp;amp;(0\lt x \lt L,t\gt 0) &amp;amp;(1) \
+u\vert_{t=0} &amp;amp;= \phi(x) &amp;amp;&amp;amp; (0\le x \le L) &amp;amp;(2)\
+\frac{\partial u}{\partial x}\vert_{x=0} &amp;amp; = 0, \frac{\partial u}{\partial x}\vert_{x=L} = 0 &amp;amp;&amp;amp; (t&amp;gt;0) &amp;amp;(3)
+\end{aligned}
+\right.
+\end{aligned}
+$$
+类似的，使用分离变量 $ u(x,t) = X(x)T(t) $。
+$$
+\begin{aligned}
+\left{
+\begin{aligned}
+X^{\prime\prime}(x) + \lambda X(x) &amp;amp;= 0 \
+T^\prime(t) + \lambda a^2T(t) &amp;amp;= 0
+\end{aligned}
+\right.
+\end{aligned}
+$$
+我们有
+$$
+\begin{aligned}
+X(x) &amp;amp;= A\cosh(kx)+B\sinh(kx) &amp;amp; X^\prime (x) &amp;amp;= Ak\sinh(kx)+Bk\cosh(kx) &amp;amp;\lambda &amp;lt; 0 \
+X(x) &amp;amp;= Ax+B &amp;amp; X^\prime(x) &amp;amp;= A &amp;amp;\lambda = 0 \
+X(x) &amp;amp;= A\cos(kx) + B\sin(kx) &amp;amp;X^\prime(x) &amp;amp;= -Ak\sin(kx) + Bk\cos(kx)&amp;amp; \lambda &amp;gt; 0
+\end{aligned}
+$$
+为了让解满足式（3）， $ \lambda \lt 0 $ 的情况需舍去。
+当 $ \lambda = 0 $ 时 $ X_0(x) = B $ ；
+当 $ \lambda &amp;gt; 0 $ 时，$ -Ak\sin(kL) = 0 $ ， $ \lambda =  k^2 = (\dfrac{n\pi}{L})^2 $ ， $ X_n(x) = A_n\cos(\dfrac{n\pi}{L}x) $ 。
+关于 $ T $ 的方程是一个一阶常微分方程，它的解是 $ T_n(t) = C_n e^{-(\frac{na\pi}{L})^2t} $ ， $ T_0(t) = c_0 $ 。
+所以
+$$
+\begin{aligned}
+u(x,t) &amp;amp;= c_0 + \sum_{n=1}^{\infty}C_ne^{-(\frac{na\pi}{L})^2t}\cos(\frac{n\pi}{L}x) \
+\phi(x) &amp;amp;= u(x,0) = c_0 + \sum_{n=1}^{\infty}C_n\cos(\frac{n\pi}{L}x)\
+c_0 &amp;amp;= \frac{1}{L}\int_0^L \phi(x)\mathrm{d}x \
+c_n &amp;amp;= \frac{2}{L}\int_0^L \phi(x)\cos(\frac{n\pi}{L}x)\mathrm{d}x
+\end{aligned}
+$$
+这就是热传导问题的解。&lt;/p&gt;
+</content:encoded></item><item><title>关于Latex</title><link>https://bytestring.top/posts/markdown/%E5%85%B3%E4%BA%8Elatex/</link><guid isPermaLink="true">https://bytestring.top/posts/markdown/%E5%85%B3%E4%BA%8Elatex/</guid><description>About Latex.</description><pubDate>Tue, 04 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;可以使用Latex在Markdown里嵌入公式&lt;br /&gt;
+&lt;s&gt;写一半发现Shokax好像不太支持行内公式，改成块级公式吧&lt;/s&gt;&lt;br /&gt;
+&lt;s&gt;可以非常粗暴地在layout.pug里加入katex支持来做到行内公式渲染&lt;/s&gt;&lt;br /&gt;
+关于我受不了latex支持而把博客迁移了这回事&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;一、基础语法&lt;/h1&gt;
+&lt;h2&gt;行内公式&lt;/h2&gt;
+&lt;p&gt;$ a^2 + b^2 = c^2 $&lt;/p&gt;
+&lt;h2&gt;块状公式&lt;/h2&gt;
+&lt;p&gt;$$ a^2 + b^2 = c^2 $$&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ a^2 + b^2 = c^2 $
+$$ a^2 + b^2 = c^2 $$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;二、数学结构&lt;/h1&gt;
+&lt;h2&gt;上下标&lt;/h2&gt;
+&lt;p&gt;$ a^2 \space x_i \space y_{12} \space e^{i\pi} $&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ a^2 \space x_i \space y_{12} \space e^{i\pi} $
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;分数&lt;/h2&gt;
+&lt;p&gt;$ \frac{a}{b} \space \frac{1}{x}{y} \space \dfrac{x}{y} $&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ \frac{a}{b} \space \frac{1}{x}{y} \space \dfrac{x}{y} (强制大分数) $
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;根号&lt;/h2&gt;
+&lt;p&gt;$ \sqrt{A_{1}^{2} + A_{2}^{2}} \space \sqrt[3]{a^{3} + b^{3}} $&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ \sqrt{A_1^2 + A_2^2} \space \sqrt[3]{a^3 + b^3} $
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;三、常用符号&lt;/h1&gt;
+&lt;h2&gt;求和和乘积&lt;/h2&gt;
+&lt;p&gt;$ \sum \space \sum_{i=1}^{n}{i^2} \space \prod \space $
+还有另一种块内求和不太一样
+$$ \sum_{i=1}^{n}{i^2} \
+\prod_{i=1}^n{i}
+$$&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ \sum \space \sum_{i=1}^{n}{i^2} \space \prod \space $
+$$ \sum_{i=1}^{n}{i^2} \\
+    \prod_{i=1}^n{i}
+$$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;积分&lt;/h2&gt;
+&lt;p&gt;$ \int \space \int_1^2 xdx = \frac{3}{2} \space \int_{-\infty}^{+\infty}t \times e^t dt \space \displaystyle\int_{-\infty}^{+\infty} $&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ \int \space \int_1^2 xdx = \frac{3}{2} \space \int_{-\infty}^{+\infty}t \times e^t dt \space \displaystyle\int_{-\infty}^{+\infty} $
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;极限&lt;/h2&gt;
+&lt;p&gt;$ \lim \space \lim_{x \to 0^+} \frac{\sin x}{x} = 1 $&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ \lim \space \lim_{x \to 0^+} \frac{\sin x}{x} = 1 $
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;运算符&lt;/h2&gt;
+&lt;p&gt;$ + - \times \div \lt \gt \le \ge \pm \mp $&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ + - \times \div \lt \gt \le \ge \pm \mp $
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;希腊字母&lt;/h2&gt;
+&lt;p&gt;$ \alpha \space \beta \space \Gamma $&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ \alpha \space \beta \space \Gamma $
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;文本&lt;/h2&gt;
+&lt;p&gt;$ \text{Hello world} \space \textcolor{red}{Red} $&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ \text{Hello world} \space \textcolor{red}{Red} $
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;矩阵和行列式&lt;/h2&gt;
+&lt;p&gt;$$
+\begin{bmatrix}
+1 &amp;amp; 2 \
+2 &amp;amp; 1
+\end{bmatrix}
+\
+\begin{vmatrix}
+1 &amp;amp; 2 \
+3 &amp;amp; 4
+\end{vmatrix}
+$$&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$$ \begin{bmatrix}
+    1 &amp;amp; 2 \\
+    2 &amp;amp; 1 \\
+    3 &amp;amp; 3
+\end{bmatrix} $$
+\\
+\begin{vmatrix}
+    1 &amp;amp; 2 \\
+    3 &amp;amp; 4
+\end{vmatrix}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;四、排版&lt;/h1&gt;
+&lt;h2&gt;对齐&lt;/h2&gt;
+&lt;p&gt;$$
+\begin{aligned}
+\left{
+\begin{aligned}
+2x + y &amp;amp;= 1  \
+2x + 2y &amp;amp;= 2
+\end{aligned}
+\right.
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;有标号&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+f &amp;amp; = (a+b)^2 \
+&amp;amp; = a^2 + 2ab + b^2
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;无标号&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align*}
+f &amp;amp; = (a+b)^2 \
+&amp;amp; = a^2 + 2ab + b^2
+\end{align*}
+$$&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$$
+\begin{aligned}
+    \left\{
+        \begin{aligned}
+            2x + y &amp;amp;= 1  \\
+            2x + 2y &amp;amp;= 2
+        \end{aligned}
+    \right.
+\end{aligned}
+$$
+$$
+\begin{align}
+    f &amp;amp; = (a+b)^2 \\
+      &amp;amp; = a^2 + 2ab + b^2
+\end{align}
+$$
+$$
+\begin{align*}
+    f &amp;amp; = (a+b)^2 \\
+      &amp;amp; = a^2 + 2ab + b^2
+\end{align*}
+( &amp;amp; 用于标注对齐点)
+$$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;分段&lt;/h2&gt;
+&lt;p&gt;$$
+\delta_{ij}=
+\begin{cases}
+1 &amp;amp; \text{if }i=j \
+0 &amp;amp; \text{otherwise}
+\end{cases}
+$$&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;\delta_{ij}=
+\begin{cases}
+    1 &amp;amp; \text{if }i=j \\
+    0 &amp;amp; \text{otherwise}
+\end{cases}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>有趣的图片api</title><link>https://bytestring.top/posts/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</link><guid isPermaLink="true">https://bytestring.top/posts/fun/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</guid><description>一些有意思的图片API.</description><pubDate>Sat, 31 Aug 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;这里有一些有趣的图片api&lt;/h1&gt;
+&lt;h2&gt;随机猫猫动图（点击可切换）&lt;/h2&gt;
+&lt;p&gt;&amp;lt;div id=&quot;maomao1&quot; style=&quot;
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+cursor:pointer;&quot;&amp;gt;
+&amp;lt;/div&amp;gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;script&amp;gt;
+function refreshPicture(urll,id) {
+const url = &lt;code&gt;${urll}/?${Date.now()}&lt;/code&gt;; // 避免缓存
+const img = new Image();
+img.src = url;
+const box = document.getElementById(id);
+img.onload = ()=&amp;gt;{
+// 根据图片尺寸设置 div 尺寸
+box.style.width = img.width + &apos;px&apos;;
+box.style.height = img.height + &apos;px&apos;;
+box.style.backgroundImage = &lt;code&gt;url(&apos;${url}&apos;)&lt;/code&gt;;
+}
+}
+function initPicture(url,id)
+{&lt;br /&gt;
+document.getElementById(id).addEventListener(&apos;click&apos;, e=&amp;gt;{
+e.stopPropagation();
+e.preventDefault();
+refreshPicture(url,id);
+});&lt;br /&gt;
+refreshPicture(url,id);
+}&lt;/p&gt;
+&lt;p&gt;initPicture(&quot;http://edgecats.net&quot;,&apos;maomao1&apos;);
+&amp;lt;/script&amp;gt;&lt;/p&gt;
+&lt;h2&gt;加载图片&lt;/h2&gt;
+&lt;p&gt;&amp;lt;div id=&quot;loadimg&quot; style=&quot;
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+cursor:pointer;&quot;&amp;gt;
+&amp;lt;/div&amp;gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;script&amp;gt;&lt;/p&gt;
+&lt;p&gt;// 初始化
+initPicture(&quot;https://imgapi.cn/loading.php&quot;,&apos;loadimg&apos;);
+&amp;lt;/script&amp;gt;&lt;/p&gt;
+&lt;h2&gt;猫猫表情包&lt;/h2&gt;
+&lt;p&gt;&amp;lt;!-- 输入框 --&amp;gt;
+&amp;lt;input id=&quot;catInput&quot;
+placeholder=&quot;输入猫猫要说的话~&quot;
+style=&quot;
+display:block;
+margin:10px auto;
+padding:8px 14px;
+border-radius:10px;
+border:1px solid #ccc;
+font-size:15px;
+outline:none;
+text-align:center;
+transition:.2s;
+background-color:rgba(0,0,0,0);
+&quot;
+onfocus=&quot;this.style.borderColor=&apos;#ffb6c1&apos;&quot;
+onblur=&quot;this.style.borderColor=&apos;#ccc&apos;&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;!-- 猫猫显示区 --&amp;gt;
+&amp;lt;div id=&quot;maomao2&quot; style=&quot;
+width:300px;
+height:300px;
+margin:10px auto;
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+cursor:pointer;
+box-shadow:0 2px 6px rgba(0,0,0,0.2);
+&quot;&amp;gt;
+&amp;lt;/div&amp;gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;script&amp;gt;
+function initPicture2(baseUrl, elementId) {
+const el = document.getElementById(elementId);
+const input = document.getElementById(&quot;catInput&quot;);&lt;/p&gt;
+&lt;p&gt;// 默认猫猫
+el.style.backgroundImage = &lt;code&gt;url(${baseUrl})&lt;/code&gt;;&lt;/p&gt;
+&lt;p&gt;// 点击时根据输入内容刷新猫图
+el.addEventListener(&quot;click&quot;, () =&amp;gt; {
+const text = encodeURIComponent(input.value.trim() || &quot;喵喵~&quot;);
+const url = &lt;code&gt;${baseUrl}says/${text}?${Date.now()}&lt;/code&gt;; // 加时间戳避免缓存
+el.style.backgroundImage = &lt;code&gt;url(${url})&lt;/code&gt;;
+});
+}&lt;/p&gt;
+&lt;p&gt;// 初始化
+initPicture2(&quot;https://cataas.com/cat/&quot;, &quot;maomao2&quot;);
+&amp;lt;/script&amp;gt;&lt;/p&gt;
+</content:encoded></item><item><title>Markdown学习</title><link>https://bytestring.top/posts/markdown/markdown%E5%AD%A6%E4%B9%A0/</link><guid isPermaLink="true">https://bytestring.top/posts/markdown/markdown%E5%AD%A6%E4%B9%A0/</guid><description>A brief intro to md.</description><pubDate>Sat, 31 Aug 2024 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;心血来潮建个博客玩玩，hexo博客要使用markdown书写，所以要重新练习一下md了，这里记一下学习笔记。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;一、标题&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;标题非常简单，有几个#就是几级标题。&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# 一级标题
+## 二级标题
+### 以此类推
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;二、字体&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;单星号是斜体&lt;br /&gt;
+双星号是粗体&lt;br /&gt;
+三星号是粗斜体&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;p&gt;&lt;em&gt;斜体&lt;/em&gt;
+&lt;strong&gt;粗体&lt;/strong&gt;
+&lt;em&gt;&lt;strong&gt;粗斜体&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*斜体*
+**粗体**
+***粗斜体***
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;三、引用&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;使用&lt;code&gt;&amp;gt;&lt;/code&gt;进行引用。&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;引用&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;嵌套引用&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;引用  
+&amp;gt;&amp;gt;嵌套引用
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;四、链接&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;[链接名称](链接地址)&lt;/code&gt;
+或者&lt;code&gt;&amp;lt;链接地址&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://Bytestring0.github.io&quot;&gt;我的主页&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://Bytestring0.github.io&quot;&gt;https://Bytestring0.github.io&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;五、图片&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;![图片描述（可写可不写）](图片地址)&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;![图片描述](https://pic.imge.cc/2024/09/01/66d3fb0f74ea6.png)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://pic.imge.cc/2024/09/01/66d3fb0f74ea6.png&quot; alt=&quot;图片描述&quot; /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;图片可以直接ctrl+v复制到md里&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;六、列表&lt;/h1&gt;
+&lt;h2&gt;无序列表&lt;/h2&gt;
+&lt;h3&gt;用法&lt;/h3&gt;
+&lt;p&gt;使用&lt;code&gt;*&lt;/code&gt;，&lt;code&gt;+&lt;/code&gt;，&lt;code&gt;-&lt;/code&gt;再加上一个空格作为列表的标记&lt;/p&gt;
+&lt;h3&gt;例子&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;无序列表1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;无序列表2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;无序列表3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;* 无序列表1
++ 无序列表2
+- 无序列表3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;有序列表&lt;/h2&gt;
+&lt;h3&gt;用法&lt;/h3&gt;
+&lt;p&gt;使用数字加上一个&lt;code&gt;.&lt;/code&gt;再加上一个空格作为列表的标记&lt;/p&gt;
+&lt;h3&gt;例子&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;有序列表1&lt;/li&gt;
+&lt;li&gt;有序列表2&lt;/li&gt;
+&lt;li&gt;有序列表3&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;1. 有序列表1
+2. 有序列表2
+3. 有序列表3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;列表的嵌套&lt;/h2&gt;
+&lt;h3&gt;用法&lt;/h3&gt;
+&lt;p&gt;使用&lt;code&gt;tab&lt;/code&gt;控制列表层级，有序无序列表可混用&lt;/p&gt;
+&lt;h3&gt;例子&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;有序 1
+&lt;ol&gt;
+&lt;li&gt;有序1.1&lt;/li&gt;
+&lt;li&gt;有序1.2
+&lt;ol&gt;
+&lt;li&gt;有序1.2.1&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;有序 2
+&lt;ol&gt;
+&lt;li&gt;有序2.1&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;无序 2.2
+&lt;ul&gt;
+&lt;li&gt;无序2.2.1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;1. 有序 1
+    1. 有序1.1
+    2. 有序1.2
+        1. 有序1.2.1
+2. 有序 2
+    1. 有序2.1
+    - 无序 2.2
+        - 无序2.2.1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;七、各种线&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;删除线：在需要删除的文字前后添加两个&lt;code&gt;~&lt;/code&gt;&lt;br /&gt;
+下划线：在需要下划的文字前后添加&lt;code&gt;&amp;lt;u&amp;gt;···&amp;lt;/u&amp;gt;&lt;/code&gt;&lt;br /&gt;
+分割线：在需要分割的地方使用三个&lt;code&gt;-&lt;/code&gt;或者&lt;code&gt;*&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;p&gt;分割线&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;s&gt;删除线&lt;/s&gt;&lt;br /&gt;
+&amp;lt;u&amp;gt;下划线&amp;lt;/u&amp;gt;&lt;/p&gt;
+&lt;h1&gt;八、代码块&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;行内代码用&lt;code&gt;`&lt;/code&gt;包围代码&lt;br /&gt;
+代码块使用&lt;code&gt;```&lt;/code&gt;包围代码&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;#include&amp;lt;bits/stdc++.h&amp;gt;
+int main()
+{
+    std::cout&amp;lt;&amp;lt;&quot;hello world!&quot;&amp;lt;&amp;lt;endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;```cpp&lt;br /&gt;
+#include&amp;lt;bits/stdc++.h&amp;gt;&lt;br /&gt;
+int main()&lt;br /&gt;
+{&lt;br /&gt;
+std::cout&amp;lt;&amp;lt;&quot;helloworld!&quot;&amp;lt;&amp;lt;endl;&lt;br /&gt;
+return 0;&lt;br /&gt;
+}&lt;br /&gt;
+```&lt;/p&gt;
+&lt;h1&gt;九、表格&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;使用&lt;code&gt;|&lt;/code&gt;分割单元格&lt;br /&gt;
+使用&lt;code&gt;-&lt;/code&gt;分割表头和其他部分&lt;br /&gt;
+使用&lt;code&gt;:-&lt;/code&gt;将单元格内容左对齐&lt;br /&gt;
+使用&lt;code&gt;-:&lt;/code&gt;将单元格内容右对齐&lt;br /&gt;
+使用&lt;code&gt;:-:&lt;/code&gt;将单元格内容居中&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;table&lt;/th&gt;
+&lt;th&gt;column1&lt;/th&gt;
+&lt;th&gt;column2&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;left_align&lt;/td&gt;
+&lt;td&gt;center_align&lt;/td&gt;
+&lt;td&gt;rigth_align&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre&gt;&lt;code&gt;| table | column1 | column2 |
+| :---- | :-----: | ------: |
+| left_align | center_align |rigth_align |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;十、角标注&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;使用&lt;code&gt;[^标识符]&lt;/code&gt;以完成标注，同时将它们放在除列表，块引号和表之类的其他元素之外的任何位置（注释会被放在末尾）&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;p&gt;你说得对，但是《原神》&lt;a href=&quot;%5B%E5%8E%9F%E7%A5%9E%5D(https://ys.mihoyo.com/)&quot;&gt;^1&lt;/a&gt;是由米哈游&lt;a href=&quot;%5B%E7%B1%B3%E5%93%88%E6%B8%B8%5D(https://www.mihoyo.com/)&quot;&gt;^2&lt;/a&gt;自主研发的一款全新开放世界冒险游戏。游戏发生在一个被称作“提瓦特”的幻想世界，在这里，被神选中的人将被授予“神之眼”，导引元素之力。你将扮演一位名为“旅行者”的神秘角色，在自由的旅行中邂逅性格各异、能力独特的同伴们，和他们一起击败强敌，找回失散的亲人——同时，逐步发掘“原神”的真相。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;你说得对，但是《原神》[^1]是由米哈游[^2]自主研发的一款全新开放世界冒险游戏。游戏发生在一个被称作“提瓦特”的幻想世界，在这里，被神选中的人将被授予“神之眼”，导引元素之力。你将扮演一位名为“旅行者”的神秘角色，在自由的旅行中邂逅性格各异、能力独特的同伴们，和他们一起击败强敌，找回失散的亲人——同时，逐步发掘“原神”的真相。
+
+[^1]:https://ys.mihoyo.com/
+[^2]:https://www.mihoyo.com/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;十一、待办事项&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;- [ ]&lt;/code&gt;表示未完成（注意中括号里面有空格）&lt;br /&gt;
+&lt;code&gt;- [x]&lt;/code&gt;表示已完成&lt;/p&gt;
+&lt;h2&gt;例子&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;[ ] 未完成&lt;/li&gt;
+&lt;li&gt;[ ] 未完成&lt;/li&gt;
+&lt;li&gt;[ ] 未完成&lt;/li&gt;
+&lt;li&gt;[ ] 未完成&lt;/li&gt;
+&lt;li&gt;[x] 已完成&lt;/li&gt;
+&lt;li&gt;[x] 已完成&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;- [ ] 未完成
+- [ ] 未完成
+- [ ] 未完成
+- [ ] 未完成
+- [x] 已完成
+- [x] 已完成
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;十二、使用html，css，js&lt;/h1&gt;
+&lt;h2&gt;用法&lt;/h2&gt;
+&lt;p&gt;使用html标签，style标签，javascript标签&lt;/p&gt;
+&lt;p&gt;[Rainbow]{.rainbow}&lt;/p&gt;
+</content:encoded></item></channel></rss>
