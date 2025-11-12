@@ -680,22 +680,22 @@ if (document.readyState === 'loading') {
 </script> <main id="swup-container" class="transition-swup-fade overflow-hidden w-full col-span-2 md:col-start-2 md:col-end-3 lg:col-start-2 lg:col-end-3 transition-main" data-astro-cid-haiuh7kc> <div id="content-wrapper" class="onload-animation transition-leaving" data-astro-cid-haiuh7kc> <!-- the overflow-hidden here prevent long text break the layout--> <!-- make id different from windows.swup global property -->  <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"> <div class="card-base z-10 px-9 py-6 relative w-full"> <!-- 页面标题 --> <div class="flex flex-col items-start justify-center mb-8"> <h1 class="text-4xl font-bold text-black/90 dark:text-white/90 mb-2 relative
                           before:w-1 before:h-8 before:rounded-md before:bg-[var(--primary)]
                           before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4"> 关于我们 </h1> </div> <!-- 从MD文件读取的内容 --> <div data-pagefind-body class="prose dark:prose-invert prose-base !max-w-none custom-md mt-2"> <!--<div class="prose dark:prose-invert max-w-none custom-md">--> <!--<div class="max-w-none custom-md">-->  <p>This website is built with the <strong>Astro</strong> framework using the <a href="https://github.com/matsuzaka-yuki/mizuki">Mizuki</a> theme.</p>
-<a id="GCqjd0cl-card" class="card-github fetch-waiting no-styling" href="https://github.com/matsuzaka-yuki/Mizuki" target="_blank" repo="matsuzaka-yuki/Mizuki"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GCqjd0cl-avatar" class="gc-avatar"></div><div class="gc-user">matsuzaka-yuki</div></div><div class="gc-divider">/</div><div class="gc-repo">Mizuki</div></div><div class="github-logo"></div></div><div id="GCqjd0cl-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GCqjd0cl-stars" class="gc-stars">00K</div><div id="GCqjd0cl-forks" class="gc-forks">0K</div><div id="GCqjd0cl-license" class="gc-license">0K</div><span id="GCqjd0cl-language" class="gc-language">Waiting...</span></div><script id="GCqjd0cl-script" type="text/javascript" defer>
+<a id="GC90ttxs-card" class="card-github fetch-waiting no-styling" href="https://github.com/matsuzaka-yuki/Mizuki" target="_blank" repo="matsuzaka-yuki/Mizuki"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GC90ttxs-avatar" class="gc-avatar"></div><div class="gc-user">matsuzaka-yuki</div></div><div class="gc-divider">/</div><div class="gc-repo">Mizuki</div></div><div class="github-logo"></div></div><div id="GC90ttxs-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GC90ttxs-stars" class="gc-stars">00K</div><div id="GC90ttxs-forks" class="gc-forks">0K</div><div id="GC90ttxs-license" class="gc-license">0K</div><span id="GC90ttxs-language" class="gc-language">Waiting...</span></div><script id="GC90ttxs-script" type="text/javascript" defer>
       fetch('https://api.github.com/repos/matsuzaka-yuki/Mizuki', { referrerPolicy: "no-referrer" }).then(response => response.json()).then(data => {
-        document.getElementById('GCqjd0cl-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
-        document.getElementById('GCqjd0cl-language').innerText = data.language;
-        document.getElementById('GCqjd0cl-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
-        document.getElementById('GCqjd0cl-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
-        const avatarEl = document.getElementById('GCqjd0cl-avatar');
+        document.getElementById('GC90ttxs-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
+        document.getElementById('GC90ttxs-language').innerText = data.language;
+        document.getElementById('GC90ttxs-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
+        document.getElementById('GC90ttxs-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
+        const avatarEl = document.getElementById('GC90ttxs-avatar');
         avatarEl.style.backgroundImage = 'url(' + data.owner.avatar_url + ')';
         avatarEl.style.backgroundColor = 'transparent';
-        document.getElementById('GCqjd0cl-license').innerText = data.license?.spdx_id || "no-license";
-        document.getElementById('GCqjd0cl-card').classList.remove("fetch-waiting");
-        console.log("[GITHUB-CARD] Loaded card for matsuzaka-yuki/Mizuki | GCqjd0cl.")
+        document.getElementById('GC90ttxs-license').innerText = data.license?.spdx_id || "no-license";
+        document.getElementById('GC90ttxs-card').classList.remove("fetch-waiting");
+        console.log("[GITHUB-CARD] Loaded card for matsuzaka-yuki/Mizuki | GC90ttxs.")
       }).catch(err => {
-        const c = document.getElementById('GCqjd0cl-card');
+        const c = document.getElementById('GC90ttxs-card');
         c?.classList.add("fetch-error");
-        console.warn("[GITHUB-CARD] (Error) Loading card for matsuzaka-yuki/Mizuki | GCqjd0cl.")
+        console.warn("[GITHUB-CARD] (Error) Loading card for matsuzaka-yuki/Mizuki | GC90ttxs.")
       })
     </script></a>
 <section><h2 id="-theme-features">🌟 Theme Features<a class="anchor" href="#-theme-features"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><section><h3 id="-design--user-experience">🎨 Design &#x26; User Experience<a class="anchor" href="#-design--user-experience"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><ul>
