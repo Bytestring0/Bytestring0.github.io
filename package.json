@@ -10,7 +10,8 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"type-check": "tsc --noEmit --isolatedDeclarations",
-		"new-post": "node scripts/new-post.js",
+		"new": "node scripts/new-post.js",
+		"new-post": "pnpm new post",
 		"format": "biome format --write ./src",
 		"lint": "biome check --write ./src",
 		"preinstall": "npx only-allow pnpm"

@@ -40,6 +40,17 @@ export const zh_CN: Translation = {
 
 	[Key.more]: "更多",
 
+	[Key.lifeCountdown]: "人生倒计时",
+	[Key.lifeCountdownToday]: "今天",
+	[Key.lifeCountdownWeek]: "本周",
+	[Key.lifeCountdownMonth]: "本月",
+	[Key.lifeCountdownYear]: "今年",
+	[Key.lifeCountdownRemaining]: "剩余",
+	[Key.lifeCountdownCompleted]: "时间已结束",
+	[Key.lifeCountdownNextHoliday]: "下一个假期",
+	[Key.lifeCountdownHolidayCountdown]: "倒计时",
+	[Key.lifeCountdownNoHoliday]: "暂无即将到来的假期",
+
 	[Key.author]: "作者",
 	[Key.publishedAt]: "发布于",
 	[Key.license]: "许可协议",

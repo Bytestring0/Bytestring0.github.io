@@ -1,7 +1,7 @@
 ---
-import { siteConfig } from "../config";
 import { getEntry, render } from "astro:content";
 import Markdown from "@components/misc/Markdown.astro";
+import { siteConfig } from "../config";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
@@ -34,6 +34,20 @@ const items = [
 	// 	siteurl: "https://docs.mizuki.mysqil.com",
 	// 	tags: ["Docs"],
 	// },
+	{
+		title: "Ikalovic@Hexo",
+		imgurl: "https://lunereal.1kal0vic.top/images/avatar.jpg",
+		desc: "loli赛高",
+		siteurl: "https://lunereal.1kal0vic.top/",
+		tags: ["Hexo", "Blog"],
+	},
+	{
+		title: "MetaVi - --BLOG",
+		imgurl: "	https://metaviii.github.io/img/2.png",
+		desc: "Add a touch of fantasy?",
+		siteurl: "https://metaviii.github.io/",
+		tags: ["Blog", "Hexo"],
+	},
 ];
 
 function shuffleArray(array) {

@@ -7,6 +7,7 @@ category: Markdown
 licenseName: "Unlicensed"
 author: bytestring
 draft: false
+image: 'https://t.alcy.cc/moez'
 ---
 
 > 可以使用Latex在Markdown里嵌入公式  

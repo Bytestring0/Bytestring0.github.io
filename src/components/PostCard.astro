@@ -2,10 +2,10 @@
 import type { CollectionEntry } from "astro:content";
 import * as path from "node:path";
 import { Icon } from "astro-icon/components";
+import { siteConfig } from "../config";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { getDir, getTagUrl } from "../utils/url-utils";
-import { siteConfig } from "../config";
 import ImageWrapper from "./misc/ImageWrapper.astro";
 import PostMetadata from "./PostMeta.astro";
 
@@ -41,7 +41,7 @@ const className = Astro.props.class;
 
 const hasCover = image !== undefined && image !== null && image !== "";
 
-const coverWidth = "28%";
+const coverWidth = "44%";
 
 const { remarkPluginFrontmatter } = await entry.render();
 ---
@@ -76,7 +76,7 @@ const { remarkPluginFrontmatter } = await entry.render();
                     <a 
                         href={getTagUrl(tag)} 
                         class:list={[
-                            siteConfig.tagStyle.useNewStyle 
+                            siteConfig.tagStyle?.useNewStyle 
                                 ? "link-lg transition text-50 text-xs font-medium px-2 py-1 rounded-lg hover:text-[var(--primary)] dark:hover:text-[var(--primary)] active:text-[var(--primary)] dark:active:text-[var(--primary)] group/tag whitespace-nowrap"
                                 : "btn-regular h-6 text-xs px-2 rounded-lg"
                         ]}
@@ -94,18 +94,18 @@ const { remarkPluginFrontmatter } = await entry.render();
     </div>
 
     {hasCover && <a href={url} aria-label={title}
-                    class:list={["group",
+                    class:list={["group post-card-cover",
                         "max-h-[20vh] md:max-h-none mx-4 mt-4 -mb-2 md:mb-0 md:mx-0 md:mt-0",
                         "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden active:scale-95"
                     ]} >
-        <div class="absolute pointer-events-none z-10 w-full h-full group-hover:bg-black/30 group-active:bg-black/50 transition"></div>
+        <div class="post-card-cover__veil absolute pointer-events-none z-10 w-full h-full bg-black/45 transition group-hover:bg-black/15 group-active:bg-black/25"></div>
         <div class="absolute pointer-events-none z-20 w-full h-full flex items-center justify-center ">
             <Icon name="material-symbols:chevron-right-rounded"
                   class="transition opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 text-white text-5xl">
             </Icon>
         </div>
         <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(entry.id))} alt="Cover Image of the Post"
-                  class="w-full h-full">
+                  class="post-card-cover__image w-full h-full">
         </ImageWrapper>
     </a>}
 
@@ -123,4 +123,108 @@ const { remarkPluginFrontmatter } = await entry.render();
 <div class="transition border-t-[1px] border-dashed mx-6 border-black/10 dark:border-white/[0.15] last:border-t-0 md:hidden"></div>
 
 <style define:vars={{coverWidth}}>
+.post-card-cover {
+    isolation: isolate;
+    --post-card-transition: 420ms cubic-bezier(.25, .85, .35, 1);
+    
+    
+}
+.post-card-cover:hover{
+    transition: transform 0.2s;
+        transform: scale(1.02) rotate(-1deg);
+}
+.post-card-cover::before,
+.post-card-cover::after,
+.post-card-cover__veil,
+.post-card-cover__image {
+    clip-path: polygon(var(--cover-clip));
+}
+
+.post-card-cover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(0, 0, 0, 0));
+    opacity: 0.2;
+    mix-blend-mode: screen;
+    transition: opacity var(--post-card-transition);
+    pointer-events: none;
+    z-index: 6;
+}
+
+.group:hover.post-card-cover::before {
+    opacity: 0.38;
+}
+
+.group:active.post-card-cover::before {
+    opacity: 0.28;
+}
+
+.post-card-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    background: linear-gradient(120deg, rgba(15, 23, 42, 0.58), rgba(15, 23, 42, 0.0) 70%);
+    opacity: 0.9;
+    mix-blend-mode: screen;
+    transition: opacity var(--post-card-transition);
+}
+
+.group:hover.post-card-cover::after {
+    opacity: 0.32;
+}
+
+.group:active.post-card-cover::after {
+    opacity: 0.4;
+}
+
+.post-card-cover__image {
+    transition: transform var(--post-card-transition);
+    background: rgba(15, 23, 42, 0.35);
+}
+
+.post-card-cover__image > div:first-child {
+    background: rgba(9, 12, 20, 0.5);
+    transition: background var(--post-card-transition);
+}
+
+.group:hover .post-card-cover__image > div:first-child {
+    background: rgba(9, 12, 20, 0.18);
+}
+
+.group:active .post-card-cover__image > div:first-child {
+    background: rgba(9, 12, 20, 0.28);
+}
+
+.post-card-cover__image picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.post-card-cover__image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: brightness(0.9);
+    transform-origin: center;
+    transition: transform var(--post-card-transition), filter var(--post-card-transition);
+}
+
+.group:hover .post-card-cover__image img {
+    filter: brightness(1);
+    transform: scale(1.05) rotate(-1.2deg);
+}
+
+.group:active .post-card-cover__image img {
+    transform: scale(1.02) rotate(-0.6deg);
+}
+
+@media (max-width: 767px) {
+    .post-card-cover {
+        --cover-clip: 14% 0%, 100% 0%, 100% 100%, 0% 100%;
+    }
+}
 </style>

@@ -40,6 +40,17 @@ export const en: Translation = {
 
 	[Key.more]: "More",
 
+	[Key.lifeCountdown]: "Life Countdown",
+	[Key.lifeCountdownToday]: "Today",
+	[Key.lifeCountdownWeek]: "This Week",
+	[Key.lifeCountdownMonth]: "This Month",
+	[Key.lifeCountdownYear]: "This Year",
+	[Key.lifeCountdownRemaining]: "Remaining",
+	[Key.lifeCountdownCompleted]: "Completed",
+	[Key.lifeCountdownNextHoliday]: "Next Holiday",
+	[Key.lifeCountdownHolidayCountdown]: "Countdown",
+	[Key.lifeCountdownNoHoliday]: "No upcoming holidays",
+
 	[Key.author]: "Author",
 	[Key.publishedAt]: "Published at",
 	[Key.license]: "License",

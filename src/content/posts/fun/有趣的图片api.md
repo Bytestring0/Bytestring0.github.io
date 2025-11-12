@@ -3,10 +3,11 @@ title: 有趣的图片api
 published: 2024-08-31
 description: 一些有意思的图片API.
 tags: [fun]
-category: 无
+category: 有趣的东西
 licenseName: "Unlicensed"
 author: bytestring
 draft: false
+image: 'https://www.loliapi.com/acg/pc/'
 ---
 # 这里有一些有趣的图片api
 

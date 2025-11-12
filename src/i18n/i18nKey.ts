@@ -37,6 +37,17 @@ enum I18nKey {
 
 	more = "more",
 
+	lifeCountdown = "lifeCountdown",
+	lifeCountdownToday = "lifeCountdownToday",
+	lifeCountdownWeek = "lifeCountdownWeek",
+	lifeCountdownMonth = "lifeCountdownMonth",
+	lifeCountdownYear = "lifeCountdownYear",
+	lifeCountdownRemaining = "lifeCountdownRemaining",
+	lifeCountdownCompleted = "lifeCountdownCompleted",
+	lifeCountdownNextHoliday = "lifeCountdownNextHoliday",
+	lifeCountdownHolidayCountdown = "lifeCountdownHolidayCountdown",
+	lifeCountdownNoHoliday = "lifeCountdownNoHoliday",
+
 	author = "author",
 	publishedAt = "publishedAt",
 	license = "license",

@@ -40,6 +40,17 @@ export const zh_TW: Translation = {
 
 	[Key.more]: "更多",
 
+	[Key.lifeCountdown]: "人生倒數",
+	[Key.lifeCountdownToday]: "今天",
+	[Key.lifeCountdownWeek]: "本週",
+	[Key.lifeCountdownMonth]: "本月",
+	[Key.lifeCountdownYear]: "今年",
+	[Key.lifeCountdownRemaining]: "剩餘",
+	[Key.lifeCountdownCompleted]: "時間已結束",
+	[Key.lifeCountdownNextHoliday]: "下一個假期",
+	[Key.lifeCountdownHolidayCountdown]: "倒數",
+	[Key.lifeCountdownNoHoliday]: "暫無即將到來的假期",
+
 	[Key.author]: "作者",
 	[Key.publishedAt]: "發布於",
 	[Key.license]: "許可協議",

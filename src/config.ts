@@ -5,6 +5,7 @@ import type {
 	FooterConfig,
 	FullscreenWallpaperConfig,
 	LicenseConfig,
+	LifeCountdownConfig,
 	MusicPlayerConfig,
 	NavBarConfig,
 	ProfileConfig,
@@ -18,7 +19,7 @@ import { LinkPreset } from "./types/config";
 
 // 定义站点语言
 const SITE_LANG = "zh_CN"; // 语言代码，例如：'en', 'zh_CN', 'ja' 等。
-const SITE_TIMEZONE = 8; //设置你的网站时区 from -12 to 12 default in UTC+8
+const SITE_TIMEZONE = 8; // 设置你的网站时区，范围 -12 至 12（此处示例为 UTC-8）
 export const siteConfig: SiteConfig = {
 	title: "Bytestring Blog",
 	subtitle: "Share",
@@ -29,7 +30,7 @@ export const siteConfig: SiteConfig = {
 
 	themeColor: {
 		hue: 240, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
-		fixed: true, // 对访问者隐藏主题色选择器
+		fixed: false, // 对访问者隐藏主题色选择器
 	},
 
 	// 特色页面开关配置(关闭不在使用的页面有助于提升SEO,关闭后直接在顶部导航删除对应的页面就行)
@@ -251,9 +252,9 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 };
 
 export const commentConfig: CommentConfig = {
-	enable: false, // 启用评论功能。当设置为 false 时，评论组件将不会显示在文章区域。
+	enable: true, // 启用评论功能。当设置为 false 时，评论组件将不会显示在文章区域。
 	twikoo: {
-		envId: "https://twikoo.vercel.app",
+		envId: "https://twikoo-pied-omega.vercel.app",
 		lang: "en", // 设置 Twikoo 评论系统语言为英文
 	},
 };
@@ -272,6 +273,17 @@ export const announcementConfig: AnnouncementConfig = {
 
 export const musicPlayerConfig: MusicPlayerConfig = {
 	enable: true, // 启用音乐播放器功能
+};
+
+export const lifeCountdownConfig: LifeCountdownConfig = {
+	enable: true,
+	birthday: "2000-01-01", // 你的生日（ISO 日期格式）
+	lifeExpectancy: 80, // 预期寿命（岁）
+	holidays: [
+		{ name: "元旦", date: "01-01", recurring: true },
+		{ name: "劳动节", date: "05-01", recurring: true },
+		{ name: "国庆节", date: "10-01", recurring: true },
+	],
 };
 
 export const footerConfig: FooterConfig = {
@@ -311,7 +323,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			// 组件类型：公告组件
 			type: "announcement",
 			// 是否启用该组件（现在通过统一配置控制）
-			enable: true,
+			enable: false,
 			// 组件显示顺序
 			order: 2,
 			// 组件位置："top" 表示固定在顶部
@@ -341,12 +353,27 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			},
 		},
 		{
+			// 组件类型：人生倒计时组件
+			type: "life-countdown",
+			// 是否启用该组件（与 lifeCountdownConfig 同步）
+			enable: lifeCountdownConfig.enable,
+			// 组件显示顺序
+			order: 5,
+			// 粘性区域显示
+			position: "sticky",
+			class: "onload-animation",
+			animationDelay: 200,
+			customProps: {
+				config: lifeCountdownConfig,
+			},
+		},
+		{
 			// 组件类型：标签组件
 			type: "tags",
 			// 是否启用该组件
 			enable: true,
 			// 组件显示顺序
-			order: 5,
+			order: 4,
 			// 组件位置："sticky" 表示粘性定位
 			position: "sticky",
 			// CSS 类名
@@ -458,10 +485,11 @@ export const widgetConfigs = {
 } as const;
 
 export const umamiConfig = {
-	enabled: false, // 是否显示Umami统计
-	apiKey: import.meta.env.UMAMI_API_KEY || "api_xxxxxxxx", // API密钥优先从环境变量读取，否则使用配置文件中的值
+	enabled: true, // 是否显示Umami统计
+	apiKey:
+		import.meta.env.UMAMI_API_KEY || "api_2iTi0hpuqHKK93oBmy9pSQ2uSybftcgd", // API密钥优先从环境变量读取，否则使用配置文件中的值
 	baseUrl: "https://api.umami.is", // Umami Cloud API地址
 	scripts: `
-<script defer src="XXXX.XXX" data-website-id="ABCD1234"></script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="511c0845-c336-48cb-94f1-7356b4a1ec71"></script>
   `.trim(), // 上面填你要插入的Script,不用再去Layout中插入
 } as const;

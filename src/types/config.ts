@@ -277,6 +277,29 @@ export type FooterConfig = {
 	customHtml?: string; // 自定义HTML内容，用于添加备案号等信息
 };
 
+export type LifeCountdownHolidayConfig = {
+	name: string;
+	/**
+	 * 支持以下日期格式：
+	 * - YYYY-MM-DD 指定具体日期
+	 * - MM-DD 每年重复的日期（自动推算下一年）
+	 */
+	date: string;
+	recurring?: boolean;
+};
+
+export type LifeCountdownConfig = {
+	enable: boolean;
+	/** 出生日期，ISO 日期字符串 */
+	birthday?: string;
+	/** 预期寿命（岁），用于计算人生进度 */
+	lifeExpectancy?: number;
+	/** 覆盖站点时区，默认使用 siteConfig.timeZone */
+	timezone?: number;
+	/** 节假日配置列表 */
+	holidays?: LifeCountdownHolidayConfig[];
+};
+
 // 组件配置类型定义
 export type WidgetComponentType =
 	| "profile"
@@ -285,6 +308,7 @@ export type WidgetComponentType =
 	| "tags"
 	| "toc"
 	| "music-player"
+	| "life-countdown"
 	| "pio" // 添加 pio 组件类型
 	| "custom";
 

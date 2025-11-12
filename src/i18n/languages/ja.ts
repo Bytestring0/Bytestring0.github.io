@@ -40,6 +40,17 @@ export const ja: Translation = {
 
 	[Key.more]: "もっと",
 
+	[Key.lifeCountdown]: "ライフカウントダウン",
+	[Key.lifeCountdownToday]: "今日",
+	[Key.lifeCountdownWeek]: "今週",
+	[Key.lifeCountdownMonth]: "今月",
+	[Key.lifeCountdownYear]: "今年",
+	[Key.lifeCountdownRemaining]: "残り",
+	[Key.lifeCountdownCompleted]: "完了",
+	[Key.lifeCountdownNextHoliday]: "次の祝日",
+	[Key.lifeCountdownHolidayCountdown]: "カウントダウン",
+	[Key.lifeCountdownNoHoliday]: "直近の祝日はありません",
+
 	[Key.author]: "著者",
 	[Key.publishedAt]: "公開日",
 	[Key.license]: "ライセンス",

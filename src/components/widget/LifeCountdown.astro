@@ -1,0 +1,277 @@
+---
+import {
+	lifeCountdownConfig as defaultLifeCountdownConfig,
+	siteConfig,
+} from "../../config";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
+import type {
+	LifeCountdownConfig,
+	LifeCountdownHolidayConfig,
+} from "../../types/config";
+import WidgetLayout from "./WidgetLayout.astro";
+
+interface Props {
+	class?: string;
+	style?: string;
+	config?: LifeCountdownConfig;
+}
+
+const { class: className, style, config } = Astro.props as Props;
+const resolvedConfig = config ?? defaultLifeCountdownConfig;
+const shouldRender =
+	config?.enable ?? defaultLifeCountdownConfig.enable ?? true;
+
+const timezone =
+	typeof resolvedConfig.timezone === "number"
+		? resolvedConfig.timezone
+		: (siteConfig.timeZone ?? 8);
+
+const now = new Date();
+const diffMinutes = (timezone + 8) * 60 + now.getTimezoneOffset();
+const tzNowMs = now.getTime() + diffMinutes * 60_000;
+const tzDate = new Date(tzNowMs);
+
+const MS_PER_DAY = 86_400_000;
+
+const year = tzDate.getUTCFullYear();
+const month = tzDate.getUTCMonth();
+const date = tzDate.getUTCDate();
+const dayOfWeekSunday = tzDate.getUTCDay();
+const dayOfWeekMonday = (dayOfWeekSunday + 6) % 7;
+
+const startOfDayMs = Date.UTC(year, month, date);
+const endOfDayMs = Date.UTC(year, month, date + 1);
+const startOfWeekMs = startOfDayMs - dayOfWeekMonday * MS_PER_DAY;
+const endOfWeekMs = startOfWeekMs + 7 * MS_PER_DAY;
+const startOfMonthMs = Date.UTC(year, month, 1);
+const endOfMonthMs = Date.UTC(year, month + 1, 1);
+const startOfYearMs = Date.UTC(year, 0, 1);
+const endOfYearMs = Date.UTC(year + 1, 0, 1);
+
+const clamp = (value: number, min: number, max: number) =>
+	Math.min(Math.max(value, min), max);
+
+const computeProgress = (startMs: number, endMs: number) => {
+	const duration = endMs - startMs;
+	if (duration <= 0) {
+		return { progress: 100, remainingMs: 0 };
+	}
+
+	const elapsed = clamp(tzNowMs - startMs, 0, duration);
+	const remainingMs = Math.max(endMs - tzNowMs, 0);
+	const percentage = clamp((elapsed / duration) * 100, 0, 100);
+
+	return { progress: percentage, remainingMs };
+};
+
+type ProgressSegment = {
+	id: string;
+	label: string;
+	progress: number;
+	remainingMs: number;
+};
+
+const segmentDefinitions: Array<{
+	id: string;
+	label: string;
+	start: number;
+	end: number;
+}> = [
+	{
+		id: "today",
+		label: i18n(I18nKey.lifeCountdownToday),
+		start: startOfDayMs,
+		end: endOfDayMs,
+	},
+	{
+		id: "week",
+		label: i18n(I18nKey.lifeCountdownWeek),
+		start: startOfWeekMs,
+		end: endOfWeekMs,
+	},
+	{
+		id: "month",
+		label: i18n(I18nKey.lifeCountdownMonth),
+		start: startOfMonthMs,
+		end: endOfMonthMs,
+	},
+	{
+		id: "year",
+		label: i18n(I18nKey.lifeCountdownYear),
+		start: startOfYearMs,
+		end: endOfYearMs,
+	},
+];
+
+const progressSegments: ProgressSegment[] = segmentDefinitions.map(
+	({ id, label, start, end }) => {
+		const { progress, remainingMs } = computeProgress(start, end);
+		return { id, label, progress, remainingMs };
+	},
+);
+
+const formatDuration = (ms: number) => {
+	if (ms <= 0) {
+		return i18n(I18nKey.lifeCountdownCompleted);
+	}
+
+	const totalSeconds = Math.floor(ms / 1_000);
+	const days = Math.floor(totalSeconds / 86_400);
+	const hours = Math.floor((totalSeconds % 86_400) / 3_600);
+	const minutes = Math.floor((totalSeconds % 3_600) / 60);
+	const seconds = totalSeconds % 60;
+
+	const parts: string[] = [];
+
+	if (days > 0) {
+		parts.push(`${days}${i18n(I18nKey.day)}`);
+	}
+	if (hours > 0 && parts.length < 3) {
+		parts.push(`${hours}${i18n(I18nKey.hour)}`);
+	}
+	if (minutes > 0 && parts.length < 3) {
+		parts.push(`${minutes}${i18n(I18nKey.minute)}`);
+	}
+	if (parts.length === 0) {
+		parts.push(`${seconds}${i18n(I18nKey.second)}`);
+	}
+
+	return parts.join(" ");
+};
+
+type ResolvedHoliday = {
+	name: string;
+	displayDate: string;
+	remainingMs: number;
+	daysLeft: number;
+};
+
+const parseHoliday = (
+	holiday: LifeCountdownHolidayConfig,
+): ResolvedHoliday | null => {
+	if (!holiday.name || !holiday.date) {
+		return null;
+	}
+
+	const isoMatch = holiday.date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+	const mdMatch = holiday.date.match(/^(\d{2})-(\d{2})$/);
+
+	let targetYear = year;
+	let monthIndex: number;
+	let dayValue: number;
+	let targetMs: number | null = null;
+
+	if (isoMatch) {
+		targetYear = Number(isoMatch[1]);
+		monthIndex = Number(isoMatch[2]) - 1;
+		dayValue = Number(isoMatch[3]);
+		targetMs = Date.UTC(targetYear, monthIndex, dayValue);
+
+		if (targetMs < tzNowMs) {
+			if (holiday.recurring) {
+				targetYear += 1;
+				targetMs = Date.UTC(targetYear, monthIndex, dayValue);
+			} else {
+				return null;
+			}
+		}
+	} else if (mdMatch) {
+		monthIndex = Number(mdMatch[1]) - 1;
+		dayValue = Number(mdMatch[2]);
+		targetMs = Date.UTC(targetYear, monthIndex, dayValue);
+
+		if (targetMs < tzNowMs) {
+			targetYear += 1;
+			targetMs = Date.UTC(targetYear, monthIndex, dayValue);
+		}
+	} else {
+		return null;
+	}
+
+	if (targetMs === null || Number.isNaN(targetMs)) {
+		return null;
+	}
+
+	const remainingMs = targetMs - tzNowMs;
+
+	if (remainingMs < 0) {
+		return null;
+	}
+
+	const daysLeft = Math.max(Math.ceil(remainingMs / MS_PER_DAY), 0);
+	const displayDate = `${targetYear}-${String((monthIndex ?? 0) + 1).padStart(2, "0")}-${String(
+		dayValue ?? 0,
+	).padStart(2, "0")}`;
+
+	return {
+		name: holiday.name,
+		displayDate,
+		remainingMs,
+		daysLeft,
+	};
+};
+
+const holidayConfigs = Array.isArray(resolvedConfig.holidays)
+	? (resolvedConfig.holidays as LifeCountdownHolidayConfig[])
+	: [];
+
+const resolvedHolidays = holidayConfigs
+	.map((holiday) => parseHoliday(holiday))
+	.filter((holiday): holiday is ResolvedHoliday => Boolean(holiday))
+	.sort((a, b) => a.remainingMs - b.remainingMs);
+
+const nextHoliday = resolvedHolidays[0] ?? null;
+---
+{shouldRender && (
+	<WidgetLayout
+		id="life-countdown"
+		name={i18n(I18nKey.lifeCountdown)}
+		class={className}
+		style={style}
+	>
+		<div class="flex flex-col gap-4">
+			{progressSegments.map((segment) => (
+				<div class="flex flex-col gap-2">
+					<div class="flex items-center justify-between text-sm font-medium text-neutral-700 dark:text-neutral-200">
+						<span>{segment.label}</span>
+						<span>{segment.progress.toFixed(1)}%</span>
+					</div>
+					<div class="h-2 w-full overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
+						<div
+							class="h-full rounded-full bg-[var(--primary)] transition-all duration-700"
+							style={`width: ${segment.progress.toFixed(1)}%`}
+						></div>
+					</div>
+					<div class="text-xs text-neutral-500 dark:text-neutral-400">
+						{segment.remainingMs > 0
+							? `${i18n(I18nKey.lifeCountdownRemaining)} ${formatDuration(segment.remainingMs)}`
+							: i18n(I18nKey.lifeCountdownCompleted)}
+					</div>
+				</div>
+			))}
+
+			<div class="h-px w-full bg-black/5 dark:bg-white/10"></div>
+
+			{nextHoliday ? (
+				<div class="flex flex-col gap-2 rounded-lg border border-black/5 bg-black/5 p-3 text-neutral-700 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-200">
+					<div class="flex items-center justify-between text-sm font-medium">
+						<span>{i18n(I18nKey.lifeCountdownNextHoliday)}</span>
+						<span>{nextHoliday.displayDate}</span>
+					</div>
+					<div class="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+						{nextHoliday.name}
+					</div>
+					<div class="text-xs text-neutral-500 dark:text-neutral-400">
+						{i18n(I18nKey.lifeCountdownHolidayCountdown)}: {nextHoliday.daysLeft}
+						{i18n(I18nKey.day)} · {formatDuration(nextHoliday.remainingMs)}
+					</div>
+				</div>
+			) : (
+				<div class="text-xs text-neutral-500 dark:text-neutral-400">
+					{i18n(I18nKey.lifeCountdownNoHoliday)}
+				</div>
+			)}
+		</div>
+	</WidgetLayout>
+)}
