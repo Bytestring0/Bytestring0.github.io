@@ -5,8 +5,24 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2025-11-12T10:43:07.681Z</updated>
+  <updated>2025-11-12T14:57:55.174Z</updated>
   <language>zh_CN</language>
+  <entry>
+    <title>博客迁移</title>
+    <link href="https://bytestring.top/posts/%E6%9D%82%E8%B0%88/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/%E6%9D%82%E8%B0%88/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/</id>
+    <published>2025-11-12T00:00:00.000Z</published>
+    <updated>2025-11-12T00:00:00.000Z</updated>
+    <summary>把博客从Hexo迁移到Astro了</summary>
+    <content type="html"><![CDATA[<h1>博客迁移</h1>
+<p>虽然<code>ShokaX</code>非常简约好看，但还是太小众了，找不到有关Latex的帮助，渲染问题得不到解决，于是花了一天的时间找到了一款新的主题<code>Mizuki</code>并迁移过来，虽然遇到了很多麻烦。</p>
+<h1>Mizuki特色</h1>
+]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+    <category term="杂谈"></category>
+  </entry>
   <entry>
     <title>STM32学习之GPIO（一）</title>
     <link href="https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8Bgpio%E4%B8%80/" rel="alternate" type="text/html"/>
@@ -696,7 +712,7 @@ initPicture2("https://cataas.com/cat/", "maomao2");
     <author>
       <name>Bytestring</name>
     </author>
-    <category term="无"></category>
+    <category term="有趣的东西"></category>
   </entry>
   <entry>
     <title>Markdown学习</title>
