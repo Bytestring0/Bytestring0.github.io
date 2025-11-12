@@ -43,3 +43,4 @@ jobs:
           folder: dist # Astro默认构建输出目录
           clean: true # 清理目标分支中的旧文件
           force_orphan: true
+          enable_jekyll: false
