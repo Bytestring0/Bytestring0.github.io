@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Bytestring's Blog</title>
-  <subtitle>Welcome to my blog!</subtitle>
+  <title>Bytestring Blog</title>
+  <subtitle>Share</subtitle>
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2025-11-12T05:04:44.579Z</updated>
+  <updated>2025-11-12T10:43:07.681Z</updated>
   <language>zh_CN</language>
   <entry>
     <title>STM32学习之GPIO（一）</title>
@@ -275,7 +275,7 @@ GPIO_Init(GPIOA, &amp;gpioDef);
 </code></pre>
 ]]></content>
     <author>
-      <name>Matsuzaka Yuki</name>
+      <name>Bytestring</name>
     </author>
     <category term="STM32"></category>
   </entry>
@@ -298,7 +298,7 @@ GPIO_Init(GPIOA, &amp;gpioDef);
 <p><a href="https://youke1.picui.cn/s1/2025/11/11/691327d525fcb.png"><img src="https://youke1.picui.cn/s1/2025/11/11/691327d525fcb.png" alt="3243597-20230718205357471-678861497.png" /></a></p>
 ]]></content>
     <author>
-      <name>Matsuzaka Yuki</name>
+      <name>Bytestring</name>
     </author>
     <category term="STM32"></category>
   </entry>
@@ -432,7 +432,7 @@ $$
 这就是热传导问题的解。</p>
 ]]></content>
     <author>
-      <name>Matsuzaka Yuki</name>
+      <name>Bytestring</name>
     </author>
     <category term="数学物理方法"></category>
   </entry>
@@ -591,7 +591,7 @@ $$</p>
 </code></pre>
 ]]></content>
     <author>
-      <name>Matsuzaka Yuki</name>
+      <name>Bytestring</name>
     </author>
     <category term="Markdown"></category>
   </entry>
@@ -694,8 +694,9 @@ initPicture2("https://cataas.com/cat/", "maomao2");
 &lt;/script&gt;</p>
 ]]></content>
     <author>
-      <name>Matsuzaka Yuki</name>
+      <name>Bytestring</name>
     </author>
+    <category term="无"></category>
   </entry>
   <entry>
     <title>Markdown学习</title>
@@ -919,7 +920,7 @@ return 0;<br />
 <p>[Rainbow]{.rainbow}</p>
 ]]></content>
     <author>
-      <name>Matsuzaka Yuki</name>
+      <name>Bytestring</name>
     </author>
     <category term="Markdown"></category>
   </entry>
