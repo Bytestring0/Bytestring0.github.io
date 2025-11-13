@@ -5,7 +5,7 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2025-11-12T16:19:03.058Z</updated>
+  <updated>2025-11-13T09:54:17.042Z</updated>
   <language>zh_CN</language>
   <entry>
     <title>博客迁移</title>
@@ -13,10 +13,68 @@
     <id>https://bytestring.top/posts/%E6%9D%82%E8%B0%88/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/</id>
     <published>2025-11-12T00:00:00.000Z</published>
     <updated>2025-11-12T00:00:00.000Z</updated>
-    <summary>把博客从Hexo迁移到Astro了</summary>
+    <summary>把博客从Hexo的ShokaX主题迁移到Astro的Mizuki主题了</summary>
     <content type="html"><![CDATA[<h1>博客迁移</h1>
 <p>虽然<code>ShokaX</code>非常简约好看，但还是太小众了，找不到有关Latex的帮助，渲染问题得不到解决，于是花了一天的时间找到了一款新的主题<code>Mizuki</code>并迁移过来，虽然遇到了很多麻烦。</p>
-<h1>Mizuki特色</h1>
+<h1>安装Mizuki</h1>
+<h2>环境搭建</h2>
+<p>经典的安装<a href="https://nodejs.org/">NodeJS</a></p>
+<p>然后安装<code>pnpm</code>这个包管理工具，据说和<code>npm</code>相比能减少<code>node_modules</code>的体积</p>
+<p><img src="https://youke1.picui.cn/s1/2025/11/13/6915a15617baa.png" alt="v2-e754eaafe8330ad33c19afb707e8da4f_r.png" />
+!!但我还是觉得很大（!!</p>
+<pre><code>npm install -g pnpm
+</code></pre>
+<p>使用<a href="https://git-scm.com/">Git</a>下载</p>
+<h2>启动项目</h2>
+<p>首先将<code>Mizuki</code>项目克隆到本地</p>
+<pre><code>git clone https://github.com/matsuzaka-yuki/mizuki.git
+cd Mizuki
+</code></pre>
+<p>然后安装依赖</p>
+<pre><code>pnpm install
+</code></pre>
+<p>在<code>src/config.ts</code>中配置完相关信息后就可以运行开发环境了</p>
+<pre><code>pnpm dev
+</code></pre>
+<p>这时打开本地的链接就可以看到项目了。</p>
+<h2>部署到Github Page</h2>
+<ol>
+<li>注册名为<code>username.github.io</code>的仓库</li>
+<li>使用Git连接远程仓库（在此之前可以先将原来的.git文件夹删了）</li>
+</ol>
+<pre><code>git init
+git remote add origin https://github.com/username/username.github.io.git
+</code></pre>
+<ol>
+<li>配置Action</li>
+</ol>
+<p><code>Mizuki</code>主题非常贴心地配了一个<code>Github Action</code>可以自动化部署页面到<code>Pages</code>分支，不过新版的<code>.github/workflows/deploy.yml</code>好像已经存在了（？），那么就可以跳过这一步了。</p>
+<ol>
+<li>先进行一次推送</li>
+</ol>
+<pre><code>pnpm build
+git add .
+git commit -m "init"
+git push -u origin main
+</code></pre>
+<ol>
+<li>在Github中将<code>Settings-&gt;Pages</code>的源设置为Pages分支</li>
+</ol>
+<p>这样就可以自动化部署了，每次使用<code>Git</code>推送时会自动将<code>dist</code>这个目标产物文件夹推送到Pages分支，这样就可以打开对应网址看到自己的网页了。</p>
+<ol>
+<li>配置自定义域名</li>
+</ol>
+<p>关于域名配置可以看这篇文章<a href="https://blog.csdn.net/m0_74766888/article/details/146487753">GithubPages+自定义域名+Cloudfare加速+浏览器收录（2025最新排坑）</a></p>
+<p>在<code>public</code>文件夹中添加一个名为<code>CNAME</code>的文件，里面填上自定义域名。</p>
+<pre><code>example.com
+</code></pre>
+<p>把<code>astro.config.mjs</code>中关于站点设置的部分改成这样</p>
+<pre><code>export default defineConfig({
+	site: "https://example.com",
+
+	base: "",
+</code></pre>
+<p>然后就OK啦！</p>
 ]]></content>
     <author>
       <name>Bytestring</name>

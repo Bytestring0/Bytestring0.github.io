@@ -1,6 +1,64 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>博客迁移</title><link>https://bytestring.top/posts/%E6%9D%82%E8%B0%88/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%9D%82%E8%B0%88/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/</guid><description>把博客从Hexo迁移到Astro了</description><pubDate>Wed, 12 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;博客迁移&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>博客迁移</title><link>https://bytestring.top/posts/%E6%9D%82%E8%B0%88/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%9D%82%E8%B0%88/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/</guid><description>把博客从Hexo的ShokaX主题迁移到Astro的Mizuki主题了</description><pubDate>Wed, 12 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;博客迁移&lt;/h1&gt;
 &lt;p&gt;虽然&lt;code&gt;ShokaX&lt;/code&gt;非常简约好看，但还是太小众了，找不到有关Latex的帮助，渲染问题得不到解决，于是花了一天的时间找到了一款新的主题&lt;code&gt;Mizuki&lt;/code&gt;并迁移过来，虽然遇到了很多麻烦。&lt;/p&gt;
-&lt;h1&gt;Mizuki特色&lt;/h1&gt;
+&lt;h1&gt;安装Mizuki&lt;/h1&gt;
+&lt;h2&gt;环境搭建&lt;/h2&gt;
+&lt;p&gt;经典的安装&lt;a href=&quot;https://nodejs.org/&quot;&gt;NodeJS&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;然后安装&lt;code&gt;pnpm&lt;/code&gt;这个包管理工具，据说和&lt;code&gt;npm&lt;/code&gt;相比能减少&lt;code&gt;node_modules&lt;/code&gt;的体积&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://youke1.picui.cn/s1/2025/11/13/6915a15617baa.png&quot; alt=&quot;v2-e754eaafe8330ad33c19afb707e8da4f_r.png&quot; /&gt;
+!!但我还是觉得很大（!!&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm install -g pnpm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用&lt;a href=&quot;https://git-scm.com/&quot;&gt;Git&lt;/a&gt;下载&lt;/p&gt;
+&lt;h2&gt;启动项目&lt;/h2&gt;
+&lt;p&gt;首先将&lt;code&gt;Mizuki&lt;/code&gt;项目克隆到本地&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git clone https://github.com/matsuzaka-yuki/mizuki.git
+cd Mizuki
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后安装依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pnpm install
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在&lt;code&gt;src/config.ts&lt;/code&gt;中配置完相关信息后就可以运行开发环境了&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pnpm dev
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这时打开本地的链接就可以看到项目了。&lt;/p&gt;
+&lt;h2&gt;部署到Github Page&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;注册名为&lt;code&gt;username.github.io&lt;/code&gt;的仓库&lt;/li&gt;
+&lt;li&gt;使用Git连接远程仓库（在此之前可以先将原来的.git文件夹删了）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;git init
+git remote add origin https://github.com/username/username.github.io.git
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;配置Action&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;code&gt;Mizuki&lt;/code&gt;主题非常贴心地配了一个&lt;code&gt;Github Action&lt;/code&gt;可以自动化部署页面到&lt;code&gt;Pages&lt;/code&gt;分支，不过新版的&lt;code&gt;.github/workflows/deploy.yml&lt;/code&gt;好像已经存在了（？），那么就可以跳过这一步了。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;先进行一次推送&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;pnpm build
+git add .
+git commit -m &quot;init&quot;
+git push -u origin main
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;在Github中将&lt;code&gt;Settings-&amp;gt;Pages&lt;/code&gt;的源设置为Pages分支&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这样就可以自动化部署了，每次使用&lt;code&gt;Git&lt;/code&gt;推送时会自动将&lt;code&gt;dist&lt;/code&gt;这个目标产物文件夹推送到Pages分支，这样就可以打开对应网址看到自己的网页了。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;配置自定义域名&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;关于域名配置可以看这篇文章&lt;a href=&quot;https://blog.csdn.net/m0_74766888/article/details/146487753&quot;&gt;GithubPages+自定义域名+Cloudfare加速+浏览器收录（2025最新排坑）&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;public&lt;/code&gt;文件夹中添加一个名为&lt;code&gt;CNAME&lt;/code&gt;的文件，里面填上自定义域名。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;example.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;把&lt;code&gt;astro.config.mjs&lt;/code&gt;中关于站点设置的部分改成这样&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export default defineConfig({
+	site: &quot;https://example.com&quot;,
+
+	base: &quot;&quot;,
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后就OK啦！&lt;/p&gt;
 </content:encoded></item><item><title>STM32学习之GPIO（一）</title><link>https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8Bgpio%E4%B8%80/</link><guid isPermaLink="true">https://bytestring.top/posts/stm32/stm32%E5%AD%A6%E4%B9%A0%E4%B9%8Bgpio%E4%B8%80/</guid><description>介绍单片机的GPIO.</description><pubDate>Tue, 11 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;什么是GPIO&lt;/h1&gt;
 &lt;p&gt;GPIO（General Purpose Input Output）是通用输入输出口。字面意思就是说芯片的这个引脚可以用于输入和输出。GPIO是单片机编程的核心之一，我们正是通过GPIO使得芯片可以和外界互动。比如有一个正极连接电源，负极连接单片机PA1的LED，我们可以通过编程让PA1输出低电平来点亮这个LED。&lt;/p&gt;
 &lt;h1&gt;STM32的GPIO&lt;/h1&gt;
