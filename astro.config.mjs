@@ -25,6 +25,7 @@ import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
+import { remarkSpoiler } from "./src/plugins/remark-spoiler.js";
 // https://astro.build/config
 export default defineConfig({
 	site: "https://bytestring.top",
@@ -53,7 +54,7 @@ export default defineConfig({
 			animateHistoryBrowsing: false,
 			skipPopStateHandling: (event) => {
 				// 跳过锚点链接的处理，让浏览器原生处理
-				return event.state && event.state.url && event.state.url.includes("#");
+				return event.state?.url?.includes("#");
 			},
 		}),
 		icon({
@@ -123,6 +124,7 @@ export default defineConfig({
 			remarkDirective,
 			remarkSectionize,
 			parseDirectiveNode,
+			remarkSpoiler,
 			remarkMermaid,
 		],
 		rehypePlugins: [
