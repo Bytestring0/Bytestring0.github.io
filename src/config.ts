@@ -47,9 +47,9 @@ export const siteConfig: SiteConfig = {
 	// 顶栏标题配置
 	navbarTitle: {
 		// 顶栏标题文本
-		text: "Bytestring",
+		text: "Bytestring Blog",
 		// 顶栏标题图标路径，默认使用 public/assets/home/home.png
-		icon: "assets/home/avatar.jpg",
+		icon: "material-symbols:home-outline-rounded",
 	},
 
 	bangumi: {
