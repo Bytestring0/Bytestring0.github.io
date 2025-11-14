@@ -19,6 +19,27 @@ int mian()
 &lt;p&gt;这个项目可以一键删光其他项目的依赖，&lt;s&gt;然后就可以再配一遍啦。&lt;/s&gt;&lt;/p&gt;
 &lt;p&gt;::github{repo=&quot;RimoChan/match-you&quot;}&lt;/p&gt;
 &lt;p&gt;!!何意味!!&lt;/p&gt;
+&lt;h1&gt;SakanaWidget&lt;/h1&gt;
+&lt;p&gt;请输入文本
+&amp;lt;link
+rel=&quot;stylesheet&quot;
+href=&quot;https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css&quot;
+/&amp;gt;
+&amp;lt;div id=&quot;sakana-widget&quot;&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;script&amp;gt;
+function initSakanaWidget() {
+new SakanaWidget().mount(&apos;#sakana-widget&apos;);
+}
+&amp;lt;/script&amp;gt;
+&amp;lt;script
+async
+onload=&quot;initSakanaWidget()&quot;
+src=&quot;https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js&quot;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;lt;/script&amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;::github{repo=&quot;dsrkafuu/sakana-widget&quot;}
+!!标题不能写Sakana!Widget，不然会被吞掉，吓哭了 !!&lt;/p&gt;
 &lt;h1&gt;更新中&lt;/h1&gt;
 </content:encoded></item><item><title>博客迁移</title><link>https://bytestring.top/posts/%E6%9D%82%E8%B0%88/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%9D%82%E8%B0%88/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/</guid><description>把博客从Hexo的ShokaX主题迁移到Astro的Mizuki主题了</description><pubDate>Wed, 12 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;虽然&lt;code&gt;ShokaX&lt;/code&gt;非常简约好看，但还是太小众了，找不到有关Latex的帮助，渲染问题得不到解决，于是花了一天的时间找到了一款新的主题&lt;code&gt;Mizuki&lt;/code&gt;并迁移过来，虽然遇到了很多麻烦。&lt;/p&gt;
 &lt;h1&gt;安装Mizuki&lt;/h1&gt;
@@ -470,6 +491,118 @@ c_n &amp;amp;= \frac{2}{L}\int_0^L \phi(x)\cos(\frac{n\pi}{L}x)\mathrm{d}x
 \end{aligned}
 $$
 这就是热传导问题的解。&lt;/p&gt;
+&lt;h1&gt;拉普拉斯方程&lt;/h1&gt;
+&lt;h2&gt;直角坐标系&lt;/h2&gt;
+&lt;p&gt;$$
+\begin{aligned}
+\left{
+\begin{aligned}
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} &amp;amp;= 0 &amp;amp; &amp;amp;(y&amp;gt;0,-\infty\lt x \lt +\infty) &amp;amp;(1) \
+u\vert_{y=0} &amp;amp;= f(x) &amp;amp;&amp;amp; (-\infty\lt x \lt +\infty) &amp;amp;(2)\
+\lim_{y\to \infty}u &amp;amp;= 有限值 &amp;amp;&amp;amp; (-\infty\lt x \lt +\infty) &amp;amp;(3)
+\end{aligned}
+\right.
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;$ u(x,y) $ 是和 $x$、$y$ 相关的变量，可以进行变量分离 $u(x,y) = X(x)Y(y) $
+$$
+\begin{aligned}
+\left{
+\begin{aligned}
+X^{\prime\prime}(x) + \lambda X(x) &amp;amp;= 0 \
+Y^{\prime\prime}(y) - \lambda Y(y) &amp;amp;= 0
+\end{aligned}
+\right.
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;当 $ \lambda &amp;lt; 0 $ 时，$ X(x) = Ae^{\omega x} + Be^{-\omega x} $ ， 其中 $ \omega = \sqrt{-\lambda} $ 。因为 $x$ 为任意值的情况下函数是有限的，所以 $ X(x) = 0 $，这是平凡解，舍去。&lt;/p&gt;
+&lt;p&gt;当 $ \lambda = 0 $ 时，$ X(x) = Ax + B $，同理不符合条件，舍去。&lt;/p&gt;
+&lt;p&gt;当 $ \lambda &amp;gt; 0 $ 时，$ X(x) = A\cos(\omega x) + B\sin(\omega x) $ ，$ Y(y) = Ce^{\omega y} + De^{-\omega y} $ 。由条件（3），$C=0$ 。&lt;/p&gt;
+&lt;p&gt;和之前两个问题不同的是，我们解出的特征值不是离散的。也就是说不再是使用傅里叶级数对解进行叠加，这里我们使用傅里叶积分进行解的“叠加”。&lt;/p&gt;
+&lt;p&gt;$$
+u(x,y) = \int_0^{+\infty}{(A(\omega)\cos(\omega x) + B(\omega)\sin(\omega x)e^{-\omega y})}\mathrm{d}x
+$$&lt;/p&gt;
+&lt;p&gt;由条件二可知&lt;/p&gt;
+&lt;p&gt;$$
+\begin{aligned}
+f(x) = u\vert_{y=0} &amp;amp;= \int_0^{+\infty}{A(\omega)\cos(\omega x) + B(\omega)\sin(\omega x)}\mathrm{d}x \
+A(\omega) &amp;amp;= \frac{1}{\pi} \int_{-\infty}^{+\infty}{f(x)\cos(\omega x)}\mathrm{d}x \
+B(\omega) &amp;amp;= \frac{1}{\pi} \int_{-\infty}^{+\infty}{f(x)\sin(\omega x)}\mathrm{d}x
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;这就是拉普拉斯方程的解。&lt;/p&gt;
+&lt;h2&gt;极坐标系&lt;/h2&gt;
+&lt;p&gt;有时候会遇到极坐标系下的拉普拉斯方程的求解，比如圆上或者椭圆上，这时候可以将直角坐标换算成极坐标，然后对极坐标进行分离变量求解。
+$$
+\begin{aligned}
+\left{
+\begin{aligned}
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} &amp;amp;= 0 &amp;amp; &amp;amp;(x^2+y^2&amp;lt;1) &amp;amp;(1) \
+u\vert_{x^2+y^2=1} &amp;amp;= x+y &amp;amp;&amp;amp; &amp;amp;(2)
+\end{aligned}
+\right.
+\end{aligned}
+$$
+这是一个圆上的拉普拉斯方程，因为$x$和$y$在一起，不能直接分离变量，考虑转化为极坐标的形式（太长了这里就不推导了）。
+$$
+\begin{aligned}
+\left{
+\begin{aligned}
+\frac{\partial^2 u}{\partial r^2} + \frac{1}{r}\frac{\partial u}{\partial r} + \frac{1}{r^2}\frac{\partial^2 u}{\partial \theta^2} &amp;amp;= 0 &amp;amp; &amp;amp;(0&amp;lt;r&amp;lt;1,0&amp;lt;\theta&amp;lt;2\pi) &amp;amp;(3) \
+u(1,\theta) &amp;amp;= \cos(\theta)+\sin(\theta) &amp;amp;&amp;amp;(0\le \theta \le 2\pi) &amp;amp;(4)
+\end{aligned}
+\right.
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;考虑变量分离$u(r,\theta)=R(r)\Theta(\theta)$，带入式$（3）$
+$$
+\begin{aligned}
+\frac{r^2R^{\prime\prime}(r)+rR^\prime(r)}{R(r)} &amp;amp;= -\frac{\Theta^{\prime\prime}(\theta)}{\Theta(\theta)} &amp;amp;= \lambda \
+\end{aligned}
+$$
+于是有
+$$
+\begin{aligned}
+r^2R^{\prime\prime}(r)+rR^\prime(r) - \lambda R(r) &amp;amp;= 0 \
+\Theta^{\prime\prime}(\theta) +\lambda \Theta(\theta) &amp;amp;= 0
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;由于是在极坐标下求解，所以自然引入了两个边界条件&lt;/p&gt;
+&lt;p&gt;$$
+\begin{aligned}
+u(r,\theta) &amp;amp;= u(r,\theta +2\pi) &amp;amp;(5)\
+u(0,\theta) &amp;amp;= 有限值 &amp;amp;(6)
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;式$(5)$说明了这是一个周期函数，沿着函数转一圈应该回到原来的地方，式$(6)$规定在求解的范围内不应该有无穷点。&lt;/p&gt;
+&lt;p&gt;这时来考虑解$\Theta(\theta)$。&lt;/p&gt;
+&lt;p&gt;当$\lambda &amp;lt; 0$ 时，$\Theta(\theta) = A\cosh(k\theta) + B\sinh(k\theta) $ ，其中 $k=\sqrt{-\lambda}$ ，这显然不是一个周期函数，舍去。&lt;/p&gt;
+&lt;p&gt;当$\lambda = 0$ 时，$\Theta(\theta) = A\theta +B$，满足条件的解为$A = 0，B = B_0$ 。&lt;/p&gt;
+&lt;p&gt;当$\lambda &amp;gt; 0$ 时，$\Theta(\theta) = A\cos(k\theta) + B\sin(k\theta) $ ，其中 $k=\sqrt{\lambda}$ ，满足周期条件的解是 $ k = n , \lambda = n^2 , \Theta _n(\theta) = A_n\cos(n\theta) + B_n\sin(n\theta)$。&lt;/p&gt;
+&lt;p&gt;对于 $ r^2R^{\prime\prime}(r)+rR^\prime(r) - n^2 R(r) = 0 $，这是一个欧拉方程，它的特征方程是 $ \rho^2 - n^2 = 0 $。&lt;/p&gt;
+&lt;p&gt;当$n=0$时，$\rho=0$，方程的解为 $ R_0(r) = C_0 + D_0\ln(r) $，应用条件$(6)$，得到$D_0=0$。&lt;/p&gt;
+&lt;p&gt;当 $n\ne 0 $ 时，$\rho=n$，方程的解为 $ R_n(r) = C_nr^n + D_nr^{-n} $，应用条件$(6)$，得到$D_n=0$。&lt;/p&gt;
+&lt;p&gt;所以得到解和累加后的解。&lt;/p&gt;
+&lt;p&gt;$$
+\begin{aligned}
+u_n(r,\theta) &amp;amp;= r^n (A_n\cos(n\theta) + B_n\sin(n\theta)) \
+u(r,\theta) &amp;amp;= a_0 + \sum_{n=1}^{\infty}{r^n (A_n\cos(n\theta) + B_n\sin(n\theta)) }
+\end{aligned}
+$$&lt;/p&gt;
+&lt;p&gt;由条件$(2)$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{aligned}
+\cos(\theta)+\sin(\theta) = u(1,\theta) &amp;amp;= a_0 + \sum_{n=1}^{\infty}{A_n\cos(n\theta) + B_n\sin(n\theta) } \
+a_0 &amp;amp;= \frac{1}{2\pi}\int_0^{2\pi} \cos(\theta)+\sin(\theta)\mathrm{d}\theta &amp;amp;= 0\
+A_n &amp;amp;= \frac{1}{\pi}\int_0^{2\pi} \cos(n\theta)(\cos(\theta)+\sin(\theta))\mathrm{d}\theta &amp;amp;= \delta_{1n}\
+B_n &amp;amp;= \frac{1}{\pi}\int_0^{2\pi} \sin(n\theta)(\cos(\theta)+\sin(\theta))\mathrm{d}\theta &amp;amp;= \delta_{1n}
+\end{aligned}
+$$
+所以
+$$
+u(r,\theta) = r(\cos\theta + \sin\theta)
+$$
+这就是方程的解&lt;/p&gt;
 </content:encoded></item><item><title>关于Latex</title><link>https://bytestring.top/posts/markdown/%E5%85%B3%E4%BA%8Elatex/</link><guid isPermaLink="true">https://bytestring.top/posts/markdown/%E5%85%B3%E4%BA%8Elatex/</guid><description>About Latex.</description><pubDate>Tue, 04 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;可以使用Latex在Markdown里嵌入公式&lt;br /&gt;
 &lt;s&gt;写一半发现Shokax好像不太支持行内公式，改成块级公式吧&lt;/s&gt;&lt;br /&gt;

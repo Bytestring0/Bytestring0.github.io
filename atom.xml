@@ -5,7 +5,7 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2025-11-13T14:34:23.053Z</updated>
+  <updated>2025-11-14T15:49:30.518Z</updated>
   <language>zh_CN</language>
   <entry>
     <title>那些有趣的Github开源项目</title>
@@ -35,6 +35,27 @@ int mian()
 <p>这个项目可以一键删光其他项目的依赖，<s>然后就可以再配一遍啦。</s></p>
 <p>::github{repo="RimoChan/match-you"}</p>
 <p>!!何意味!!</p>
+<h1>SakanaWidget</h1>
+<p>请输入文本
+&lt;link
+rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css"
+/&gt;
+&lt;div id="sakana-widget"&gt;&lt;/div&gt;
+&lt;script&gt;
+function initSakanaWidget() {
+new SakanaWidget().mount('#sakana-widget');
+}
+&lt;/script&gt;
+&lt;script
+async
+onload="initSakanaWidget()"
+src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js"</p>
+<blockquote>
+<p>&lt;/script&gt;</p>
+</blockquote>
+<p>::github{repo="dsrkafuu/sakana-widget"}
+!!标题不能写Sakana!Widget，不然会被吞掉，吓哭了 !!</p>
 <h1>更新中</h1>
 ]]></content>
     <author>
@@ -415,7 +436,7 @@ GPIO_Init(GPIOA, &amp;gpioDef);
     <link href="https://bytestring.top/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/" rel="alternate" type="text/html"/>
     <id>https://bytestring.top/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</id>
     <published>2025-11-05T21:28:08.000Z</published>
-    <updated>2025-11-05T21:28:08.000Z</updated>
+    <updated>2025-11-14T21:28:08.000Z</updated>
     <summary>pde.</summary>
     <content type="html"><![CDATA[<p>!!我的天呐数学物理方法大人，吓哭了!!</p>
 <h1>弦振动问题求解</h1>
@@ -538,6 +559,118 @@ c_n &amp;= \frac{2}{L}\int_0^L \phi(x)\cos(\frac{n\pi}{L}x)\mathrm{d}x
 \end{aligned}
 $$
 这就是热传导问题的解。</p>
+<h1>拉普拉斯方程</h1>
+<h2>直角坐标系</h2>
+<p>$$
+\begin{aligned}
+\left{
+\begin{aligned}
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} &amp;= 0 &amp; &amp;(y&gt;0,-\infty\lt x \lt +\infty) &amp;(1) \
+u\vert_{y=0} &amp;= f(x) &amp;&amp; (-\infty\lt x \lt +\infty) &amp;(2)\
+\lim_{y\to \infty}u &amp;= 有限值 &amp;&amp; (-\infty\lt x \lt +\infty) &amp;(3)
+\end{aligned}
+\right.
+\end{aligned}
+$$</p>
+<p>$ u(x,y) $ 是和 $x$、$y$ 相关的变量，可以进行变量分离 $u(x,y) = X(x)Y(y) $
+$$
+\begin{aligned}
+\left{
+\begin{aligned}
+X^{\prime\prime}(x) + \lambda X(x) &amp;= 0 \
+Y^{\prime\prime}(y) - \lambda Y(y) &amp;= 0
+\end{aligned}
+\right.
+\end{aligned}
+$$</p>
+<p>当 $ \lambda &lt; 0 $ 时，$ X(x) = Ae^{\omega x} + Be^{-\omega x} $ ， 其中 $ \omega = \sqrt{-\lambda} $ 。因为 $x$ 为任意值的情况下函数是有限的，所以 $ X(x) = 0 $，这是平凡解，舍去。</p>
+<p>当 $ \lambda = 0 $ 时，$ X(x) = Ax + B $，同理不符合条件，舍去。</p>
+<p>当 $ \lambda &gt; 0 $ 时，$ X(x) = A\cos(\omega x) + B\sin(\omega x) $ ，$ Y(y) = Ce^{\omega y} + De^{-\omega y} $ 。由条件（3），$C=0$ 。</p>
+<p>和之前两个问题不同的是，我们解出的特征值不是离散的。也就是说不再是使用傅里叶级数对解进行叠加，这里我们使用傅里叶积分进行解的“叠加”。</p>
+<p>$$
+u(x,y) = \int_0^{+\infty}{(A(\omega)\cos(\omega x) + B(\omega)\sin(\omega x)e^{-\omega y})}\mathrm{d}x
+$$</p>
+<p>由条件二可知</p>
+<p>$$
+\begin{aligned}
+f(x) = u\vert_{y=0} &amp;= \int_0^{+\infty}{A(\omega)\cos(\omega x) + B(\omega)\sin(\omega x)}\mathrm{d}x \
+A(\omega) &amp;= \frac{1}{\pi} \int_{-\infty}^{+\infty}{f(x)\cos(\omega x)}\mathrm{d}x \
+B(\omega) &amp;= \frac{1}{\pi} \int_{-\infty}^{+\infty}{f(x)\sin(\omega x)}\mathrm{d}x
+\end{aligned}
+$$</p>
+<p>这就是拉普拉斯方程的解。</p>
+<h2>极坐标系</h2>
+<p>有时候会遇到极坐标系下的拉普拉斯方程的求解，比如圆上或者椭圆上，这时候可以将直角坐标换算成极坐标，然后对极坐标进行分离变量求解。
+$$
+\begin{aligned}
+\left{
+\begin{aligned}
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} &amp;= 0 &amp; &amp;(x^2+y^2&lt;1) &amp;(1) \
+u\vert_{x^2+y^2=1} &amp;= x+y &amp;&amp; &amp;(2)
+\end{aligned}
+\right.
+\end{aligned}
+$$
+这是一个圆上的拉普拉斯方程，因为$x$和$y$在一起，不能直接分离变量，考虑转化为极坐标的形式（太长了这里就不推导了）。
+$$
+\begin{aligned}
+\left{
+\begin{aligned}
+\frac{\partial^2 u}{\partial r^2} + \frac{1}{r}\frac{\partial u}{\partial r} + \frac{1}{r^2}\frac{\partial^2 u}{\partial \theta^2} &amp;= 0 &amp; &amp;(0&lt;r&lt;1,0&lt;\theta&lt;2\pi) &amp;(3) \
+u(1,\theta) &amp;= \cos(\theta)+\sin(\theta) &amp;&amp;(0\le \theta \le 2\pi) &amp;(4)
+\end{aligned}
+\right.
+\end{aligned}
+$$</p>
+<p>考虑变量分离$u(r,\theta)=R(r)\Theta(\theta)$，带入式$（3）$
+$$
+\begin{aligned}
+\frac{r^2R^{\prime\prime}(r)+rR^\prime(r)}{R(r)} &amp;= -\frac{\Theta^{\prime\prime}(\theta)}{\Theta(\theta)} &amp;= \lambda \
+\end{aligned}
+$$
+于是有
+$$
+\begin{aligned}
+r^2R^{\prime\prime}(r)+rR^\prime(r) - \lambda R(r) &amp;= 0 \
+\Theta^{\prime\prime}(\theta) +\lambda \Theta(\theta) &amp;= 0
+\end{aligned}
+$$</p>
+<p>由于是在极坐标下求解，所以自然引入了两个边界条件</p>
+<p>$$
+\begin{aligned}
+u(r,\theta) &amp;= u(r,\theta +2\pi) &amp;(5)\
+u(0,\theta) &amp;= 有限值 &amp;(6)
+\end{aligned}
+$$</p>
+<p>式$(5)$说明了这是一个周期函数，沿着函数转一圈应该回到原来的地方，式$(6)$规定在求解的范围内不应该有无穷点。</p>
+<p>这时来考虑解$\Theta(\theta)$。</p>
+<p>当$\lambda &lt; 0$ 时，$\Theta(\theta) = A\cosh(k\theta) + B\sinh(k\theta) $ ，其中 $k=\sqrt{-\lambda}$ ，这显然不是一个周期函数，舍去。</p>
+<p>当$\lambda = 0$ 时，$\Theta(\theta) = A\theta +B$，满足条件的解为$A = 0，B = B_0$ 。</p>
+<p>当$\lambda &gt; 0$ 时，$\Theta(\theta) = A\cos(k\theta) + B\sin(k\theta) $ ，其中 $k=\sqrt{\lambda}$ ，满足周期条件的解是 $ k = n , \lambda = n^2 , \Theta _n(\theta) = A_n\cos(n\theta) + B_n\sin(n\theta)$。</p>
+<p>对于 $ r^2R^{\prime\prime}(r)+rR^\prime(r) - n^2 R(r) = 0 $，这是一个欧拉方程，它的特征方程是 $ \rho^2 - n^2 = 0 $。</p>
+<p>当$n=0$时，$\rho=0$，方程的解为 $ R_0(r) = C_0 + D_0\ln(r) $，应用条件$(6)$，得到$D_0=0$。</p>
+<p>当 $n\ne 0 $ 时，$\rho=n$，方程的解为 $ R_n(r) = C_nr^n + D_nr^{-n} $，应用条件$(6)$，得到$D_n=0$。</p>
+<p>所以得到解和累加后的解。</p>
+<p>$$
+\begin{aligned}
+u_n(r,\theta) &amp;= r^n (A_n\cos(n\theta) + B_n\sin(n\theta)) \
+u(r,\theta) &amp;= a_0 + \sum_{n=1}^{\infty}{r^n (A_n\cos(n\theta) + B_n\sin(n\theta)) }
+\end{aligned}
+$$</p>
+<p>由条件$(2)$</p>
+<p>$$
+\begin{aligned}
+\cos(\theta)+\sin(\theta) = u(1,\theta) &amp;= a_0 + \sum_{n=1}^{\infty}{A_n\cos(n\theta) + B_n\sin(n\theta) } \
+a_0 &amp;= \frac{1}{2\pi}\int_0^{2\pi} \cos(\theta)+\sin(\theta)\mathrm{d}\theta &amp;= 0\
+A_n &amp;= \frac{1}{\pi}\int_0^{2\pi} \cos(n\theta)(\cos(\theta)+\sin(\theta))\mathrm{d}\theta &amp;= \delta_{1n}\
+B_n &amp;= \frac{1}{\pi}\int_0^{2\pi} \sin(n\theta)(\cos(\theta)+\sin(\theta))\mathrm{d}\theta &amp;= \delta_{1n}
+\end{aligned}
+$$
+所以
+$$
+u(r,\theta) = r(\cos\theta + \sin\theta)
+$$
+这就是方程的解</p>
 ]]></content>
     <author>
       <name>Bytestring</name>
