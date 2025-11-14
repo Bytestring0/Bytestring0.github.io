@@ -38,4 +38,27 @@ int mian()
 
 !!何意味!!
 
+# SakanaWidget 
+
+请输入文本
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css"
+/>
+<div id="sakana-widget"></div>
+<script>
+  function initSakanaWidget() {
+    new SakanaWidget().mount('#sakana-widget');
+  }
+</script>
+<script
+  async
+  onload="initSakanaWidget()"
+  src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js"
+></script>
+
+::github{repo="dsrkafuu/sakana-widget"}
+!!标题不能写Sakana!Widget，不然会被吞掉，吓哭了 !!
+
+
 # 更新中

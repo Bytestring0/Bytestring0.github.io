@@ -52,3 +52,10 @@ const imageStyle = `object-position: ${position}`;
     {isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle}/>}
     {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle}/>}
 </div>
+<style>
+	img:hover {
+	transform: scale(1.05) rotate(-1deg);
+	transition: transform 0.4s ease-in-out;
+		
+	}
+</style>
