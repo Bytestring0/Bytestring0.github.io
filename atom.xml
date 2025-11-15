@@ -5,8 +5,59 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2025-11-14T15:49:30.518Z</updated>
+  <updated>2025-11-15T15:57:17.988Z</updated>
   <language>zh_CN</language>
+  <entry>
+    <title>工科基本功之傅里叶级数、傅里叶积分、傅里叶变换</title>
+    <link href="https://bytestring.top/posts/%E5%B7%A5%E7%A7%91%E5%9F%BA%E6%9C%AC%E5%8A%9F/%E5%B7%A5%E7%A7%91%E5%9F%BA%E6%9C%AC%E5%8A%9F%E4%B9%8B%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E5%82%85%E9%87%8C%E5%8F%B6%E7%A7%AF%E5%88%86%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/%E5%B7%A5%E7%A7%91%E5%9F%BA%E6%9C%AC%E5%8A%9F/%E5%B7%A5%E7%A7%91%E5%9F%BA%E6%9C%AC%E5%8A%9F%E4%B9%8B%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E5%82%85%E9%87%8C%E5%8F%B6%E7%A7%AF%E5%88%86%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2/</id>
+    <published>2025-11-15T00:00:00.000Z</published>
+    <updated>2025-11-15T00:00:00.000Z</updated>
+    <summary>本文讲一下傅里叶变换的知识</summary>
+    <content type="html"><![CDATA[<h1>正交性</h1>
+<p>当我们想要表示一个几何空间中的一个点时，我们通常使用一个向量来表示，比如$\mathbf{a}=[1,2]^\mathrm{T}$，我们可以将其分解为两个向量的叠加，显然可以有无数种叠加方式，其中有一种特殊的叠加方式，即$\mathbf{a}=[1,2]^\mathrm{T} = [1,0]^\mathrm{T} + 2[0,1]^\mathrm{T}$，令$\mathbf{i}=[1,0]^\mathrm{T}$，$\mathbf{j}=[0,1]^\mathrm{T}$，它之所以特殊，是因为分解出来的两个基向量是垂直的，或者说是正交的，即$\langle\mathbf{i},\mathbf{j}\rangle=0$。我们选择的向量基为${\mathbf{i},\mathbf{j}}$</p>
+<p>正交性是一个非常好的性质，意味着我们可以单独考虑某一维的特性，之后再线性叠加，非常适合做分解。</p>
+<h2>函数的分解</h2>
+<p>我们可以把处理向量的这种想法放在函数上。因为函数的取值是连续的，我们想对函数进行分解，就需要把函数看成是无穷维度的向量，事实上，我们已经可以对函数$f(x)$进行一种分解
+$$
+f(x)=f(0)+f^\prime(0)x+\frac{f^{\prime\prime}(0)}{2}x^2+...+\frac{f^{(n)}(0)}{n!}x^n+...
+$$
+这就是泰勒展开，在这里我们选择的基为${1,x,x^2,...,x^n,...}$，其中的每一项都可以看成是无穷维的向量。这样我们就可以分别考虑函数的各种性质，比如函数在一阶泰勒展开中表现的线性，二阶展开中表现的类抛物线的性质。但这里的$x,x^2$等不存在正交性的性质，所以我们还需要一种更好的分解方式。</p>
+<h2>三角函数</h2>
+<p>向量中的正交性定义为两个向量的内积等于0，对于函数，由于可以将函数看成无穷维度的向量，如果想对两个函数作内积，则需要把函数中的每个“点”相乘再相加，而每个点又是没有宽度的，所以这是一种积分。</p>
+<p>如果
+$$
+\int_a^bf(x)g(x)\mathrm{d}x = 0
+$$
+我们就说两个函数是正交的。</p>
+<p>下面考虑三角函数系 ${1,\cos(x),\sin(x),\cos(2x),\sin(2x),...,\cos(nx),\sin(nx),...}$，其中的$1$可以理解为$\cos(0x)$，对于$\sin(0x)=0$我们不考虑。
+可以证明
+$$
+\int_{-\pi}^{\pi}\cos(nx)\sin(mx)=0 \
+\int_{-\pi}^{\pi}\cos(nx)\cos(mx)=\pi\delta_{mn} \
+\int_{-\pi}^{\pi}\sin(nx)\sin(mx)=\pi\delta_{mn} \
+\int_{-\pi}^{\pi}\cos(nx)=0 \
+\int_{-\pi}^{\pi}\sin(nx)=0 \
+$$
+所以上面那个三角函数系在$[-\pi,\pi]$是正交的，而且自身的内积（可以理解为向量的模）是$\pi\delta_{mn}$。</p>
+<p>其中
+$$
+\begin{aligned}\delta_{mn}=
+\left{
+\begin{aligned}
+1 &amp; &amp; &amp; m=n \
+0 &amp; &amp; &amp; m\ne n
+\end{aligned}
+\right.
+\end{aligned}
+$$</p>
+<h1>傅里叶级数</h1>
+]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+    <category term="工科基本功"></category>
+  </entry>
   <entry>
     <title>那些有趣的Github开源项目</title>
     <link href="https://bytestring.top/posts/%E6%9C%89%E8%B6%A3%E7%9A%84%E4%B8%9C%E8%A5%BF/%E9%82%A3%E4%BA%9B%E6%9C%89%E8%B6%A3%E7%9A%84github%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/" rel="alternate" type="text/html"/>
