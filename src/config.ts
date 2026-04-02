@@ -55,7 +55,7 @@ export const siteConfig: SiteConfig = {
 		// 顶栏标题文本
 		text: "Bytestring Blog",
 		// 顶栏标题图标路径，默认使用 public/assets/home/home.png
-		icon: "public/assets/home/home.svg",
+		icon: "assets/home/home.svg",
 		// 网站Logo图片路径
 		logo: "assets/home/default-logo.png",
 	},
