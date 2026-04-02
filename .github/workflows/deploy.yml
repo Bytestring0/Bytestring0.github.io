@@ -38,7 +38,6 @@ jobs:
       
       - name: Build site
         run: pnpm run build
-        env:
           # 如果需要启用内容分离,取消以下注释并配置
           # ENABLE_CONTENT_SYNC: true
           # CONTENT_REPO_URL: ${{ secrets.CONTENT_REPO_URL }}
@@ -50,4 +49,3 @@ jobs:
           branch: pages # 部署到pages分支
           folder: dist # Astro默认构建输出目录
           clean: true # 清理目标分支中的旧文件
-          enable_jekyll: false # 禁用Jekyll处理（如果不需要）
