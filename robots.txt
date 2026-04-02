@@ -1,4 +1,6 @@
 User-agent: *
-Disallow: /_astro/
+Disallow: /
+Allow: /$
+Allow: /posts/
 
 Sitemap: https://bytestring.top/sitemap-index.xml

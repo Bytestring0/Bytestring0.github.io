@@ -5,7 +5,7 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2025-11-15T15:57:17.988Z</updated>
+  <updated>2026-04-02T10:53:38.463Z</updated>
   <language>zh_CN</language>
   <entry>
     <title>工科基本功之傅里叶级数、傅里叶积分、傅里叶变换</title>
@@ -888,109 +888,6 @@ $$</p>
     <category term="Markdown"></category>
   </entry>
   <entry>
-    <title>有趣的图片api</title>
-    <link href="https://bytestring.top/posts/%E6%9C%89%E8%B6%A3%E7%9A%84%E4%B8%9C%E8%A5%BF/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/" rel="alternate" type="text/html"/>
-    <id>https://bytestring.top/posts/%E6%9C%89%E8%B6%A3%E7%9A%84%E4%B8%9C%E8%A5%BF/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</id>
-    <published>2024-08-31T00:00:00.000Z</published>
-    <updated>2024-08-31T00:00:00.000Z</updated>
-    <summary>一些有意思的图片API.</summary>
-    <content type="html"><![CDATA[<h1>这里有一些有趣的图片api</h1>
-<h2>随机猫猫动图（点击可切换）</h2>
-<p>&lt;div id="maomao1" style="
-background-size:contain;
-background-repeat:no-repeat;
-background-position:center;
-cursor:pointer;"&gt;
-&lt;/div&gt;</p>
-<p>&lt;script&gt;
-function refreshPicture(urll,id) {
-const url = <code>${urll}/?${Date.now()}</code>; // 避免缓存
-const img = new Image();
-img.src = url;
-const box = document.getElementById(id);
-img.onload = ()=&gt;{
-// 根据图片尺寸设置 div 尺寸
-box.style.width = img.width + 'px';
-box.style.height = img.height + 'px';
-box.style.backgroundImage = <code>url('${url}')</code>;
-}
-}
-function initPicture(url,id)
-{<br />
-document.getElementById(id).addEventListener('click', e=&gt;{
-e.stopPropagation();
-e.preventDefault();
-refreshPicture(url,id);
-});<br />
-refreshPicture(url,id);
-}</p>
-<p>initPicture("http://edgecats.net",'maomao1');
-&lt;/script&gt;</p>
-<h2>加载图片</h2>
-<p>&lt;div id="loadimg" style="
-background-size:contain;
-background-repeat:no-repeat;
-background-position:center;
-cursor:pointer;"&gt;
-&lt;/div&gt;</p>
-<p>&lt;script&gt;</p>
-<p>// 初始化
-initPicture("https://imgapi.cn/loading.php",'loadimg');
-&lt;/script&gt;</p>
-<h2>猫猫表情包</h2>
-<p>&lt;!-- 输入框 --&gt;
-&lt;input id="catInput"
-placeholder="输入猫猫要说的话~"
-style="
-display:block;
-margin:10px auto;
-padding:8px 14px;
-border-radius:10px;
-border:1px solid #ccc;
-font-size:15px;
-outline:none;
-text-align:center;
-transition:.2s;
-background-color:rgba(0,0,0,0);
-"
-onfocus="this.style.borderColor='#ffb6c1'"
-onblur="this.style.borderColor='#ccc'"
-/&gt;</p>
-<p>&lt;!-- 猫猫显示区 --&gt;
-&lt;div id="maomao2" style="
-width:300px;
-height:300px;
-margin:10px auto;
-background-size:contain;
-background-repeat:no-repeat;
-background-position:center;
-cursor:pointer;
-box-shadow:0 2px 6px rgba(0,0,0,0.2);
-"&gt;
-&lt;/div&gt;</p>
-<p>&lt;script&gt;
-function initPicture2(baseUrl, elementId) {
-const el = document.getElementById(elementId);
-const input = document.getElementById("catInput");</p>
-<p>// 默认猫猫
-el.style.backgroundImage = <code>url(${baseUrl})</code>;</p>
-<p>// 点击时根据输入内容刷新猫图
-el.addEventListener("click", () =&gt; {
-const text = encodeURIComponent(input.value.trim() || "喵喵~");
-const url = <code>${baseUrl}says/${text}?${Date.now()}</code>; // 加时间戳避免缓存
-el.style.backgroundImage = <code>url(${url})</code>;
-});
-}</p>
-<p>// 初始化
-initPicture2("https://cataas.com/cat/", "maomao2");
-&lt;/script&gt;</p>
-]]></content>
-    <author>
-      <name>Bytestring</name>
-    </author>
-    <category term="有趣的东西"></category>
-  </entry>
-  <entry>
     <title>Markdown学习</title>
     <link href="https://bytestring.top/posts/markdown/markdown%E5%AD%A6%E4%B9%A0/" rel="alternate" type="text/html"/>
     <id>https://bytestring.top/posts/markdown/markdown%E5%AD%A6%E4%B9%A0/</id>
@@ -1215,5 +1112,199 @@ return 0;<br />
       <name>Bytestring</name>
     </author>
     <category term="Markdown"></category>
+  </entry>
+  <entry>
+    <title>有趣的图片api</title>
+    <link href="https://bytestring.top/posts/%E6%9C%89%E8%B6%A3%E7%9A%84%E4%B8%9C%E8%A5%BF/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/%E6%9C%89%E8%B6%A3%E7%9A%84%E4%B8%9C%E8%A5%BF/%E6%9C%89%E8%B6%A3%E7%9A%84%E5%9B%BE%E7%89%87api/</id>
+    <published>2024-08-31T00:00:00.000Z</published>
+    <updated>2024-08-31T00:00:00.000Z</updated>
+    <summary>一些有意思的图片API.</summary>
+    <content type="html"><![CDATA[<h1>这里有一些有趣的图片api</h1>
+<h2>随机猫猫动图（点击可切换）</h2>
+<p>&lt;div id="maomao1" style="
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+cursor:pointer;"&gt;
+&lt;/div&gt;</p>
+<p>&lt;script&gt;
+function refreshPicture(urll,id) {
+const url = <code>${urll}/?${Date.now()}</code>; // 避免缓存
+const img = new Image();
+img.src = url;
+const box = document.getElementById(id);
+img.onload = ()=&gt;{
+// 根据图片尺寸设置 div 尺寸
+box.style.width = img.width + 'px';
+box.style.height = img.height + 'px';
+box.style.backgroundImage = <code>url('${url}')</code>;
+}
+}
+function initPicture(url,id)
+{<br />
+document.getElementById(id).addEventListener('click', e=&gt;{
+e.stopPropagation();
+e.preventDefault();
+refreshPicture(url,id);
+});<br />
+refreshPicture(url,id);
+}</p>
+<p>initPicture("http://edgecats.net",'maomao1');
+&lt;/script&gt;</p>
+<h2>加载图片</h2>
+<p>&lt;div id="loadimg" style="
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+cursor:pointer;"&gt;
+&lt;/div&gt;</p>
+<p>&lt;script&gt;</p>
+<p>// 初始化
+initPicture("https://imgapi.cn/loading.php",'loadimg');
+&lt;/script&gt;</p>
+<h2>猫猫表情包</h2>
+<p>&lt;!-- 输入框 --&gt;
+&lt;input id="catInput"
+placeholder="输入猫猫要说的话~"
+style="
+display:block;
+margin:10px auto;
+padding:8px 14px;
+border-radius:10px;
+border:1px solid #ccc;
+font-size:15px;
+outline:none;
+text-align:center;
+transition:.2s;
+background-color:rgba(0,0,0,0);
+"
+onfocus="this.style.borderColor='#ffb6c1'"
+onblur="this.style.borderColor='#ccc'"
+/&gt;</p>
+<p>&lt;!-- 猫猫显示区 --&gt;
+&lt;div id="maomao2" style="
+width:300px;
+height:300px;
+margin:10px auto;
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+cursor:pointer;
+box-shadow:0 2px 6px rgba(0,0,0,0.2);
+"&gt;
+&lt;/div&gt;</p>
+<p>&lt;script&gt;
+function initPicture2(baseUrl, elementId) {
+const el = document.getElementById(elementId);
+const input = document.getElementById("catInput");</p>
+<p>// 默认猫猫
+el.style.backgroundImage = <code>url(${baseUrl})</code>;</p>
+<p>// 点击时根据输入内容刷新猫图
+el.addEventListener("click", () =&gt; {
+const text = encodeURIComponent(input.value.trim() || "喵喵~");
+const url = <code>${baseUrl}says/${text}?${Date.now()}</code>; // 加时间戳避免缓存
+el.style.backgroundImage = <code>url(${url})</code>;
+});
+}</p>
+<p>// 初始化
+initPicture2("https://cataas.com/cat/", "maomao2");
+&lt;/script&gt;</p>
+]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+    <category term="有趣的东西"></category>
+  </entry>
+  <entry>
+    <title>Simple Guides for Mizuki</title>
+    <link href="https://bytestring.top/posts/guide/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/guide/</id>
+    <published>2024-04-01T00:00:00.000Z</published>
+    <updated>2024-04-01T00:00:00.000Z</updated>
+    <summary>How to use this blog template.</summary>
+    <content type="html"><![CDATA[<p>This blog template is built with <a href="https://astro.build/">Astro</a>. For the things that are not mentioned in this guide, you may find the answers in the <a href="https://docs.astro.build/">Astro Docs</a>.</p>
+<h2>Front-matter of Posts</h2>
+<pre><code>---
+title: My First Blog Post
+published: 2023-09-09
+description: This is the first post of my new Astro blog.
+image: ./cover.jpg
+tags: [Foo, Bar]
+category: Front-end
+draft: false
+---
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>The title of the post.</td>
+</tr>
+<tr>
+<td><code>published</code></td>
+<td>The date the post was published.</td>
+</tr>
+<tr>
+<td><code>pinned</code></td>
+<td>Whether this post is pinned to the top of the post list.</td>
+</tr>
+<tr>
+<td><code>priority</code></td>
+<td>The priority of the pinned post. Smaller value means higher priority (0, 1, 2...).</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>A short description of the post. Displayed on index page.</td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td>The cover image path of the post.&lt;br/&gt;1. Start with <code>http://</code> or <code>https://</code>: Use web image&lt;br/&gt;2. Start with <code>/</code>: For image in <code>public</code> dir&lt;br/&gt;3. With none of the prefixes: Relative to the markdown file</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>The tags of the post.</td>
+</tr>
+<tr>
+<td><code>category</code></td>
+<td>The category of the post.</td>
+</tr>
+<tr>
+<td><code>licenseName</code></td>
+<td>The license name for the post content.</td>
+</tr>
+<tr>
+<td><code>author</code></td>
+<td>The author of the post.</td>
+</tr>
+<tr>
+<td><code>sourceLink</code></td>
+<td>The source link or reference for the post content.</td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td>If this post is still a draft, which won't be displayed.</td>
+</tr>
+</tbody>
+</table>
+<h2>Where to Place the Post Files</h2>
+<p>Your post files should be placed in <code>src/content/posts/</code> directory. You can also create sub-directories to better organize your posts and assets.</p>
+<pre><code>src/content/posts/
+├── post-1.md
+└── post-2/
+    ├── cover.webp
+    └── index.md
+</code></pre>
+]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+    <category term="Guides"></category>
   </entry>
 </feed>
