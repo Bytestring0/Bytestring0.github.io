@@ -452,6 +452,16 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			// 动画延迟时间
 			animationDelay: 250,
 		},
+		{
+			// 组件类型：进度追踪组件
+			type: "progress-tracker",
+			// 组件位置
+			position: "top",
+			// CSS 类名
+			class: "onload-animation",
+			// 动画延迟时间
+			animationDelay: 300,
+		},
 	],
 
 	// 侧栏组件布局配置
@@ -463,6 +473,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			"tags",
 			"site-stats",
 			"calendar",
+			"progress-tracker",
 		],
 		right: [],
 		drawer: ["profile", "announcement", "categories", "tags"],

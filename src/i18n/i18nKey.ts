@@ -329,6 +329,16 @@ enum I18nKey {
 	// 布局切换按钮
 	switchToGridMode = "switchToGridMode",
 	switchToListMode = "switchToListMode",
+
+	// 进度追踪器
+	progressTracker = "progressTracker",
+	progressTrackerCurrentTime = "progressTrackerCurrentTime",
+	progressTrackerToday = "progressTrackerToday",
+	progressTrackerWeek = "progressTrackerWeek",
+	progressTrackerMonth = "progressTrackerMonth",
+	progressTrackerYear = "progressTrackerYear",
+	progressTrackerHolidays = "progressTrackerHolidays",
+	progressTrackerLoading = "progressTrackerLoading",
 }
 
 export default I18nKey;

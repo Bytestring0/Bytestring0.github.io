@@ -339,4 +339,14 @@ export const zh_CN: Translation = {
 	// 布局切换按钮
 	[Key.switchToGridMode]: "切换到网格模式",
 	[Key.switchToListMode]: "切换到列表模式",
+
+	// 进度追踪器
+	[Key.progressTracker]: "时间进度",
+	[Key.progressTrackerCurrentTime]: "当前时间",
+	[Key.progressTrackerToday]: "今日",
+	[Key.progressTrackerWeek]: "本周",
+	[Key.progressTrackerMonth]: "本月",
+	[Key.progressTrackerYear]: "本年",
+	[Key.progressTrackerHolidays]: "节假日",
+	[Key.progressTrackerLoading]: "加载中...",
 };

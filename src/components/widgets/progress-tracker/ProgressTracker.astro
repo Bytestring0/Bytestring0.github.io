@@ -1,0 +1,353 @@
+---
+import { Icon } from "astro-icon/components";
+import { siteConfig } from "../../../config";
+import I18nKey from "../../../i18n/i18nKey";
+import { i18n } from "../../../i18n/translation";
+import WidgetLayout from "../common/WidgetLayout.astro";
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+
+const { class: className, style } = Astro.props;
+
+// 获取时区偏移
+const timeZone = siteConfig.timeZone ?? 8;
+---
+
+<WidgetLayout
+	name={i18n(I18nKey.progressTracker)}
+	id="progress-tracker"
+	class={className}
+	style={style}
+>
+	<div class="flex flex-col gap-3">
+		<!-- 当前时间 -->
+		<div class="flex items-center justify-between px-2 py-2">
+			<div class="flex items-center gap-2.5 flex-1 min-w-0">
+				<div class="text-[var(--primary)] text-xl shrink-0">
+					<Icon name="material-symbols:schedule" />
+				</div>
+				<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+					{i18n(I18nKey.progressTrackerCurrentTime)}
+				</span>
+			</div>
+			<div class="flex items-center ml-3 shrink-0">
+				<span id="progress-current-time" class="text-base font-bold text-neutral-900 dark:text-neutral-100">
+					--:--:--
+				</span>
+			</div>
+		</div>
+
+		<!-- 今日进度 -->
+		<div class="px-2 py-2">
+			<div class="flex items-center justify-between mb-1.5">
+				<div class="flex items-center gap-2.5 flex-1 min-w-0">
+					<div class="text-[var(--primary)] text-xl shrink-0">
+						<Icon name="material-symbols:today" />
+					</div>
+					<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+						{i18n(I18nKey.progressTrackerToday)}
+					</span>
+				</div>
+				<span id="progress-today-value" class="text-base font-bold text-neutral-900 dark:text-neutral-100">0%</span>
+			</div>
+			<div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+				<div id="progress-today-bar" class="bg-[var(--primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+			</div>
+		</div>
+
+		<!-- 本周进度 -->
+		<div class="px-2 py-2">
+			<div class="flex items-center justify-between mb-1.5">
+				<div class="flex items-center gap-2.5 flex-1 min-w-0">
+					<div class="text-[var(--primary)] text-xl shrink-0">
+						<Icon name="material-symbols:date-range" />
+					</div>
+					<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+						{i18n(I18nKey.progressTrackerWeek)}
+					</span>
+				</div>
+				<span id="progress-week-value" class="text-base font-bold text-neutral-900 dark:text-neutral-100">0%</span>
+			</div>
+			<div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+				<div id="progress-week-bar" class="bg-[var(--primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+			</div>
+		</div>
+
+		<!-- 本月进度 -->
+		<div class="px-2 py-2">
+			<div class="flex items-center justify-between mb-1.5">
+				<div class="flex items-center gap-2.5 flex-1 min-w-0">
+					<div class="text-[var(--primary)] text-xl shrink-0">
+						<Icon name="material-symbols:calendar-month" />
+					</div>
+					<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+						{i18n(I18nKey.progressTrackerMonth)}
+					</span>
+				</div>
+				<span id="progress-month-value" class="text-base font-bold text-neutral-900 dark:text-neutral-100">0%</span>
+			</div>
+			<div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+				<div id="progress-month-bar" class="bg-[var(--primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+			</div>
+		</div>
+
+		<!-- 本年进度 -->
+		<div class="px-2 py-2">
+			<div class="flex items-center justify-between mb-1.5">
+				<div class="flex items-center gap-2.5 flex-1 min-w-0">
+					<div class="text-[var(--primary)] text-xl shrink-0">
+						<Icon name="material-symbols:calendar-clock" />
+					</div>
+					<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+						{i18n(I18nKey.progressTrackerYear)}
+					</span>
+				</div>
+				<span id="progress-year-value" class="text-base font-bold text-neutral-900 dark:text-neutral-100">0%</span>
+			</div>
+			<div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+				<div id="progress-year-bar" class="bg-[var(--primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+			</div>
+		</div>
+
+		<!-- 节假日信息 -->
+		<div class="mt-1 pt-2 border-t border-neutral-200 dark:border-neutral-700">
+			<div class="flex items-center gap-2.5 px-2 mb-2">
+				<div class="text-[var(--primary)] text-xl shrink-0">
+					<Icon name="material-symbols:celebration" />
+				</div>
+				<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+					{i18n(I18nKey.progressTrackerHolidays)}
+				</span>
+			</div>
+			<div id="progress-holidays" class="flex flex-col gap-1.5 px-2 text-sm text-neutral-600 dark:text-neutral-400">
+				<span class="loading-hint">{i18n(I18nKey.progressTrackerLoading)}</span>
+			</div>
+		</div>
+	</div>
+</WidgetLayout>
+
+<script is:inline define:vars={{ timeZone }}>
+	// 中国法定节假日数据 (2024-2027)
+	const HOLIDAYS_DATA = {
+		2024: [
+			{ name: "元旦", date: "2024-01-01", days: 1 },
+			{ name: "春节", date: "2024-02-10", days: 8 },
+			{ name: "清明节", date: "2024-04-04", days: 3 },
+			{ name: "劳动节", date: "2024-05-01", days: 5 },
+			{ name: "端午节", date: "2024-06-10", days: 3 },
+			{ name: "中秋节", date: "2024-09-17", days: 3 },
+			{ name: "国庆节", date: "2024-10-01", days: 7 },
+		],
+		2025: [
+			{ name: "元旦", date: "2025-01-01", days: 1 },
+			{ name: "春节", date: "2025-01-28", days: 8 },
+			{ name: "清明节", date: "2025-04-04", days: 3 },
+			{ name: "劳动节", date: "2025-05-01", days: 5 },
+			{ name: "端午节", date: "2025-05-31", days: 3 },
+			{ name: "中秋节", date: "2025-10-06", days: 3 },
+			{ name: "国庆节", date: "2025-10-01", days: 7 },
+		],
+		2026: [
+			{ name: "元旦", date: "2026-01-01", days: 1 },
+			{ name: "春节", date: "2026-02-17", days: 8 },
+			{ name: "清明节", date: "2026-04-04", days: 3 },
+			{ name: "劳动节", date: "2026-05-01", days: 5 },
+			{ name: "端午节", date: "2026-05-28", days: 3 },
+			{ name: "中秋节", date: "2026-10-04", days: 3 },
+			{ name: "国庆节", date: "2026-10-01", days: 7 },
+		],
+		2027: [
+			{ name: "元旦", date: "2027-01-01", days: 1 },
+			{ name: "春节", date: "2027-02-06", days: 8 },
+			{ name: "清明节", date: "2027-04-04", days: 3 },
+			{ name: "劳动节", date: "2027-05-01", days: 5 },
+			{ name: "端午节", date: "2027-05-19", days: 3 },
+			{ name: "中秋节", date: "2027-09-24", days: 3 },
+			{ name: "国庆节", date: "2027-10-01", days: 7 },
+		],
+	};
+
+	// 格式化日期
+	function formatDate(date) {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	}
+
+	// 格式化时间显示
+	function formatTime(date) {
+		const hours = String(date.getHours()).padStart(2, '0');
+		const minutes = String(date.getMinutes()).padStart(2, '0');
+		const seconds = String(date.getSeconds()).padStart(2, '0');
+		return `${hours}:${minutes}:${seconds}`;
+	}
+
+	// 获取本周开始日期（周一）
+	function getWeekStart(date) {
+		const d = new Date(date);
+		const day = d.getDay();
+		const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+		return new Date(d.setDate(diff));
+	}
+
+	// 获取本月开始日期
+	function getMonthStart(date) {
+		return new Date(date.getFullYear(), date.getMonth(), 1);
+	}
+
+	// 获取今年开始日期
+	function getYearStart(date) {
+		return new Date(date.getFullYear(), 0, 1);
+	}
+
+	// 计算进度百分比
+	function calculateProgress(start, end, current) {
+		const total = end.getTime() - start.getTime();
+		const elapsed = current.getTime() - start.getTime();
+		return Math.min(100, Math.max(0, (elapsed / total) * 100));
+	}
+
+	// 获取本月总天数
+	function getDaysInMonth(year, month) {
+		return new Date(year, month + 1, 0).getDate();
+	}
+
+	// 获取今年的总天数（考虑闰年）
+	function getDaysInYear(year) {
+		return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0) ? 366 : 365;
+	}
+
+	// 更新进度显示
+	function updateProgress() {
+		const now = new Date();
+
+		// 调整时区
+		const localTime = new Date(now.getTime() + (timeZone - 8) * 60 * 60 * 1000);
+
+		// 更新当前时间
+		const timeEl = document.getElementById('progress-current-time');
+		if (timeEl) {
+			timeEl.textContent = formatTime(localTime);
+		}
+
+		// 计算今日进度
+		const todayStart = new Date(localTime);
+		todayStart.setHours(0, 0, 0, 0);
+		const todayEnd = new Date(localTime);
+		todayEnd.setHours(23, 59, 59, 999);
+		const todayProgress = calculateProgress(todayStart, todayEnd, localTime);
+
+		const todayValueEl = document.getElementById('progress-today-value');
+		const todayBarEl = document.getElementById('progress-today-bar');
+		if (todayValueEl) todayValueEl.textContent = todayProgress.toFixed(1) + '%';
+		if (todayBarEl) todayBarEl.style.width = todayProgress + '%';
+
+		// 计算本周进度
+		const weekStart = getWeekStart(localTime);
+		weekStart.setHours(0, 0, 0, 0);
+		const weekEnd = new Date(weekStart);
+		weekEnd.setDate(weekEnd.getDate() + 6);
+		weekEnd.setHours(23, 59, 59, 999);
+		const weekProgress = calculateProgress(weekStart, weekEnd, localTime);
+
+		const weekValueEl = document.getElementById('progress-week-value');
+		const weekBarEl = document.getElementById('progress-week-bar');
+		if (weekValueEl) weekValueEl.textContent = weekProgress.toFixed(1) + '%';
+		if (weekBarEl) weekBarEl.style.width = weekProgress + '%';
+
+		// 计算本月进度
+		const monthStart = getMonthStart(localTime);
+		const monthEnd = new Date(localTime.getFullYear(), localTime.getMonth() + 1, 0, 23, 59, 59, 999);
+		const monthProgress = calculateProgress(monthStart, monthEnd, localTime);
+
+		const monthValueEl = document.getElementById('progress-month-value');
+		const monthBarEl = document.getElementById('progress-month-bar');
+		if (monthValueEl) monthValueEl.textContent = monthProgress.toFixed(1) + '%';
+		if (monthBarEl) monthBarEl.style.width = monthProgress + '%';
+
+		// 计算本年进度
+		const yearStart = getYearStart(localTime);
+		const yearEnd = new Date(localTime.getFullYear(), 11, 31, 23, 59, 59, 999);
+		const yearProgress = calculateProgress(yearStart, yearEnd, localTime);
+
+		const yearValueEl = document.getElementById('progress-year-value');
+		const yearBarEl = document.getElementById('progress-year-bar');
+		if (yearValueEl) yearValueEl.textContent = yearProgress.toFixed(1) + '%';
+		if (yearBarEl) yearBarEl.style.width = yearProgress + '%';
+	}
+
+	// 显示节假日信息
+	function showHolidays() {
+		const holidaysEl = document.getElementById('progress-holidays');
+		if (!holidaysEl) return;
+
+		const now = new Date();
+		const localTime = new Date(now.getTime() + (timeZone - 8) * 60 * 60 * 1000);
+		const currentYear = localTime.getFullYear();
+		const currentDateStr = formatDate(localTime);
+
+		// 获取当前年和明年的节假日
+		const holidays = [
+			...(HOLIDAYS_DATA[currentYear] || []),
+			...(HOLIDAYS_DATA[currentYear + 1] || []),
+		];
+
+		// 排序并找出最近的和即将到来的节假日
+		const upcomingHolidays = holidays
+			.filter(h => h.date >= currentDateStr)
+			.sort((a, b) => a.date.localeCompare(b.date))
+			.slice(0, 3);
+
+		if (upcomingHolidays.length === 0) {
+			holidaysEl.innerHTML = '<span class="text-neutral-500 dark:text-neutral-500">' +
+				(document.documentElement.lang?.startsWith('zh') ? '暂无即将到来的节假日' : 'No upcoming holidays') + '</span>';
+			return;
+		}
+
+		holidaysEl.innerHTML = upcomingHolidays.map(holiday => {
+			const holidayDate = new Date(holiday.date + 'T00:00:00');
+			const diffTime = holidayDate.getTime() - localTime.getTime();
+			const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+			let countdownText;
+			if (diffDays === 0) {
+				countdownText = document.documentElement.lang?.startsWith('zh') ? '今天!' : 'Today!';
+			} else if (diffDays === 1) {
+				countdownText = document.documentElement.lang?.startsWith('zh') ? '明天' : 'Tomorrow';
+			} else {
+				countdownText = document.documentElement.lang?.startsWith('zh') ?
+					`还有 ${diffDays} 天` : `in ${diffDays} days`;
+			}
+
+			return `<div class="flex items-center justify-between py-1">
+				<span class="font-medium text-neutral-700 dark:text-neutral-300">${holiday.name}</span>
+				<span class="text-[var(--primary)] text-xs font-medium">${countdownText}</span>
+			</div>`;
+		}).join('');
+	}
+
+	// 初始化
+	function init() {
+		updateProgress();
+		showHolidays();
+
+		// 每秒更新时间
+		setInterval(updateProgress, 1000);
+
+		// 每分钟更新节假日（检查是否跨天）
+		setInterval(() => {
+			showHolidays();
+		}, 60000);
+	}
+
+	// 如果 DOM 已加载完成，立即执行；否则等待 DOMContentLoaded
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+</script>

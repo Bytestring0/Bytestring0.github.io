@@ -27,7 +27,15 @@ export const friendsData: FriendItem[] = [
 		desc: "Add a touch of fantasy?",
 		siteurl: "https://metaviii.github.io/",
 		tags: ["Blog", "Hexo"],
-	}
+	},
+	{
+		id: 3,
+		title: "Home • JerryMain Island",
+		imgurl: "https://jerrymain.top/_image?href=%2F_astro%2Favatar.BNMTrox7.png&w=828&h=828&f=webp",
+		desc: "Stay hungry, Stay foolish.",
+		siteurl: "https://jerrymain.top/",
+		tags: ["Blog", "Personal"],
+	},
 ];
 
 // 获取所有友情链接数据

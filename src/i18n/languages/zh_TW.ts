@@ -341,4 +341,14 @@ export const zh_TW: Translation = {
 	// 布局切換按鈕
 	[Key.switchToGridMode]: "切換到網格模式",
 	[Key.switchToListMode]: "切換到列表模式",
+
+	// 進度追蹤器
+	[Key.progressTracker]: "時間進度",
+	[Key.progressTrackerCurrentTime]: "當前時間",
+	[Key.progressTrackerToday]: "今日",
+	[Key.progressTrackerWeek]: "本週",
+	[Key.progressTrackerMonth]: "本月",
+	[Key.progressTrackerYear]: "本年",
+	[Key.progressTrackerHolidays]: "節假日",
+	[Key.progressTrackerLoading]: "載入中...",
 };

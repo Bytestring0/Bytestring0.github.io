@@ -355,4 +355,14 @@ export const ja: Translation = {
 	// レイアウト切り替えボタン
 	[Key.switchToGridMode]: "グリッド表示に切り替え",
 	[Key.switchToListMode]: "リスト表示に切り替え",
+
+	// 進捗トラッカー
+	[Key.progressTracker]: "時間進捗",
+	[Key.progressTrackerCurrentTime]: "現在時刻",
+	[Key.progressTrackerToday]: "今日",
+	[Key.progressTrackerWeek]: "今週",
+	[Key.progressTrackerMonth]: "今月",
+	[Key.progressTrackerYear]: "今年",
+	[Key.progressTrackerHolidays]: "祝日",
+	[Key.progressTrackerLoading]: "読み込み中...",
 };

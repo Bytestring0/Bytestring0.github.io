@@ -352,4 +352,14 @@ export const en: Translation = {
 	// Layout Switch Button
 	[Key.switchToGridMode]: "Switch to Grid Mode",
 	[Key.switchToListMode]: "Switch to List Mode",
+
+	// Progress Tracker
+	[Key.progressTracker]: "Time Progress",
+	[Key.progressTrackerCurrentTime]: "Current Time",
+	[Key.progressTrackerToday]: "Today",
+	[Key.progressTrackerWeek]: "This Week",
+	[Key.progressTrackerMonth]: "This Month",
+	[Key.progressTrackerYear]: "This Year",
+	[Key.progressTrackerHolidays]: "Holidays",
+	[Key.progressTrackerLoading]: "Loading...",
 };
