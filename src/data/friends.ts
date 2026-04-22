@@ -32,7 +32,7 @@ export const friendsData: FriendItem[] = [
 		id: 3,
 		title: "Home • JerryMain Island",
 		imgurl: "https://jerrymain.top/_image?href=%2F_astro%2Favatar.BNMTrox7.png&w=828&h=828&f=webp",
-		desc: "Stay hungry, Stay foolish.",
+		desc: "Stay stupid, Stay android.",
 		siteurl: "https://jerrymain.top/",
 		tags: ["Blog", "Personal"],
 	},
