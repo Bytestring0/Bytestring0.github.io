@@ -7,7 +7,6 @@ category: STM32
 licenseName: "Unlicensed"
 author: bytestring
 draft: false
-image: 'https://t.alcy.cc/pc'
 ---
 
 # 单片机是什么

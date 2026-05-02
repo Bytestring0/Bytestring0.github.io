@@ -7,7 +7,6 @@ category: 有趣的东西
 licenseName: "Unlicensed"
 author: bytestring
 draft: false
-image: 'https://www.loliapi.com/acg/pc/'
 ---
 # 这里有一些有趣的图片api
 

@@ -112,7 +112,7 @@ export const siteConfig: SiteConfig = {
 		// "mobile" = 仅在移动端显示
 		// "desktop" = 仅在桌面端显示
 		// "both" = 在所有设备上显示
-		showModeSwitchOnMobile: "desktop",
+		showModeSwitchOnMobile: "off",
 	},
 
 	banner: {
@@ -193,16 +193,16 @@ export const siteConfig: SiteConfig = {
 		asciiFont: {
 			// 英文字体 - 优先级最高
 			// 指定为英文字体则无论字体包含多大范围，都只会保留 ASCII 字符子集
-			fontFamily: "ZenMaruGothic-Medium",
+			fontFamily: "SarasaMonoSC-Regular",
 			fontWeight: "400",
-			localFonts: ["ZenMaruGothic-Medium.ttf"],
+			localFonts: ["SarasaMonoSC-Regular.ttf"],
 			enableCompress: true, // 启用字体子集优化，减少字体文件大小
 		},
 		cjkFont: {
 			// 中日韩字体 - 作为回退字体
-			fontFamily: "萝莉体 第二版",
+			fontFamily: "SarasaMonoSC-Regular",
 			fontWeight: "500",
-			localFonts: ["萝莉体 第二版.ttf"],
+			localFonts: ["SarasaMonoSC-Regular.ttf"],
 			enableCompress: true, // 启用字体子集优化，减少字体文件大小
 		},
 	},
@@ -468,14 +468,11 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 	components: {
 		left: [
 			"profile",
-			"announcement",
 			"categories",
 			"tags",
-			"site-stats",
-			"calendar",
-			"progress-tracker",
+"progress-tracker",
 		],
-		right: [],
+		right: ["calendar","site-stats",],
 		drawer: ["profile", "announcement", "categories", "tags"],
 	},
 

@@ -7,7 +7,6 @@ category: Markdown
 licenseName: "Unlicensed"
 author: bytestring
 draft: false
-image: 'https://t.alcy.cc/ycy'
 ---
 
 >心血来潮建个博客玩玩，hexo博客要使用markdown书写，所以要重新练习一下md了，这里记一下学习笔记。  

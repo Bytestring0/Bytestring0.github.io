@@ -398,7 +398,8 @@ if (siteConfig.font) {
 	<body
 		class="min-h-screen"
 		class:list={[
-			{ "lg:is-home": isHomePage, "enable-banner": enableBanner },
+			{ "lg:is-home": isHomePage,     "enable-banner": enableBanner && siteConfig.wallpaperMode.defaultMode === "banner",
+    "no-banner-mode": siteConfig.wallpaperMode.defaultMode !== "banner",},
 		]}
 		style={bodyFontFamily ? `font-family: ${bodyFontFamily};` : ""}
 		data-overlayscrollbars-initialize

@@ -5,7 +5,6 @@ description: "一些有趣的Github开源项目，更新中~"
 tags: [fun]
 category: "有趣的东西"
 author: "Bytestring"
-image: "https://www.loliapi.com/acg/pc/"
 draft: false
 ---
 

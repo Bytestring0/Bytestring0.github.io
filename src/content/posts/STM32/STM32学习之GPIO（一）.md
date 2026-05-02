@@ -7,7 +7,6 @@ category: STM32
 licenseName: "Unlicensed"
 author: bytestring
 draft: false
-image: 'https://t.alcy.cc/moez'
 ---
 
 # 什么是GPIO
