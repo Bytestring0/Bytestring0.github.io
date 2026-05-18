@@ -1,7 +1,7 @@
 ---
 title: "那些有趣的Github开源项目"
 published: 2025-11-13
-description: "一些有趣的Github开源项目，更新中~"
+description: "一些有趣的Github开源项目"
 tags: [fun]
 category: "有趣的东西"
 author: "Bytestring"
