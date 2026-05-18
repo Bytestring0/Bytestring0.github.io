@@ -5,16 +5,104 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2026-05-02T06:32:22.776Z</updated>
+  <updated>2026-05-18T15:46:24.099Z</updated>
   <language>zh_CN</language>
   <entry>
-    <title>编写墨水屏驱动</title>
-    <link href="https://bytestring.top/posts/%E5%B0%86gxepd2%E7%A7%BB%E6%A4%8D%E5%88%B0esp-idf%E4%B8%AD/" rel="alternate" type="text/html"/>
-    <id>https://bytestring.top/posts/%E5%B0%86gxepd2%E7%A7%BB%E6%A4%8D%E5%88%B0esp-idf%E4%B8%AD/</id>
-    <published>2026-04-26T00:00:00.000Z</published>
-    <updated>2026-04-26T00:00:00.000Z</updated>
-    <summary></summary>
-    <content type="html"><![CDATA[]]></content>
+    <title>SSD1619A墨水屏驱动</title>
+    <link href="https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</id>
+    <published>2026-05-09T00:00:00.000Z</published>
+    <updated>2026-05-09T00:00:00.000Z</updated>
+    <summary>使用ESP-IDF编写的墨水屏驱动</summary>
+    <content type="html"><![CDATA[<p>最近想做一个墨水屏的小项目玩玩，就去淘了一个4.2寸的墨水屏，看标签是大连佳显的屏，去官网找到了驱动IC是SSD1619A，正好写一个底层驱动。</p>
+<h1>阅读数据手册</h1>
+<p>数据手册可以从<code>6 Functional Block</code>开始看</p>
+<h2>引脚定义</h2>
+<p>主要有<code>BUSY，RES#，CS#，D/C#，SCL，SDA</code>需要配置。</p>
+<pre><code>#define EPD_PIN_CS         5  // 片选
+#define EPD_PIN_DC         17 // 数据/命令选择
+#define EPD_PIN_RST        16 // 复位
+#define EPD_PIN_BUSY       19 // 忙碌状态
+#define EPD_PIN_SCK        18 // 时钟
+#define EPD_PIN_MOSI       23 // 主出从入
+</code></pre>
+<h2>数据通信</h2>
+<p>本次使用的是4线SPI，阅读时序图，该芯片使用SPI模式0进行通信，高位在前，DC脚为低电平写入命令，高电平写入数据。</p>
+<h2>RAM</h2>
+<p>RAM是用来写入显示数据的，SSD1619A有两块RAM，一块用于显示黑白，一块用于显示红色，尺寸都是 400x300 bits。数据写入是用byte写入的，所以一块RAM需要写400x300/8=15000个字节，从DB0一直到DB14999。对于同一个像素位置，需要分别设置R和B/W这两个bit，从而决定是什么颜色。
+这里提到了三个命令</p>
+<ul>
+<li><code>Data Entry Mode Setting</code>：控制XY方向上是否递增</li>
+<li><code>Driver Output Control</code>： 选择扫描方式</li>
+<li><code>Gate Scan Start Position</code>： 设置扫描起点</li>
+</ul>
+<h2>命令</h2>
+<p>命令比较重要，用来向IC发送数据，决定工作方式，显示图形等等，现在依次介绍。</p>
+<h3>Driver Output control</h3>
+<p>命令： 0x01
+数据：</p>
+<ul>
+<li>A[8:0]：设置MUX Gate，也就是多少行，墨水屏是300x400的，所以固定0x12B=299。因为一次只能发送一字节，所以A[8]需要发完低七位后再发一次。</li>
+<li>SM/GD（可以看一下图8-1）：
+<ul>
+<li>00：顺序对应每一行</li>
+<li>01：交换上下两行交错对应</li>
+<li>10：偶数从0开始，奇数从150行开始</li>
+<li>11：偶数从150行开始，奇数从0开始</li>
+</ul>
+</li>
+<li>TB：
+<ul>
+<li>0：从上到下扫描</li>
+<li>1：从下到上扫描</li>
+</ul>
+</li>
+</ul>
+<p>没啥用，默认就行。</p>
+<h3>Gate Scan Start Position</h3>
+<p>命令： 0x0F
+数据：</p>
+<ul>
+<li>SCN[8:0]：Gate的起始位置，配合上面的A[8:0]可以将图形截出一个区域，剩下的区域不用。</li>
+</ul>
+<p>感觉也没啥用（</p>
+<h3>Data Entry Mode Setting</h3>
+<p>命令：0x11
+数据：</p>
+<ul>
+<li>AM：
+<ul>
+<li>0：地址沿X方向更新</li>
+<li>1：地址沿Y方向更新</li>
+</ul>
+</li>
+<li>ID[1:0]：决定XY递增还是递减</li>
+</ul>
+<p>一般都是00</p>
+<h3>Set RAM X</h3>
+<p>命令：0x44
+数据：</p>
+<ul>
+<li>XSA[5:0]:起始位置（X因为是400/8=50所以6位就够了，后面Y是300所以需要9位）</li>
+<li>XEA[5:0]:终点位置</li>
+</ul>
+<p>决定写RAM的哪一块区域（X）</p>
+<h3>Set RAM Y</h3>
+<p>命令：0x45
+数据：</p>
+<ul>
+<li>YSA[8:0]:起始位置</li>
+<li>YEA[8:0]:终点位置</li>
+</ul>
+<p>决定写RAM的哪一块区域（Y）</p>
+<h3>Set RAM Address Counter</h3>
+<p>命令：0x4E和0x4F
+数据：</p>
+<ul>
+<li>XAD[5:0]：X写指针</li>
+<li>YAD[8:5]：Y写指针</li>
+</ul>
+]]></content>
     <author>
       <name>Bytestring</name>
     </author>
@@ -76,7 +164,7 @@ $$</p>
     <id>https://bytestring.top/posts/%E6%9C%89%E8%B6%A3%E7%9A%84%E4%B8%9C%E8%A5%BF/%E9%82%A3%E4%BA%9B%E6%9C%89%E8%B6%A3%E7%9A%84github%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/</id>
     <published>2025-11-13T00:00:00.000Z</published>
     <updated>2025-11-13T00:00:00.000Z</updated>
-    <summary>一些有趣的Github开源项目，更新中~</summary>
+    <summary>一些有趣的Github开源项目</summary>
     <content type="html"><![CDATA[<blockquote>
 <p>[!NOTE]
 收录一些个人觉得有意思的开源项目</p>
