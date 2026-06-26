@@ -14,7 +14,7 @@ declare global {
 		pagefind: {
 			search: (query: string) => Promise<{
 				results: Array<{
-					data: () => Promise<SearchResult>;
+					data: () => Promise<SearchResult>; 
 				}>;
 			}>;
 		};

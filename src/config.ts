@@ -193,16 +193,16 @@ export const siteConfig: SiteConfig = {
 		asciiFont: {
 			// 英文字体 - 优先级最高
 			// 指定为英文字体则无论字体包含多大范围，都只会保留 ASCII 字符子集
-			fontFamily: "SarasaMonoSC-Regular",
+			fontFamily: "MapleMonoNormal-NF-CN-Regular",
 			fontWeight: "400",
-			localFonts: ["SarasaMonoSC-Regular.ttf"],
+			localFonts: ["MapleMonoNormal-NF-CN-Regular.ttf"],
 			enableCompress: true, // 启用字体子集优化，减少字体文件大小
 		},
 		cjkFont: {
 			// 中日韩字体 - 作为回退字体
-			fontFamily: "SarasaMonoSC-Regular",
+			fontFamily: "ZenMaruGothic-Medium",
 			fontWeight: "500",
-			localFonts: ["SarasaMonoSC-Regular.ttf"],
+			localFonts: ["ZenMaruGothic-Medium.ttf"],
 			enableCompress: true, // 启用字体子集优化，减少字体文件大小
 		},
 	},
@@ -341,12 +341,12 @@ export const commentConfig: CommentConfig = {
 };
 
 export const shareConfig: ShareConfig = {
-	enable: true, // 启用分享功能
+	enable: false, // 启用分享功能
 };
 
 export const announcementConfig: AnnouncementConfig = {
 	title: "", // 公告标题，填空使用i18n字符串Key.announcement
-	content: "ブログへようこそ！これはサンプルの告知です", // 公告内容
+	content: "", // 公告内容
 	closable: true, // 允许用户关闭公告
 	link: {
 		enable: true, // 启用链接
@@ -391,16 +391,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			class: "onload-animation",
 			// 动画延迟时间（毫秒），用于错开动画效果
 			animationDelay: 0,
-		},
-		{
-			// 组件类型：公告组件
-			type: "announcement",
-			// 组件位置："top" 表示固定在顶部
-			position: "top",
-			// CSS 类名
-			class: "onload-animation",
-			// 动画延迟时间
-			animationDelay: 50,
 		},
 		{
 			// 组件类型：分类组件
@@ -466,13 +456,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
 	// 侧栏组件布局配置
 	components: {
-		left: [
-			"profile",
-			"categories",
-			"tags",
-"progress-tracker",
-		],
-		right: ["calendar","site-stats",],
+		left: ["profile", "categories", "tags"],
+		right: [],
 		drawer: ["profile", "announcement", "categories", "tags"],
 	},
 
