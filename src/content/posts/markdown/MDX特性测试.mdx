@@ -1,0 +1,109 @@
+---
+title: MDX 特性测试
+published: 2026-06-27
+description: 用一篇文章检查 MDX、JSX、表达式、组件、表格和代码块是否能正常工作。
+tags:
+  - MDX
+  - Markdown
+  - Astro
+category: Markdown
+---
+
+export const featureCount = 6;
+
+export const Callout = ({ title, children }) => (
+  <section
+    style={{
+      border: "1px solid color-mix(in oklch, var(--primary) 28%, transparent)",
+      borderRadius: "0.85rem",
+      padding: "1rem 1.1rem",
+      background: "color-mix(in oklch, var(--primary) 8%, transparent)",
+      margin: "1.25rem 0",
+    }}
+  >
+    <strong style={{ color: "var(--primary)" }}>{title}</strong>
+    <div style={{ marginTop: "0.45rem" }}>{children}</div>
+  </section>
+);
+
+export const Badge = ({ children }) => (
+  <span
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      minHeight: "1.75rem",
+      padding: "0 0.65rem",
+      borderRadius: "999px",
+      color: "var(--primary)",
+      background: "color-mix(in oklch, var(--primary) 12%, transparent)",
+      fontWeight: 700,
+    }}
+  >
+    {children}
+  </span>
+);
+
+这是一篇用来验证博客 MDX 支持的测试文章。它同时使用普通 Markdown、JSX 组件、表达式、HTML 标签、表格和代码块。
+
+<Callout title="MDX 组件渲染">
+  这一块不是普通 Markdown，而是文章里直接声明并使用的 JSX 组件。
+</Callout>
+
+## 表达式
+
+当前文章里测试的 MDX 能力数量：<Badge>{featureCount}</Badge>
+
+也可以在正文中插入简单表达式，例如：`2 + 3 = {2 + 3}`。
+
+## Markdown 语法
+
+- 普通列表
+- **加粗文本**
+- `inline code`
+- [内部链接](/archive/)
+
+> 这是一段引用，用来确认 MDX 中 Markdown 块级语法仍然正常。
+
+## 表格
+
+| 能力 | 状态 | 说明 |
+| --- | --- | --- |
+| Markdown | OK | 标题、列表、引用、表格 |
+| JSX | OK | 直接在文章中写组件 |
+| 表达式 | OK | 支持 `{}` 插值 |
+| 代码块 | OK | 使用站点代码高亮和 Maple Mono 字体 |
+
+## 代码块
+
+```tsx title="Counter.tsx"
+import { useState } from "react";
+
+export function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  );
+}
+```
+
+```mdx title="Example.mdx"
+export const Note = ({ children }) => <aside>{children}</aside>;
+
+<Note>MDX 可以把 Markdown 和组件组合起来。</Note>
+```
+
+## HTML / JSX 混排
+
+<div style={{ display: "grid", gap: "0.75rem", gridTemplateColumns: "repeat(auto-fit, minmax(10rem, 1fr))" }}>
+  <div style={{ padding: "1rem", borderRadius: "0.75rem", background: "rgba(255, 255, 255, 0.32)" }}>
+    JSX Card A
+  </div>
+  <div style={{ padding: "1rem", borderRadius: "0.75rem", background: "rgba(255, 255, 255, 0.32)" }}>
+    JSX Card B
+  </div>
+</div>
+
+如果这篇文章能正常构建并渲染，说明当前内容集合已经可以处理 `.mdx` 文件。

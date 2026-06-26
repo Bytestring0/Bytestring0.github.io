@@ -1,0 +1,53 @@
+---
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPostsList } from "@utils/content-utils";
+import { getCategoryUrl, getPostUrl } from "@utils/url-utils";
+
+const posts = await getSortedPostsList();
+const categories = posts.reduce(
+	(acc, post) => {
+		const category = post.data.category || i18n(I18nKey.uncategorized);
+		if (!acc.has(category)) acc.set(category, []);
+		acc.get(category)?.push(post);
+		return acc;
+	},
+	new Map<string, typeof posts>(),
+);
+
+const sortedCategories = [...categories.entries()].sort((a, b) =>
+	a[0].localeCompare(b[0], "zh-CN"),
+);
+---
+
+<MainGridLayout title="分类">
+	<section class="minimal-page-shell">
+		<div class="minimal-glass-panel taxonomy-hero">
+			<p class="taxonomy-eyebrow">Categories</p>
+			<h1>分类</h1>
+		</div>
+
+		<div class="taxonomy-grid">
+			{sortedCategories.map(([category, categoryPosts]) => (
+				<article class="taxonomy-card minimal-glass-panel">
+					<div class="taxonomy-card-head">
+						<div>
+							<h2>{category}</h2>
+						</div>
+						<a href={getCategoryUrl(category)}>{categoryPosts.length} 篇</a>
+					</div>
+					<ul>
+						{categoryPosts.slice(0, 3).map((post) => (
+							<li>
+								<a class="taxonomy-post-link" href={getPostUrl(post)}>
+									{post.data.title}
+								</a>
+							</li>
+						))}
+					</ul>
+				</article>
+			))}
+		</div>
+	</section>
+</MainGridLayout>

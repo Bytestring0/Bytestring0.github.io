@@ -1,0 +1,43 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPostsList } from "@utils/content-utils";
+import { getTagUrl } from "@utils/url-utils";
+
+const posts = await getSortedPostsList();
+const tagCounts = posts.reduce(
+	(acc, post) => {
+		for (const tag of post.data.tags ?? []) {
+			acc.set(tag, (acc.get(tag) ?? 0) + 1);
+		}
+		return acc;
+	},
+	new Map<string, number>(),
+);
+
+const tags = [...tagCounts.entries()].sort((a, b) =>
+	a[0].localeCompare(b[0], "zh-CN"),
+);
+const maxCount = Math.max(...tags.map(([, count]) => count), 1);
+---
+
+<MainGridLayout title="标签">
+	<section class="minimal-page-shell">
+		<div class="minimal-glass-panel taxonomy-hero">
+			<p class="taxonomy-eyebrow">Tags</p>
+			<h1>标签</h1>
+		</div>
+
+		<div class="tag-cloud minimal-glass-panel">
+			{tags.map(([tag, count]) => (
+				<a
+					href={getTagUrl(tag)}
+					class="tag-cloud-item"
+					style={`--weight: ${Math.max(0.85, count / maxCount)}`}
+				>
+					<span># {tag}</span>
+					<small>{count}</small>
+				</a>
+			))}
+		</div>
+	</section>
+</MainGridLayout>

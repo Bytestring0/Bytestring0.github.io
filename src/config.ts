@@ -100,7 +100,7 @@ export const siteConfig: SiteConfig = {
 	// 标签样式配置
 	tagStyle: {
 		// 是否使用新样式（悬停高亮样式）还是旧样式（外框常亮样式）
-		useNewStyle: false,
+		useNewStyle: true,
 	},
 
 	// 壁纸模式配置
@@ -226,7 +226,28 @@ export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 export const navBarConfig: NavBarConfig = {
 	links: [
 		LinkPreset.Home,
-		LinkPreset.Archive,
+		{
+			name: "归档",
+			url: "/archive/",
+			icon: "material-symbols:archive",
+			children: [
+				{
+					name: "归档",
+					url: "/archive/",
+					icon: "material-symbols:archive",
+				},
+				{
+					name: "分类",
+					url: "/categories/",
+					icon: "material-symbols:folder-outline-rounded",
+				},
+				{
+					name: "标签",
+					url: "/tags/",
+					icon: "material-symbols:tag-rounded",
+				},
+			],
+		},
 		// 支持自定义导航栏链接，支持多级菜单
 		{
 			name: "About",
@@ -275,7 +296,7 @@ export const profileConfig: ProfileConfig = {
 	name: "Bytestring",
 	bio: "我去，不早说",
 	typewriter: {
-		enable: true, // 启用个人简介打字机效果
+		enable: false, // 启用个人简介打字机效果
 		speed: 80, // 打字速度（毫秒）
 	},
 	links: [
@@ -357,7 +378,7 @@ export const announcementConfig: AnnouncementConfig = {
 };
 
 export const musicPlayerConfig: MusicPlayerConfig = {
-	enable: true, // 启用音乐播放器功能
+	enable: false, // 启用音乐播放器功能
 	mode: "meting", // 音乐播放器模式，可选 "local" 或 "meting"
 	meting_api:
 		"https://meting.mysqil.com/api?server=:server&type=:type&id=:id&auth=:auth&r=:r", // Meting API 地址
@@ -456,15 +477,15 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
 	// 侧栏组件布局配置
 	components: {
-		left: ["profile", "categories", "tags"],
+		left: [],
 		right: [],
-		drawer: ["profile", "announcement", "categories", "tags"],
+		drawer: [],
 	},
 
 	// 默认动画配置
 	defaultAnimation: {
 		// 是否启用默认动画
-		enable: true,
+		enable: false,
 		// 基础延迟时间（毫秒）
 		baseDelay: 0,
 		// 递增延迟时间（毫秒），每个组件依次增加的延迟

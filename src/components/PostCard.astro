@@ -45,21 +45,21 @@ const { remarkPluginFrontmatter } = await render(entry);
 >
 	<div
 		class:list={[
-			"pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative",
+			"px-5 py-5 md:px-7 md:py-6 relative",
 			{
-				"w-full md:w-[calc(100%_-_3.25rem_-_0.75rem)]": !hasCover,
+				"w-full": !hasCover,
 				"w-full md:w-[calc(100%_-_var(--coverWidth)_-_0.75rem)]": hasCover,
 			},
 		]}
 	>
 		<a
 			href={url}
-			class="transition group w-full block font-bold mb-3 text-3xl text-90
+			class="transition group w-full block font-bold mb-3 text-[1.35rem] md:text-[1.625rem] leading-snug text-90 break-words
         hover:text-[var(--primary)] dark:hover:text-[var(--primary)]
         active:text-[var(--title-active)] dark:active:text-[var(--title-active)]
         before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
         before:absolute
-        before:top-[2.1875rem] before:left-[1.125rem] before:hidden md:before:block"
+        before:top-[1.85rem] before:left-[1rem] before:hidden md:before:block md:pl-0"
 		>
 			{
 				pinned && (
@@ -71,7 +71,7 @@ const { remarkPluginFrontmatter } = await render(entry);
 			}
 			{title}
 			<Icon
-				class="inline text-[2rem] text-[var(--primary)] md:hidden translate-y-0.5 absolute"
+				class="inline text-[1.5rem] text-[var(--primary)] md:hidden translate-y-0.5 ml-1"
 				name="material-symbols:chevron-right-rounded"
 			/>
 			<Icon
@@ -95,7 +95,8 @@ const { remarkPluginFrontmatter } = await render(entry);
 
 		<div
 			class:list={[
-				"transition text-75 mb-3.5 pr-4",
+				"post-card-description transition text-75 mb-3.5 pr-4",
+				"text-[0.95rem] leading-7",
 				{ "line-clamp-2 md:line-clamp-1": !description },
 			]}
 		>
@@ -160,14 +161,13 @@ const { remarkPluginFrontmatter } = await render(entry);
 			<a
 				href={url}
 				aria-label={title}
-				class="!hidden md:!flex btn-regular w-[3.25rem]
-         absolute right-3 top-3 bottom-3 rounded-xl bg-[var(--enter-btn-bg)]
-         hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95
+				class="!hidden md:!flex btn-plain w-9 h-9
+         absolute right-5 top-5 rounded-lg active:scale-95
         "
 			>
 				<Icon
 					name="material-symbols:chevron-right-rounded"
-					class="transition text-[var(--primary)] text-4xl mx-auto"
+					class="transition text-[var(--primary)] text-2xl mx-auto"
 				/>
 			</a>
 		)

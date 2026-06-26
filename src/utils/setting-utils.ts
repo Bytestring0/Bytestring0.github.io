@@ -91,7 +91,8 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
 	if (
 		needsThemeChange &&
 		document.startViewTransition &&
-		!window.matchMedia("(prefers-reduced-motion: reduce)").matches
+		!window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+		localStorage.getItem("useViewTransition") === "true"
 	) {
 		// 添加标记类，表示正在使用 View Transitions
 		document.documentElement.classList.add(

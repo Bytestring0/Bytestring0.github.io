@@ -1,4 +1,5 @@
 import sitemap from "@astrojs/sitemap";
+import mdx from "@astrojs/mdx";
 import svelte, { vitePreprocess } from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
@@ -91,7 +92,7 @@ export default defineConfig({
 				borderColor: "none",
 				codeFontSize: "0.875rem",
 				codeFontFamily:
-					"'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+					"'MapleMonoNormal-NF-CN-Regular', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
 				codeLineHeight: "1.5rem",
 				frames: {
 					editorBackground: "var(--codeblock-bg)",
@@ -114,6 +115,7 @@ export default defineConfig({
 				showCopyToClipboardButton: false,
 			},
 		}),
+		mdx(),
 		svelte({
 			preprocess: vitePreprocess(),
 		}),
