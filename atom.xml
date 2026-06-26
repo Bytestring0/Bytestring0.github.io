@@ -5,8 +5,130 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2026-05-18T15:46:24.099Z</updated>
+  <updated>2026-06-26T16:39:44.708Z</updated>
   <language>zh_CN</language>
+  <entry>
+    <title>MDX 特性测试</title>
+    <link href="https://bytestring.top/posts/markdown/mdx%E7%89%B9%E6%80%A7%E6%B5%8B%E8%AF%95/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/markdown/mdx%E7%89%B9%E6%80%A7%E6%B5%8B%E8%AF%95/</id>
+    <published>2026-06-27T00:00:00.000Z</published>
+    <updated>2026-06-27T00:00:00.000Z</updated>
+    <summary>用一篇文章检查 MDX、JSX、表达式、组件、表格和代码块是否能正常工作。</summary>
+    <content type="html"><![CDATA[<p>export const featureCount = 6;</p>
+<p>export const Callout = ({ title, children }) =&gt; (
+&lt;section
+style={{
+border: "1px solid color-mix(in oklch, var(--primary) 28%, transparent)",
+borderRadius: "0.85rem",
+padding: "1rem 1.1rem",
+background: "color-mix(in oklch, var(--primary) 8%, transparent)",
+margin: "1.25rem 0",
+}}</p>
+<blockquote></blockquote>
+<pre><code>&lt;strong style={{ color: "var(--primary)" }}&gt;{title}&lt;/strong&gt;
+&lt;div style={{ marginTop: "0.45rem" }}&gt;{children}&lt;/div&gt;
+</code></pre>
+<p>&lt;/section&gt;
+);</p>
+<p>export const Badge = ({ children }) =&gt; (
+&lt;span
+style={{
+display: "inline-flex",
+alignItems: "center",
+minHeight: "1.75rem",
+padding: "0 0.65rem",
+borderRadius: "999px",
+color: "var(--primary)",
+background: "color-mix(in oklch, var(--primary) 12%, transparent)",
+fontWeight: 700,
+}}</p>
+<blockquote></blockquote>
+<pre><code>{children}
+</code></pre>
+<p>&lt;/span&gt;
+);</p>
+<p>这是一篇用来验证博客 MDX 支持的测试文章。它同时使用普通 Markdown、JSX 组件、表达式、HTML 标签、表格和代码块。</p>
+<p>&lt;Callout title="MDX 组件渲染"&gt;
+这一块不是普通 Markdown，而是文章里直接声明并使用的 JSX 组件。
+&lt;/Callout&gt;</p>
+<h2>表达式</h2>
+<p>当前文章里测试的 MDX 能力数量：&lt;Badge&gt;{featureCount}&lt;/Badge&gt;</p>
+<p>也可以在正文中插入简单表达式，例如：<code>2 + 3 = {2 + 3}</code>。</p>
+<h2>Markdown 语法</h2>
+<ul>
+<li>普通列表</li>
+<li><strong>加粗文本</strong></li>
+<li><code>inline code</code></li>
+<li><a href="/archive/">内部链接</a></li>
+</ul>
+<blockquote>
+<p>这是一段引用，用来确认 MDX 中 Markdown 块级语法仍然正常。</p>
+</blockquote>
+<h2>表格</h2>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Markdown</td>
+<td>OK</td>
+<td>标题、列表、引用、表格</td>
+</tr>
+<tr>
+<td>JSX</td>
+<td>OK</td>
+<td>直接在文章中写组件</td>
+</tr>
+<tr>
+<td>表达式</td>
+<td>OK</td>
+<td>支持 <code>{}</code> 插值</td>
+</tr>
+<tr>
+<td>代码块</td>
+<td>OK</td>
+<td>使用站点代码高亮和 Maple Mono 字体</td>
+</tr>
+</tbody>
+</table>
+<h2>代码块</h2>
+<pre><code>import { useState } from "react";
+
+export function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+      Count: {count}
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+<pre><code>export const Note = ({ children }) =&gt; &lt;aside&gt;{children}&lt;/aside&gt;;
+
+&lt;Note&gt;MDX 可以把 Markdown 和组件组合起来。&lt;/Note&gt;
+</code></pre>
+<h2>HTML / JSX 混排</h2>
+<p>&lt;div style={{ display: "grid", gap: "0.75rem", gridTemplateColumns: "repeat(auto-fit, minmax(10rem, 1fr))" }}&gt;
+&lt;div style={{ padding: "1rem", borderRadius: "0.75rem", background: "rgba(255, 255, 255, 0.32)" }}&gt;
+JSX Card A
+&lt;/div&gt;
+&lt;div style={{ padding: "1rem", borderRadius: "0.75rem", background: "rgba(255, 255, 255, 0.32)" }}&gt;
+JSX Card B
+&lt;/div&gt;
+&lt;/div&gt;</p>
+<p>如果这篇文章能正常构建并渲染，说明当前内容集合已经可以处理 <code>.mdx</code> 文件。</p>
+]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+    <category term="Markdown"></category>
+  </entry>
   <entry>
     <title>SSD1619A墨水屏驱动</title>
     <link href="https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/" rel="alternate" type="text/html"/>
@@ -34,7 +156,7 @@
 <ul>
 <li><code>Data Entry Mode Setting</code>：控制XY方向上是否递增</li>
 <li><code>Driver Output Control</code>： 选择扫描方式</li>
-<li><code>Gate Scan Start Position</code>： 设置扫描起点</li>
+<li><code>Gate Scan Start Position </code>： 设置扫描起点</li>
 </ul>
 <h2>命令</h2>
 <p>命令比较重要，用来向IC发送数据，决定工作方式，显示图形等等，现在依次介绍。</p>

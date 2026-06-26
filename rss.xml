@@ -1,4 +1,113 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>SSD1619A墨水屏驱动</title><link>https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</guid><description>使用ESP-IDF编写的墨水屏驱动</description><pubDate>Sat, 09 May 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;最近想做一个墨水屏的小项目玩玩，就去淘了一个4.2寸的墨水屏，看标签是大连佳显的屏，去官网找到了驱动IC是SSD1619A，正好写一个底层驱动。&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>MDX 特性测试</title><link>https://bytestring.top/posts/markdown/mdx%E7%89%B9%E6%80%A7%E6%B5%8B%E8%AF%95/</link><guid isPermaLink="true">https://bytestring.top/posts/markdown/mdx%E7%89%B9%E6%80%A7%E6%B5%8B%E8%AF%95/</guid><description>用一篇文章检查 MDX、JSX、表达式、组件、表格和代码块是否能正常工作。</description><pubDate>Sat, 27 Jun 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;export const featureCount = 6;&lt;/p&gt;
+&lt;p&gt;export const Callout = ({ title, children }) =&amp;gt; (
+&amp;lt;section
+style={{
+border: &quot;1px solid color-mix(in oklch, var(--primary) 28%, transparent)&quot;,
+borderRadius: &quot;0.85rem&quot;,
+padding: &quot;1rem 1.1rem&quot;,
+background: &quot;color-mix(in oklch, var(--primary) 8%, transparent)&quot;,
+margin: &quot;1.25rem 0&quot;,
+}}&lt;/p&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;strong style={{ color: &quot;var(--primary)&quot; }}&amp;gt;{title}&amp;lt;/strong&amp;gt;
+&amp;lt;div style={{ marginTop: &quot;0.45rem&quot; }}&amp;gt;{children}&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&amp;lt;/section&amp;gt;
+);&lt;/p&gt;
+&lt;p&gt;export const Badge = ({ children }) =&amp;gt; (
+&amp;lt;span
+style={{
+display: &quot;inline-flex&quot;,
+alignItems: &quot;center&quot;,
+minHeight: &quot;1.75rem&quot;,
+padding: &quot;0 0.65rem&quot;,
+borderRadius: &quot;999px&quot;,
+color: &quot;var(--primary)&quot;,
+background: &quot;color-mix(in oklch, var(--primary) 12%, transparent)&quot;,
+fontWeight: 700,
+}}&lt;/p&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;{children}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&amp;lt;/span&amp;gt;
+);&lt;/p&gt;
+&lt;p&gt;这是一篇用来验证博客 MDX 支持的测试文章。它同时使用普通 Markdown、JSX 组件、表达式、HTML 标签、表格和代码块。&lt;/p&gt;
+&lt;p&gt;&amp;lt;Callout title=&quot;MDX 组件渲染&quot;&amp;gt;
+这一块不是普通 Markdown，而是文章里直接声明并使用的 JSX 组件。
+&amp;lt;/Callout&amp;gt;&lt;/p&gt;
+&lt;h2&gt;表达式&lt;/h2&gt;
+&lt;p&gt;当前文章里测试的 MDX 能力数量：&amp;lt;Badge&amp;gt;{featureCount}&amp;lt;/Badge&amp;gt;&lt;/p&gt;
+&lt;p&gt;也可以在正文中插入简单表达式，例如：&lt;code&gt;2 + 3 = {2 + 3}&lt;/code&gt;。&lt;/p&gt;
+&lt;h2&gt;Markdown 语法&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;普通列表&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加粗文本&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;inline code&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/archive/&quot;&gt;内部链接&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这是一段引用，用来确认 MDX 中 Markdown 块级语法仍然正常。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;表格&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;能力&lt;/th&gt;
+&lt;th&gt;状态&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Markdown&lt;/td&gt;
+&lt;td&gt;OK&lt;/td&gt;
+&lt;td&gt;标题、列表、引用、表格&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;JSX&lt;/td&gt;
+&lt;td&gt;OK&lt;/td&gt;
+&lt;td&gt;直接在文章中写组件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;表达式&lt;/td&gt;
+&lt;td&gt;OK&lt;/td&gt;
+&lt;td&gt;支持 &lt;code&gt;{}&lt;/code&gt; 插值&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;代码块&lt;/td&gt;
+&lt;td&gt;OK&lt;/td&gt;
+&lt;td&gt;使用站点代码高亮和 Maple Mono 字体&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;代码块&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;import { useState } from &quot;react&quot;;
+
+export function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    &amp;lt;button onClick={() =&amp;gt; setCount(count + 1)}&amp;gt;
+      Count: {count}
+    &amp;lt;/button&amp;gt;
+  );
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;export const Note = ({ children }) =&amp;gt; &amp;lt;aside&amp;gt;{children}&amp;lt;/aside&amp;gt;;
+
+&amp;lt;Note&amp;gt;MDX 可以把 Markdown 和组件组合起来。&amp;lt;/Note&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;HTML / JSX 混排&lt;/h2&gt;
+&lt;p&gt;&amp;lt;div style={{ display: &quot;grid&quot;, gap: &quot;0.75rem&quot;, gridTemplateColumns: &quot;repeat(auto-fit, minmax(10rem, 1fr))&quot; }}&amp;gt;
+&amp;lt;div style={{ padding: &quot;1rem&quot;, borderRadius: &quot;0.75rem&quot;, background: &quot;rgba(255, 255, 255, 0.32)&quot; }}&amp;gt;
+JSX Card A
+&amp;lt;/div&amp;gt;
+&amp;lt;div style={{ padding: &quot;1rem&quot;, borderRadius: &quot;0.75rem&quot;, background: &quot;rgba(255, 255, 255, 0.32)&quot; }}&amp;gt;
+JSX Card B
+&amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;&lt;/p&gt;
+&lt;p&gt;如果这篇文章能正常构建并渲染，说明当前内容集合已经可以处理 &lt;code&gt;.mdx&lt;/code&gt; 文件。&lt;/p&gt;
+</content:encoded></item><item><title>SSD1619A墨水屏驱动</title><link>https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</guid><description>使用ESP-IDF编写的墨水屏驱动</description><pubDate>Sat, 09 May 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;最近想做一个墨水屏的小项目玩玩，就去淘了一个4.2寸的墨水屏，看标签是大连佳显的屏，去官网找到了驱动IC是SSD1619A，正好写一个底层驱动。&lt;/p&gt;
 &lt;h1&gt;阅读数据手册&lt;/h1&gt;
 &lt;p&gt;数据手册可以从&lt;code&gt;6 Functional Block&lt;/code&gt;开始看&lt;/p&gt;
 &lt;h2&gt;引脚定义&lt;/h2&gt;
@@ -18,7 +127,7 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;Data Entry Mode Setting&lt;/code&gt;：控制XY方向上是否递增&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;Driver Output Control&lt;/code&gt;： 选择扫描方式&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Gate Scan Start Position&lt;/code&gt;： 设置扫描起点&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Gate Scan Start Position &lt;/code&gt;： 设置扫描起点&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;命令&lt;/h2&gt;
 &lt;p&gt;命令比较重要，用来向IC发送数据，决定工作方式，显示图形等等，现在依次介绍。&lt;/p&gt;
