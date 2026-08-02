@@ -2,13 +2,8 @@ import type { Favicon } from "@/types/config.ts";
 
 export const defaultFavicons: Favicon[] = [
 	{
-		src: "/favicon/favicon.ico",
-		theme: "light",
-		sizes: "64x64",
-	},
-	{
-		src: "/favicon/favicon.ico",
-		theme: "dark",
-		sizes: "64x64",
+		// 修改图标后同步更新版本号，避免浏览器和 CDN 继续使用旧 favicon。
+		src: "/favicon/favicon.ico?v=20260802",
+		sizes: "any",
 	},
 ];
