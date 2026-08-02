@@ -7,15 +7,11 @@ import Navbar from "@components/Navbar.astro";
 import SideBar from "@components/widgets/sidebar/SideBar.astro";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
-import FullscreenWallpaper from "../components/misc/FullscreenWallpaper.astro";
 import IconifyLoader from "../components/misc/IconifyLoader.astro";
 import ImageWrapper from "../components/misc/ImageWrapper.astro";
 import TypewriterText from "../components/TypewriterText.astro";
 import TOC from "../components/widgets/toc/TOC.astro";
-import {
-	fullscreenWallpaperConfig,
-	siteConfig,
-} from "../config";
+import { siteConfig } from "../config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
@@ -96,7 +92,12 @@ const getBannerImages = async () => {
 	};
 };
 
-const bannerImages = await getBannerImages();
+// Background artwork is intentionally disabled to avoid any banner/wallpaper
+// image request. Keep the existing markup available for future re-enabling.
+const backgroundImagesEnabled = false;
+const bannerImages = backgroundImagesEnabled
+	? await getBannerImages()
+	: { desktop: null, mobile: null };
 
 const {
 	title,
@@ -249,7 +250,7 @@ const transparentClass = shouldEnableTransparency
 
 	// 立即执行，在页面渲染前应用壁纸模式和布局模式，避免闪烁
 	(function() {
-		const wallpaperMode = localStorage.getItem('wallpaperMode') || defaultWallpaperMode;
+		const wallpaperMode = defaultWallpaperMode;
 		const body = document.body;
 		
 		// 定义 banner 高度常量（与 constants.ts 保持一致）
@@ -335,7 +336,7 @@ const transparentClass = shouldEnableTransparency
 	}
 	
 	function applyWallpaperMode() {
-		var wallpaperMode = localStorage.getItem('wallpaperMode') || defaultWallpaperMode;
+		var wallpaperMode = defaultWallpaperMode;
 		var bannerWrapper = document.getElementById('banner-wrapper');
 		var fullscreenWallpaper = document.querySelector('[data-fullscreen-wallpaper]');
 		var navbar = document.getElementById('navbar');
@@ -583,9 +584,6 @@ const transparentClass = shouldEnableTransparency
 	}
 </script>
 
-<!-- 全屏壁纸 - 始终渲染，通过 JS 控制显示隐藏 -->
-<FullscreenWallpaper config={fullscreenWallpaperConfig} />
-
 <!-- 全局图标加载器 -->
 <IconifyLoader />
 
@@ -597,8 +595,8 @@ const transparentClass = shouldEnableTransparency
     </div>
 </div>
 
-<!-- Banner - 始终渲染，通过 JS 控制显示隐藏 -->
-<div id="banner-wrapper" class={`absolute z-10 w-full transition duration-700 overflow-hidden ${mobileNonHomeBannerClass}`} style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
+<!-- 背景图片关闭时不输出 Banner DOM，浏览器不会发起图片请求 -->
+{backgroundImagesEnabled && <div id="banner-wrapper" class={`absolute z-10 w-full transition duration-700 overflow-hidden ${mobileNonHomeBannerClass}`} style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
 
     {siteConfig.banner.carousel?.enable && ((bannerImages.desktop && Array.isArray(bannerImages.desktop) && bannerImages.desktop.length > 1) || (bannerImages.mobile && Array.isArray(bannerImages.mobile) && bannerImages.mobile.length > 1)) ? (
         <!-- Carousel mode for multiple images -->
@@ -792,7 +790,7 @@ const transparentClass = shouldEnableTransparency
     )}
     
 
-</div>
+</div>}
 
 <!-- Main content -->
 <div class={`absolute w-full z-30 pointer-events-none ${mobileNonHomeBannerClass ? 'mobile-main-no-banner' : ''} ${siteConfig.wallpaperMode.defaultMode === 'none' ? 'no-banner-layout' : ''} ${transparentClass}`} style={`top: ${finalMainPanelTop}`}>

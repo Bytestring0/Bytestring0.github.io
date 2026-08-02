@@ -142,7 +142,12 @@ if (siteConfig.font) {
 	if (siteConfig.font.cjkFont?.fontFamily) {
 		const cjkFont = siteConfig.font.cjkFont.fontFamily;
 		// 如果字体名包含空格，需要用引号包围
-		fonts.push(cjkFont.includes(" ") ? `"${cjkFont}"` : cjkFont);
+		const normalizedCjkFont = cjkFont.includes(" ")
+			? `"${cjkFont}"`
+			: cjkFont;
+		if (!fonts.includes(normalizedCjkFont)) {
+			fonts.push(normalizedCjkFont);
+		}
 	}
 	// 添加系统字体作为最终回退
 	fonts.push(
@@ -161,6 +166,22 @@ if (siteConfig.font) {
 	// 组合成完整的 font-family 字符串
 	bodyFontFamily = fonts.join(", ");
 }
+
+const mapleFontWoff2Url = url(
+	"/assets/font/MapleMonoNormal-NF-CN-Regular.woff2",
+);
+const mapleFontTtfUrl = url(
+	"/assets/font/MapleMonoNormal-NF-CN-Regular.ttf",
+);
+const mapleFontFaceCss = `
+@font-face {
+	font-family: "MapleMonoNormal-NF-CN-Regular";
+	src: url("${mapleFontWoff2Url}") format("woff2"),
+		url("${mapleFontTtfUrl}") format("truetype");
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+}`;
 ---
 
 <!doctype html>
@@ -170,6 +191,7 @@ if (siteConfig.font) {
 	data-overlayscrollbars-initialize
 >
 	<head>
+		<style is:inline set:html={mapleFontFaceCss}></style>
 		<!-- 第三方分析脚本 - 延迟加载优化 -->
 		<script is:inline>
 			// 使用 requestIdleCallback 延迟加载第三方脚本
