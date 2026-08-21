@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>F6简易输入输出</title><link>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/f%E9%98%B6%E6%AE%B5/f6%E7%AE%80%E6%98%93%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/</link><guid isPermaLink="true">https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/f%E9%98%B6%E6%AE%B5/f6%E7%AE%80%E6%98%93%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/</guid><pubDate>Fri, 21 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;[!NOTE]
-做着做着发现文档更新成26.07了，去掉了原来很长的RISCV的部分，不用在F阶段啃手册了。
-不过F5之前的东西都没有变，PC从4位变成了8位需要注意一下。&lt;/p&gt;
+做着做着发现文档更新成26.07了，去掉了原来很长的RISCV的部分，不用在F阶段啃手册了。&lt;/p&gt;
+&lt;p&gt;不过F5之前的东西都没有变，PC从4位变成了8位需要注意一下。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h1&gt;sISA指令拓展&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt; 7  6 5  4 3   2 1   0
@@ -158,11 +158,11 @@ Hint: 存在一种只需要12条指令的解决方案.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;思路是在读取完输入后用io和bner0等待按钮输入，输入后进行正常累加，然后跳转回到等待前。&lt;/p&gt;
 &lt;h1&gt;F6&lt;/h1&gt;
-&lt;p&gt;虽然我们在Logisim中成功搭建了一个拥有程序执行功能的简单处理器，但是Logisim的设计是很麻烦的，而且其中有很多步骤完全可以自动化执行，设计人员只需要负责设计。
-在计算机诞生之初，没有任何电子自动化工具（EDA），处理器的逻辑设计、电路版图完全由研发人员手绘而成，比较有名的有英特尔的Intel 4004，由&lt;a href=&quot;https://en.wikipedia.org/wiki/Federico_Faggin&quot;&gt;Federico Faggin&lt;/a&gt;设计。
-随着摩尔定律的生效，ISA变得越来越复杂，芯片进入大规模（LSI）以及超大规模集成电路（VLSI），手工设计越来越困难，一旦流片失败将造成极大的成本压力。在1980年，&lt;a href=&quot;https://en.wikipedia.org/wiki/Carver_Mead&quot;&gt;Carver Mead&lt;/a&gt;和&lt;a href=&quot;https://en.wikipedia.org/wiki/Lynn_Conway&quot;&gt;Lynn Conway&lt;/a&gt;（值得一提的是Conway还是一名跨性别者）发表了《超大规模集成电路系统导论》（Introduction to VLSI Systems），提出了使用编程语言进行芯片设计的新思想，并在之后谈生了Verilog、VHDL等硬件描述语言。实际上这些语言一开始是作为模拟和仿真验证使用，即使如此也极大降低了成本。
-在之后Synopsys等公司发明了逻辑综合器（即将硬件描述语言转化为逻辑门电路），HDL逐渐成为设计工具，并影响到ISA的设计哲学。得益于HDL工具的综合能力对简洁清晰代码的支持，精简指令集（RISC）得到广泛的认可，也使得芯片设计的门槛在一定程度上降低。
-回顾整个历史，处理器硬件的发展离不开软件的支持，计算机性能的提升使得开发更复杂的软件成为可能，而软件的诞生刺激硬件的发展，并诞生了有利于设计更优秀处理器的软件工具，颇有一些左脚踩右脚的感觉。随着软件和硬件联系的加深，诞生了&lt;a href=&quot;https://www.chisel-lang.org/&quot;&gt;Chisel&lt;/a&gt;这类拥有高级编程语言思想的HDL甚至可以将高级语言“翻译”成HDL的高层次综合（HLS）工具。硬件设计需要重视软件发挥的作用，更需要一些软件工程的思想。&lt;/p&gt;
+&lt;p&gt;虽然我们在Logisim中成功搭建了一个拥有程序执行功能的简单处理器，但是Logisim的设计是很麻烦的，而且其中有很多步骤完全可以自动化执行，设计人员只需要负责设计。&lt;/p&gt;
+&lt;p&gt;在计算机诞生之初，没有任何电子自动化工具（EDA），处理器的逻辑设计、电路版图完全由研发人员手绘而成，比较有名的有英特尔的Intel 4004，由&lt;a href=&quot;https://en.wikipedia.org/wiki/Federico_Faggin&quot;&gt;Federico Faggin&lt;/a&gt;设计。&lt;/p&gt;
+&lt;p&gt;随着摩尔定律的生效，ISA变得越来越复杂，芯片进入大规模（LSI）以及超大规模集成电路（VLSI），手工设计越来越困难，一旦流片失败将造成极大的成本压力。在1980年，&lt;a href=&quot;https://en.wikipedia.org/wiki/Carver_Mead&quot;&gt;Carver Mead&lt;/a&gt;和&lt;a href=&quot;https://en.wikipedia.org/wiki/Lynn_Conway&quot;&gt;Lynn Conway&lt;/a&gt;（值得一提的是Conway还是一名跨性别者）发表了《超大规模集成电路系统导论》（Introduction to VLSI Systems），提出了使用编程语言进行芯片设计的新思想，并在之后谈生了Verilog、VHDL等硬件描述语言。实际上这些语言一开始是作为模拟和仿真验证使用，即使如此也极大降低了成本。&lt;/p&gt;
+&lt;p&gt;在之后Synopsys等公司发明了逻辑综合器（即将硬件描述语言转化为逻辑门电路），HDL逐渐成为设计工具，并影响到ISA的设计哲学。得益于HDL工具的综合能力对简洁清晰代码的支持，精简指令集（RISC）得到广泛的认可，也使得芯片设计的门槛在一定程度上降低。&lt;/p&gt;
+&lt;p&gt;回顾整个历史，处理器硬件的发展离不开软件的支持，计算机性能的提升使得开发更复杂的软件成为可能，而软件的诞生刺激硬件的发展，并诞生了有利于设计更优秀处理器的软件工具，颇有一些左脚踩右脚的感觉。随着软件和硬件联系的加深，诞生了&lt;a href=&quot;https://www.chisel-lang.org/&quot;&gt;Chisel&lt;/a&gt;这类拥有高级编程语言思想的HDL甚至可以将高级语言“翻译”成HDL的高层次综合（HLS）工具。硬件设计需要重视软件发挥的作用，更需要一些软件工程的思想。&lt;/p&gt;
 </content:encoded></item><item><title>F4计算机系统的状态机模型</title><link>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/f%E9%98%B6%E6%AE%B5/f4%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%8A%B6%E6%80%81%E6%9C%BA%E6%A8%A1%E5%9E%8B/</link><guid isPermaLink="true">https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/f%E9%98%B6%E6%AE%B5/f4%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%8A%B6%E6%80%81%E6%9C%BA%E6%A8%A1%E5%9E%8B/</guid><pubDate>Tue, 04 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;处理器的工作原理&lt;/h1&gt;
 &lt;p&gt;软件的运行其实就是运行软件的代码，代码会被翻译成一条条指令，装载到一个程序计数器中，然后交由处理器执行。
 处理器处理的是一条条指令，对于每个指令来说分为操作码和操作数，这很好理解。操作码决定了处理器执行什么操作，操作数决定要操作哪些数据。

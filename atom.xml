@@ -5,7 +5,7 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2026-08-21T11:15:33.402Z</updated>
+  <updated>2026-08-21T11:22:55.941Z</updated>
   <language>zh_CN</language>
   <entry>
     <title>F6简易输入输出</title>
@@ -16,8 +16,8 @@
     <summary></summary>
     <content type="html"><![CDATA[<blockquote>
 <p>[!NOTE]
-做着做着发现文档更新成26.07了，去掉了原来很长的RISCV的部分，不用在F阶段啃手册了。
-不过F5之前的东西都没有变，PC从4位变成了8位需要注意一下。</p>
+做着做着发现文档更新成26.07了，去掉了原来很长的RISCV的部分，不用在F阶段啃手册了。</p>
+<p>不过F5之前的东西都没有变，PC从4位变成了8位需要注意一下。</p>
 </blockquote>
 <h1>sISA指令拓展</h1>
 <pre><code> 7  6 5  4 3   2 1   0
@@ -174,11 +174,11 @@ Hint: 存在一种只需要12条指令的解决方案.</p>
 </blockquote>
 <p>思路是在读取完输入后用io和bner0等待按钮输入，输入后进行正常累加，然后跳转回到等待前。</p>
 <h1>F6</h1>
-<p>虽然我们在Logisim中成功搭建了一个拥有程序执行功能的简单处理器，但是Logisim的设计是很麻烦的，而且其中有很多步骤完全可以自动化执行，设计人员只需要负责设计。
-在计算机诞生之初，没有任何电子自动化工具（EDA），处理器的逻辑设计、电路版图完全由研发人员手绘而成，比较有名的有英特尔的Intel 4004，由<a href="https://en.wikipedia.org/wiki/Federico_Faggin">Federico Faggin</a>设计。
-随着摩尔定律的生效，ISA变得越来越复杂，芯片进入大规模（LSI）以及超大规模集成电路（VLSI），手工设计越来越困难，一旦流片失败将造成极大的成本压力。在1980年，<a href="https://en.wikipedia.org/wiki/Carver_Mead">Carver Mead</a>和<a href="https://en.wikipedia.org/wiki/Lynn_Conway">Lynn Conway</a>（值得一提的是Conway还是一名跨性别者）发表了《超大规模集成电路系统导论》（Introduction to VLSI Systems），提出了使用编程语言进行芯片设计的新思想，并在之后谈生了Verilog、VHDL等硬件描述语言。实际上这些语言一开始是作为模拟和仿真验证使用，即使如此也极大降低了成本。
-在之后Synopsys等公司发明了逻辑综合器（即将硬件描述语言转化为逻辑门电路），HDL逐渐成为设计工具，并影响到ISA的设计哲学。得益于HDL工具的综合能力对简洁清晰代码的支持，精简指令集（RISC）得到广泛的认可，也使得芯片设计的门槛在一定程度上降低。
-回顾整个历史，处理器硬件的发展离不开软件的支持，计算机性能的提升使得开发更复杂的软件成为可能，而软件的诞生刺激硬件的发展，并诞生了有利于设计更优秀处理器的软件工具，颇有一些左脚踩右脚的感觉。随着软件和硬件联系的加深，诞生了<a href="https://www.chisel-lang.org/">Chisel</a>这类拥有高级编程语言思想的HDL甚至可以将高级语言“翻译”成HDL的高层次综合（HLS）工具。硬件设计需要重视软件发挥的作用，更需要一些软件工程的思想。</p>
+<p>虽然我们在Logisim中成功搭建了一个拥有程序执行功能的简单处理器，但是Logisim的设计是很麻烦的，而且其中有很多步骤完全可以自动化执行，设计人员只需要负责设计。</p>
+<p>在计算机诞生之初，没有任何电子自动化工具（EDA），处理器的逻辑设计、电路版图完全由研发人员手绘而成，比较有名的有英特尔的Intel 4004，由<a href="https://en.wikipedia.org/wiki/Federico_Faggin">Federico Faggin</a>设计。</p>
+<p>随着摩尔定律的生效，ISA变得越来越复杂，芯片进入大规模（LSI）以及超大规模集成电路（VLSI），手工设计越来越困难，一旦流片失败将造成极大的成本压力。在1980年，<a href="https://en.wikipedia.org/wiki/Carver_Mead">Carver Mead</a>和<a href="https://en.wikipedia.org/wiki/Lynn_Conway">Lynn Conway</a>（值得一提的是Conway还是一名跨性别者）发表了《超大规模集成电路系统导论》（Introduction to VLSI Systems），提出了使用编程语言进行芯片设计的新思想，并在之后谈生了Verilog、VHDL等硬件描述语言。实际上这些语言一开始是作为模拟和仿真验证使用，即使如此也极大降低了成本。</p>
+<p>在之后Synopsys等公司发明了逻辑综合器（即将硬件描述语言转化为逻辑门电路），HDL逐渐成为设计工具，并影响到ISA的设计哲学。得益于HDL工具的综合能力对简洁清晰代码的支持，精简指令集（RISC）得到广泛的认可，也使得芯片设计的门槛在一定程度上降低。</p>
+<p>回顾整个历史，处理器硬件的发展离不开软件的支持，计算机性能的提升使得开发更复杂的软件成为可能，而软件的诞生刺激硬件的发展，并诞生了有利于设计更优秀处理器的软件工具，颇有一些左脚踩右脚的感觉。随着软件和硬件联系的加深，诞生了<a href="https://www.chisel-lang.org/">Chisel</a>这类拥有高级编程语言思想的HDL甚至可以将高级语言“翻译”成HDL的高层次综合（HLS）工具。硬件设计需要重视软件发挥的作用，更需要一些软件工程的思想。</p>
 ]]></content>
     <author>
       <name>Bytestring</name>
