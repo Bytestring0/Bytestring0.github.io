@@ -5,8 +5,301 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2026-08-21T11:22:55.941Z</updated>
+  <updated>2026-08-22T14:23:53.599Z</updated>
   <language>zh_CN</language>
+  <entry>
+    <title>E1硬件描述语言</title>
+    <link href="https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e1/e1%E7%A1%AC%E4%BB%B6%E6%8F%8F%E8%BF%B0%E8%AF%AD%E8%A8%80/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e1/e1%E7%A1%AC%E4%BB%B6%E6%8F%8F%E8%BF%B0%E8%AF%AD%E8%A8%80/</id>
+    <published>2026-08-21T00:00:00.000Z</published>
+    <updated>2026-08-21T00:00:00.000Z</updated>
+    <summary></summary>
+    <content type="html"><![CDATA[<blockquote>
+<p>[NOTE]
+HDLbits好像不保存代码，注意保存（被坑了！！！）</p>
+</blockquote>
+<h1>状态机</h1>
+<p>有限状态机（Finite-State Machine，FSM），是表示有限个状态以及在这些状态之间的转移和动作等行为的数学模型，在电路设计上有广泛的用处。</p>
+<h2>Moore型状态机</h2>
+<p><img src="https://bytestring.top/_astro/image.DJNbruMT_ZrPyey.webp" alt="alt text" />
+Moore型状态机的输出只与当前的状态有关，也就是说当输入发生变化时，只要没有到下一个时钟周期（状态没有改变），输出也就保持不变，Moore型状态机的输入和输出是隔离的。</p>
+<pre><code>assign output = (state == target)?1:0; //典型组合逻辑
+</code></pre>
+<h2>Mealy型状态机</h2>
+<p><img src="https://bytestring.top/_astro/image-1.Dy2YaMp8_Z1jvtOI.webp" alt="alt text" /></p>
+<p>Mealy型状态机不仅与当前状态有关，也和输入有关，当输入发生变化时，状态机的输出会立刻发生变化，同种逻辑下，Mealy 型状态机输出对输入的响应会比 Moore 型状态机早一个时钟周期。</p>
+<pre><code>assign output = (state == target &amp;&amp; input)?1:0; //典型组合逻辑
+</code></pre>
+<h2>状态机设计三段式</h2>
+<ul>
+<li>根据状态个数确定状态机编码</li>
+</ul>
+<pre><code>parameter STATE_01 = 2'b00;
+parameter STATE_02 = 2'b01;
+parameter STATE_03 = 2'b10;
+parameter STATE_04 = 2'b11;
+</code></pre>
+<ul>
+<li>状态机第一段，时序逻辑，非阻塞赋值，传递寄存器的状态。</li>
+</ul>
+<pre><code>always @(posedge clk or negedge rstn) begin
+        if (!rstn) begin
+            st_cur      &lt;= 'b00 ;
+        end
+        else begin
+            st_cur      &lt;= st_next ;
+        end
+    end
+</code></pre>
+<ul>
+<li>状态机第二段，组合逻辑，阻塞赋值，根据当前状态和当前输入，确定下一个状态机的状态。</li>
+</ul>
+<pre><code>always @(*)begin
+    case(st_cur)
+        STATE_01:
+            if(...)
+                st_next = ...
+    ...
+end
+</code></pre>
+<ul>
+<li>状态机第三段，时序逻辑，根据当前状态（当前输入），确定输出信号。</li>
+</ul>
+<pre><code>//非阻塞型（Mealy）
+reg output_r;
+always @(posedge clk) begin
+    if(...&amp;&amp;)
+        output_r &lt;= ...
+    ...
+end
+assign output = output_r;
+</code></pre>
+<pre><code>//阻塞型（Moore）
+reg output_r;
+always @(*) begin
+    if(...)
+        output_r &lt;= ...
+    ...
+end
+assign output = output_r;
+</code></pre>
+<h1><a href="https://hdlbits.01xz.net/wiki/Lemmings4">Lemmings</a></h1>
+<p>简单的状态机</p>
+<pre><code>module top_module(
+    input clk,
+    input areset,    // Freshly brainwashed Lemmings walk left.
+    input bump_left,
+    input bump_right,
+    input ground,
+    input dig,
+    output walk_left,
+    output walk_right,
+    output aaah,
+    output digging ); 
+
+parameter LEFT = 0,
+          RIGHT = 1,
+          FALL = 2,
+          DIG = 3;
+reg [1:0] state, next_state;
+reg [1:0] fall_dir;
+reg flag;
+integer count = 0;
+always @(*) begin
+    next_state = state;
+    case(state)
+        LEFT:
+            if(!ground)
+                next_state = FALL;
+            else if(dig)
+                next_state = DIG;
+            else if(bump_left)
+                next_state = RIGHT;
+        RIGHT:
+            if(!ground)
+                next_state = FALL;
+            else if(dig)
+                next_state = DIG;
+            else if(bump_right)
+                next_state = LEFT;
+        FALL:
+            if(ground)
+                next_state = fall_dir;
+        DIG:
+            if(!ground)
+                next_state = FALL;
+    endcase
+end
+
+always @(posedge clk,posedge areset) begin
+    if(areset) begin
+        state &lt;= LEFT;
+        fall_dir &lt;= LEFT;
+        flag &lt;= 0;
+        count &lt;= 0;
+    end
+    else begin
+        if(state == FALL)
+            count &lt;= count + 1;
+            if(count &gt;= 20 &amp;&amp; next_state != FALL)
+                flag &lt;= 1;
+            else if(next_state != FALL)
+                count &lt;= 0;
+        if(next_state == FALL || next_state == DIG)
+            if(state == LEFT || state == RIGHT)
+                fall_dir &lt;= state;
+        state &lt;= next_state;
+    end
+end
+
+assign walk_left = flag ? 0 : (state == LEFT);
+assign walk_right = flag ? 0 : (state == RIGHT);
+assign aaah = flag ? 0 : (state == FALL);
+assign digging = flag ? 0 : (state == DIG);
+endmodule
+
+</code></pre>
+<h1><a href="https://hdlbits.01xz.net/wiki/Fsm_ps2data">PS2</a></h1>
+<p>写成两段式了...</p>
+<pre><code>module top_module(
+    input clk,
+    input [7:0] in,
+    input reset,    // Synchronous reset
+    output [23:0] out_bytes,
+    output done); //
+
+    parameter R0=0,R1 = 1,R2 = 2,R3 = 3;
+    reg [1:0] state, next_state;
+    // State transition logic (combinational)
+    reg [23:0] buffer;
+    always @(posedge clk) begin
+        if(reset)begin
+            state &lt;= R0;
+        end
+        else begin
+            if(state == R0 &amp;&amp; in[3] == 1)begin
+                state &lt;= R1;
+                buffer &lt;= {in[7:0],buffer[15:0]};
+            end
+            else if(state == R1)begin
+                state &lt;= R2;
+                buffer &lt;= {buffer[23:16],in[7:0],buffer[7:0]};
+            end
+            else if(state == R2) begin
+                state &lt;= R3;
+                buffer &lt;= {buffer[23:8],in[7:0]};
+            end
+            else if(state == R3 &amp;&amp; in[3] == 0)begin
+                state &lt;= R0;
+                buffer &lt;= 24'b0;
+            end
+            else if(state == R3 &amp;&amp; in[3] == 1)begin
+                state &lt;= R1;
+                buffer &lt;= {in[7:0],buffer[15:0]};
+            end
+        end
+    end
+    // State flip-flops (sequential)
+    // always @(*) begin
+    //     next_state = state;
+    //     case(state)
+    //         R0:
+    //             if(in[3] == 1)
+    //                 next_state = R1;
+    //             else
+    //                 next_state = R0;
+    //         R3:
+    //             if(in[3] == 1)
+    //                 next_state = R1;
+    //             else
+    //                 next_state = R0;
+    //     endcase
+    // end
+
+    // Output logic
+    assign done = (state == R3) ? 1 : 0;
+    assign out_bytes = buffer;
+endmodule
+
+</code></pre>
+<h1><a href="https://hdlbits.01xz.net/wiki/Fsm_serialdp">Serial</a></h1>
+<p>阻塞或非阻塞，这是个问题。</p>
+<pre><code>module top_module(
+    input clk,
+    input in,
+    input reset,    // Synchronous reset
+    output [7:0] out_byte,
+    output done
+); 
+parameter IDLE = 0, START = 1, DATA = 2, STOP = 3,ERR = 4;
+reg [2:0] state, next_state;
+integer count = 0;
+reg [7:0] buffer;
+reg [8:0] check;
+reg flag;
+always @(posedge clk) begin
+    if (reset) begin
+        state  &lt;= IDLE;
+        count  &lt;= 0;
+        buffer &lt;= 0;
+        check  &lt;= 0;
+        flag   &lt;= 0;
+    end else begin
+        if (state == DATA || state == START) begin
+            if (count &lt; 9) begin                    
+                if(count &lt; 8)
+                    buffer &lt;= (buffer &gt;&gt; 1) | (in &lt;&lt; 7);      
+                if(count == 8)begin
+                    check = {in,buffer};
+                    flag  = ^check;
+                end
+                count  &lt;= count + 1;
+            end
+        end else begin
+            count  &lt;= 0;
+            buffer &lt;= 0;   
+        end
+        state &lt;= next_state;
+    end
+end
+
+always @(*)begin
+    next_state = state;
+    case(state)
+        IDLE:
+            if(in == 0)
+                next_state = START;
+        START:
+            next_state = DATA;
+        DATA:
+            if(in == 1 &amp;&amp; count == 9)
+                next_state = STOP;
+            else if(count &gt;=9)
+                next_state = ERR;
+        STOP:
+            if(in == 0)
+                next_state = START;
+            else
+                next_state = IDLE;
+        ERR:
+            if(in == 1)
+                next_state = IDLE;
+            else
+                next_state = ERR;
+    endcase
+end
+
+assign done = flag &amp;&amp; (state == STOP) &amp;&amp; (count == 9);
+assign out_byte = buffer;
+endmodule
+
+</code></pre>
+]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+    <category term="一生一芯"></category>
+  </entry>
   <entry>
     <title>F6简易输入输出</title>
     <link href="https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/f%E9%98%B6%E6%AE%B5/f6%E7%AE%80%E6%98%93%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/" rel="alternate" type="text/html"/>
@@ -37,9 +330,9 @@
 然后修改数列求和程序的指令序列, 让程序使用增强后的指令来计算1+2+...+10. 让sCPU运行修改后的数列求和程序, 检查求和的结果是否正确.</p>
 </blockquote>
 <p>实现li
-<img src="image-41.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-41.Ca5ckTO4_Z1n0dYF.webp" alt="alt text" /></p>
 <p>实现bner0
-<img src="image-42.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-42.DhnETlFO_brR31.webp" alt="alt text" /></p>
 <p>让我们重新编写数列求和程序。</p>
 <pre><code>li r0 1 2  // r0 = 8
 li r1 0 2  // r1 = 2
@@ -94,7 +387,7 @@ bner0 0 r3
 01101000
 11000011
 </code></pre>
-<p><img src="image-43.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-43.Ow5NcbsX_Z1Gwlet.webp" alt="alt text" /></p>
 <blockquote>
 <p>完善io指令的实现, 使得io指令可以控制七段数码管. 和LED类似, 你还需要为七段数码管添加一个输出数据寄存器.
 然后修改数列求和程序的指令序列, 让程序通过io指令将计算结果输出到七段数码管, 并检查七段数码管的显示情况是否符合预期. 注意Hex Digit Display组件显示的是十六进制.</p>
@@ -162,7 +455,7 @@ bner0 0 r1
 0b11000001
 </code></pre>
 <p>完成
-<img src="image-44.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-44.DaGDo7I3_gLg5b.webp" alt="alt text" /></p>
 <blockquote>
 <p>实现单步求和
 修改数列求和程序的指令序列, 同时实现以下效果:
@@ -246,19 +539,19 @@ do{
     <content type="html"><![CDATA[<h1>只读存储器（ROM）</h1>
 <p>我们将程序存储在ROM中。ROM的容量由地址数和数据位宽决定，比如256*4bit，说明这个ROM数据位宽为4位，有256（2^8）个地址，地址端有8个。对于我们要实现的sCPU来说，PC位宽为4位，那么就需要4位的地址端，每条指令有8位，位宽为8，需要实现的规格为16*8。
 ROM其实就是根据地址选择不同的数据，因此就是一个数据选择器，可以通过一个16选1八位选择器得到。
-<img src="image-35.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-35.BFDvWamS_Z1kJ18a.webp" alt="alt text" /></p>
 <h1>随机存取存储器（RAM）</h1>
 <p>我们需要使用RAM来实现操作数的寄存器。寄存器的位宽应该为8，除此之外寄存器还需要具有可以根据地址获得输出以及根据地址可以进行写入的操作。
-<img src="image-36.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-36.CGt5nf8m_Z1qRM22.webp" alt="alt text" /></p>
 <h1>实现li</h1>
-<p><img src="image-37.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-37.CaEUb0p2_23Xrci.webp" alt="alt text" /></p>
 <h1>实现add</h1>
-<p><img src="image-38.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-38.D505SpUU_Z8tNly.webp" alt="alt text" /></p>
 <h1>实现bner0</h1>
-<p><img src="image-39.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-39.BNAnOuAX_Z13hw40.webp" alt="alt text" /></p>
 <h1>实现out</h1>
 <p>定义为01，<code>out rs</code>表示将R[rs]显示在数码管上。</p>
-<p><img src="image-40.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-40.No61yQKF_1lViiR.webp" alt="alt text" /></p>
 ]]></content>
     <author>
       <name>Bytestring</name>
@@ -274,17 +567,17 @@ ROM其实就是根据地址选择不同的数据，因此就是一个数据选�
     <summary>数电基础</summary>
     <content type="html"><![CDATA[<h1>逻辑门</h1>
 <h2>非门</h2>
-<p><img src="image.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image.ZI8L9w3O_Z1eaJo1.webp" alt="alt text" /></p>
 <p>一个CMOS电路就是一个非门，当输入A为1时，PMOS截止，NMOS导通，Y与地相连，输出为0.</p>
 <h2>与非门</h2>
 <p>与非门要求输入均为1时输出为0，其余情况输出为1。那么输入为1时是“与”特性，可以用两个NMOS串联接地，这样输入均为1时满足输出为0。对于其余情况可以知道，只要有一个是0，那么输出就为1，这是“或”的特性，可以用两个PMOS并联接VCC。</p>
-<p><img src="image-1.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-1.CWeTZLhv_Z1DJ3OX.webp" alt="alt text" /></p>
 <h2>与门</h2>
 <p>将与非门的输出连接到非门的输入即可。</p>
-<p><img src="image-2.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-2.CEppMZg8_Z10acaG.webp" alt="alt text" /></p>
 <blockquote>
 <p>尝试分析以下门电路的行为和功能.
-<img src="image-3.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-3.BW0Fk4G3_Z1u1dH8.webp" alt="alt text" /></p>
 </blockquote>
 <p>可以使用真值表枚举分析功能。也可以从图中可以看出N1N2是并联型NMOS，当AB任一为1时导通，此时Y输出为0，P1P2是串联型PMOS，当AB均为0时Y输出为1。所以这是一个或非门。</p>
 <blockquote>
@@ -293,7 +586,7 @@ ROM其实就是根据地址选择不同的数据，因此就是一个数据选�
 <p>将上述或非门电路输出连接一个CMOS电路即可。</p>
 <h2>三输入与非门</h2>
 <p>对于N输入与门（或门），需要N-1个与门（或门）进行输入口的两两级联即可。与非门和或非门同理。</p>
-<p><img src="image-4.png" alt="alt text" /><img src="image-5.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-4.CMVwcCE__YsPX8.webp" alt="alt text" /><img src="https://bytestring.top/_astro/image-5.BwVB5-43_Pj97I.webp" alt="alt text" /></p>
 <blockquote>
 <p>不难分析, 上述晶体管结构同样实现了三输入与非门的功能. 尝试对比两种实现方式中所需晶体管的数量.</p>
 </blockquote>
@@ -304,29 +597,29 @@ ROM其实就是根据地址选择不同的数据，因此就是一个数据选�
 <p>尝试在Logisim中用上文提到的门电路搭建一个异或门. 搭建后, 通过仿真检查你的方案是否正确.实现正确后, 计算你的方案使用了多少个晶体管.</p>
 </blockquote>
 <p>根据逻辑表达式画出的异或门，共使用2+2+6+6+6=22个晶体管。
-<img src="image-6.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-6.BP3tlaDa_Z1b3lEw.webp" alt="alt text" /></p>
 <blockquote>
 <p>还有另一种操作是"同或"操作, 当输入A和B相同时, 结果为1, 否则为0. 同或操作可以认为是异或操作结果的取反.尝试在Logisim中用上文提到的门电路搭建一个同或门. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
 <p>在异或门的基础上取反即可。
-<img src="image-7.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-7.BojiI5te_Z1Ec5wT.webp" alt="alt text" /></p>
 <h1>组合逻辑电路</h1>
 <h2>译码器</h2>
 <p>译码器用于将二进制转化为第几个十进制。</p>
-<p><img src="image-8.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-8.C2h0bkBz_Z6JJkp.webp" alt="alt text" /></p>
 <p>这是一个1-2译码器。</p>
 <blockquote>
 <p>尝试在Logisim中用门电路搭建一个2-4译码器, 它有2位输入, 4位输出. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
 <p>为了使得能够顺利级联，给1-2译码器加入使能端。
-<img src="image-9.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-9.DG8URBR7_2e8Fko.webp" alt="alt text" /></p>
 <p>进行级联得到2-4译码器。
-<img src="image-10.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-10.Df9az-fY_1z9Kzy.webp" alt="alt text" /></p>
 <blockquote>
 <p>3-8译码器有3位输入, 8位输出. 尝试实例化若干个2-4译码器(具体数量交给你的思考), 并添加少量门电路, 从而实现3-8译码器的功能. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
 <p>38译码器同理
-<img src="image-11.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-11.a6E4rl50_Z18j2Jd.webp" alt="alt text" /></p>
 <blockquote>
 <p>尝试在Logisim中通过门电路搭建一个支持十六进制数字的七段数码管译码器. 和上述的十进制数字相比, 当输入对应10-15时, 七段数码管分别显示A, b, C, d, E, F. 搭建后, 通过仿真检查你的实现是否正确.</p>
 </blockquote>
@@ -409,7 +702,7 @@ ROM其实就是根据地址选择不同的数据，因此就是一个数据选�
 </tbody>
 </table>
 <p>可以使用如下的思路设计：对于某一位段码，只有特定数值才会亮，这是一个或关系，因此可以使用译码器将不同数值或在一起连在对应的段上。</p>
-<p><img src="image-12.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-12.BK6SN6sA_Z1kM2v2.webp" alt="alt text" /></p>
 <p>对于当输入对应0-9时, 七段数码管显示对应的数字; 对于其他输入, 七段数码管只显示小数点的要求，只需要将接了Y10及以上的输入用0代替，增加一个或门将Y10以及上连接在一起接到dp上。</p>
 <h2>编码器</h2>
 <p>编码器则相反，将第几个十进制转化为二进制</p>
@@ -491,33 +784,33 @@ ROM其实就是根据地址选择不同的数据，因此就是一个数据选�
 </tbody>
 </table>
 <p>通过真值表获得Y3~Y0的输出与输入的关系。</p>
-<p><img src="image-13.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-13.DIytgVFh_2m7eTI.webp" alt="alt text" /></p>
 <blockquote>
 <p>根据上述真值表, 尝试列出每一位输出的逻辑表达式. 然后尝试在Logisim中通过门电路搭建一个4-2优先编码器. 搭建后, 通过仿真检查你的方案是否正确.
 实现后, 对比4-2编码器和4-2优先编码器所需的门电路数量.</p>
 </blockquote>
 <p>优先编码器需要考虑占位情况，故需要更多门电路来排除这些情况。</p>
-<p><img src="image-14.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-14.CDu_lOjB_Z1yE9pF.webp" alt="alt text" /></p>
 <h2>多路选择器</h2>
 <p>多路选择器用于选择不同端口的数据</p>
 <blockquote>
 <p>尝试在Logisim中通过门电路搭建一个1位2选1选择器. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
-<p><img src="image-15.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-15.BBdS0jI6_Z1Y6vgv.webp" alt="alt text" /></p>
 <blockquote>
 <p>尝试画出3位4选1选择器的电路结构图, 然后在Logisim中通过门电路搭建一个3位4选1选择器. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
-<p><img src="image-16.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-16.DjdENqP0_1Txr4e.webp" alt="alt text" /></p>
 <blockquote>
 <p>通过5个拨码开关和1个七段数码管, 实现如下功能: 其中4个拨码开关当作数据输入, 剩下1个拨码开关作为进位计数制的选择, 当选择信号为0时, 七段数码管以十进制方式显示数据; 当选择信号为1时, 七段数码管以十六进制方式显示数据. 在输入数据为10-15时, 两种显示方式有所不同.</p>
 </blockquote>
-<p><img src="image-17.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-17.Dn6uan3F_1qsOOh.webp" alt="alt text" /></p>
 <h2>比较器</h2>
 <p>用于比较数值是否相同</p>
 <blockquote>
 <p>尝试在Logisim中通过门电路搭建一个4位比较器, 然后通过两组拨码开关对比两组数据是否相等, 若相等, 则点亮一个LED灯. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
-<p><img src="image-18.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-18.Cl4l4vKZ_Z1NfjEG.webp" alt="alt text" /></p>
 <h2>加法器</h2>
 <p>用于处理加法</p>
 <blockquote>
@@ -595,24 +888,24 @@ ROM其实就是根据地址选择不同的数据，因此就是一个数据选�
 <blockquote>
 <p>尝试在Logisim中通过门电路搭建一个4位加法器, 用七段数码管按十六进制显示加法器的两个输入和结果, 并用一个LED灯指示加法结果是否产生进位. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
-<p><img src="image-19.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-19.iupT1Wp5_ZmUpcx.webp" alt="alt text" /></p>
 <blockquote>
 <p>根据4位加法器的设计思路, 尝试在Logisim中通过门电路搭建一个4位减法器, 用七段数码管按十六进制显示减法器的两个输入和结果, 并用一个LED灯指示减法结果是否产生借位. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
-<p><img src="image-20.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-20.CfdLc8HB_Z2a6aCF.webp" alt="alt text" /></p>
 <blockquote>
 <p>理解原码加法器的工作原理后, 尝试用加法器, 减法器和多路选择器等部件, 在Logisim中搭建一个4位原码加法器. 为了显示符号位, 你可以额外实例化一个七段数码管, 结果为负数时显示负号-, 否则不显示. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
-<p><img src="image-21.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-21.7hDpEdAz_26Aakb.webp" alt="alt text" /></p>
 <blockquote>
 <p>尝试按照上述思路, 在Logisim中搭建一个4位反码加法器. 搭建后, 通过仿真检查你的方案是否正确.
-<img src="image-22.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-22.B4XEksnL_1ooLE0.webp" alt="alt text" /></p>
 </blockquote>
 <blockquote>
 <p>将上述真值表补充完整, 尝试列出溢出条件的逻辑表达式. 然后在Logisim中在4位加法器的基础上添加溢出判断逻辑. 添加后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
 <p>显然补码加法溢出发生在两个加数符号相同，但是所得结果，也就是进位符号不同。因此逻辑表达式为 $ Cin \oplus Cout  $。</p>
-<p><img src="image-23.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-23.DZx0NDOm_Z1LvnD1.webp" alt="alt text" /></p>
 <h1>时序逻辑电路</h1>
 <p>时序逻辑电路可以记住当前电路状态，可以用于存储，状态机实现等等。
 这类电路通常带有“反馈”信号。</p>
@@ -621,15 +914,15 @@ ROM其实就是根据地址选择不同的数据，因此就是一个数据选�
 <blockquote>
 <p>尝试在Logisim中通过门电路搭建一个SR锁存器. 搭建后, 通过仿真检查你的方案是否正确.</p>
 </blockquote>
-<p><img src="image-24.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-24.Iq77Ejkf_1Ppss2.webp" alt="alt text" /></p>
 <h2>D锁存器</h2>
 <p>对于SR锁存器来说，会出现一个S和R均为1的禁止态，这时候SR锁存器的输出逻辑不正常，另外可以发现，Reset这一端口其实没有必要。完全可以由一个Set来实现。
-<img src="image-25.png" alt="alt text" />
+<img src="https://bytestring.top/_astro/image-25.CvEu_25A_MMgJj.webp" alt="alt text" />
 对于以上的D触发器，D端口用来设置数据，WE端口为写入使能。通过一个反相器避免了禁止态，同时通过写使能保护原有数据。</p>
 <blockquote>
 <p>尝试为D锁存器添加一个用于复位的输入端和复位功能. 当复位信号有效时, D锁存器中存放的值将变为0.</p>
 </blockquote>
-<p><img src="image-26.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-26.BI04qMUX_Z1KTJ6E.webp" alt="alt text" /></p>
 <blockquote>
 <p>实例化一个带复位功能的D锁存器, 并将其输出取反后作为输入. 我们预期看到D锁存器的输出将在0和1之间反复变化, 但你应该在仿真过程中看到Oscillation apparent的信息, 请分析原因.</p>
 </blockquote>
@@ -637,38 +930,38 @@ ROM其实就是根据地址选择不同的数据，因此就是一个数据选�
 <h2>D触发器</h2>
 <p>有时候我们希望电路是边沿敏感的，也就是当WE发生跳变时，电路产生特定变化，而电平稳定时，电路保持原有状态。当WE从0跳变到1，这时我们称之为上升沿。
 下图为一种上升沿触发的D触发器，clk上升沿有效，此时Q=D。实现原理为当clk=0时，第一级D锁存器对D进行缓存，当clk跳变到1时，第一级保持，第二级进行输出。
-<img src="image-27.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-27.Be8LsviI_ZvpNvS.webp" alt="alt text" /></p>
 <blockquote>
 <p>尝试为D触发器添加一个用于复位的输入端和复位功能. 当复位信号有效时, D触发器中存放的值将变为0.</p>
 </blockquote>
-<p><img src="image-28.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-28.CdhyK_NQ_2hn6Jx.webp" alt="alt text" /></p>
 <blockquote>
 <p>实例化一个带复位功能的D触发器, 并将其输出取反后作为输入. 我们预期看到D触发器的输出将在0和1之间反复变化. 尝试和上文D锁存器的结果进行对比.</p>
 </blockquote>
 <p>对于触发器来说，在一个时钟周期内会发生一次跳变。</p>
 <blockquote>
 <p>尝试在Logisim中通过D触发器和若干电路, 搭建一个带使能端的D触发器. 搭建后, 通过仿真检查你的方案是否正确.
-<img src="image-29.png" alt="alt text" /></p>
+<img src="https://bytestring.top/_astro/image-29.DkvsFFY0_ZfV8O1.webp" alt="alt text" /></p>
 </blockquote>
 <h2>寄存器</h2>
 <p>简单来说上述一个D触发器就是一位锁存器，因为它已经拥有了存储一位数据所需的所有东西，当使能端有效时可以将数据在时钟上升沿时存入，使能端无效时对数据进行写保护，可以随时将数据取出。将D触发器进行并联拓展就可以实现多位的寄存器。</p>
 <blockquote>
 <p>尝试在Logisim中通过D触发器搭建一个4位的寄存器, 具备复位功能. 搭建后, 尝试从拨码开关向寄存器写入4位数据, 并将寄存器的输出接到七段数码管进行显示.</p>
 </blockquote>
-<p><img src="image-31.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-30.qjYIxJqR_2s64X9.webp" alt="alt text" /></p>
 <blockquote>
 <p>通过上述4位寄存器和之前搭建的加法器, 实现一个4位计数器, 每次时钟到来时, 寄存器中的值加1, 加到最大值时重新从0开始.</p>
 </blockquote>
-<p><img src="image-32.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-32.CkuL8PBU_1WSnag.webp" alt="alt text" /></p>
 <blockquote>
 <p>尝试通过寄存器和加法器, 计算出1+2+...+10的结果. 为了容纳计算结果, 你可以考虑实现8位的寄存器和加法器.</p>
 </blockquote>
-<p><img src="image-33.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-33.DlGPzNUw_Z1kyIHs.webp" alt="alt text" /></p>
 <blockquote>
 <p>利用寄存器和七段数码管, 实现一个电子时钟, 具备"分"和"秒"的功能.</p>
 </blockquote>
 <p>时钟需要每60个重置一次，也就是要实现一个模60计数器。</p>
-<p><img src="image-34.png" alt="alt text" /></p>
+<p><img src="https://bytestring.top/_astro/image-34.C4EQHtrU_17CiLh.webp" alt="alt text" /></p>
 <h1>F3</h1>
 <p>F3终于结束咯</p>
 ]]></content>
