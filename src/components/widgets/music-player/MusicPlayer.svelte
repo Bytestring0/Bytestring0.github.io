@@ -147,7 +147,7 @@
 	}
 
 	function handleNextSong(autoPlay = true) {
-		const newIndex = nextSong(playlistState, audioPlayerState.isPlaying);
+		const newIndex = nextSong(playlistState);
 		if (newIndex !== -1) {
 			playSong(playlistState, newIndex);
 			loadSong(

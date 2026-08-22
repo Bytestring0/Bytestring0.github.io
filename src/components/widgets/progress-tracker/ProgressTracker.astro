@@ -211,16 +211,6 @@ const timeZone = siteConfig.timeZone ?? 8;
 		return Math.min(100, Math.max(0, (elapsed / total) * 100));
 	}
 
-	// 获取本月总天数
-	function getDaysInMonth(year, month) {
-		return new Date(year, month + 1, 0).getDate();
-	}
-
-	// 获取今年的总天数（考虑闰年）
-	function getDaysInYear(year) {
-		return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0) ? 366 : 365;
-	}
-
 	// 更新进度显示
 	function updateProgress() {
 		const now = new Date();

@@ -1,10 +1,13 @@
 <script lang="ts">
+	import type { Snippet } from "svelte";
+
 	interface Props {
 		href?: string;
 		label?: string;
 		dot?: boolean;
 		badge?: string | number;
 		class?: string;
+		children?: Snippet;
 	}
 	let {
 		href,
@@ -12,6 +15,7 @@
 		dot = false,
 		badge,
 		class: className = "",
+		children,
 	}: Props = $props();
 </script>
 
@@ -22,7 +26,7 @@
 				<div class="chip-dot"></div>
 			{/if}
 			<span class="chip-content">
-				<slot />
+				{@render children?.()}
 			</span>
 			{#if badge !== undefined && badge !== null && badge !== ""}
 				<div class="chip-badge">{badge}</div>
@@ -35,7 +39,7 @@
 			<div class="chip-dot"></div>
 		{/if}
 		<span class="chip-content">
-			<slot />
+			{@render children?.()}
 		</span>
 		{#if badge !== undefined && badge !== null && badge !== ""}
 			<div class="chip-badge">{badge}</div>

@@ -5,6 +5,7 @@ import rss from "@astrojs/rss";
 import type { APIContext, ImageMetadata } from "astro";
 import MarkdownIt from "markdown-it";
 import { parse as htmlParser } from "node-html-parser";
+import path from "node:path";
 import sanitizeHtml from "sanitize-html";
 import { siteConfig } from "@/config";
 import { getSortedPosts } from "@/utils/content-utils";
@@ -34,6 +35,10 @@ export async function GET(context: APIContext) {
 	const feed: RSSFeedItem[] = [];
 
 	for (const post of posts) {
+		const postFilePath = post.filePath
+			? `/${path.relative(process.cwd(), post.filePath).replace(/\\/g, "/")}`
+			: `/src/content/posts/${post.id}`;
+		const postDir = path.posix.dirname(postFilePath);
 		// convert markdown to html string, ensure post.body is a string
 		const body = markdownParser.render(String(post.body ?? ""));
 		// convert html string to DOM-like structure
@@ -51,43 +56,7 @@ export async function GET(context: APIContext) {
 				src.startsWith("../") ||
 				(!src.startsWith("http") && !src.startsWith("/"))
 			) {
-				let importPath: string | null = null;
-
-				if (src.startsWith("./")) {
-					// Path relative to the post file directory
-					const prefixRemoved = src.slice(2);
-					// Check if this post is in a subdirectory (like bestimageapi/index.md)
-					const postPath = post.id; // This gives us the full path like "bestimageapi/index.md"
-					const postDir = postPath.includes("/")
-						? postPath.split("/")[0]
-						: "";
-
-					if (postDir) {
-						// For posts in subdirectories
-						importPath = `/src/content/posts/${postDir}/${prefixRemoved}`;
-					} else {
-						// For posts directly in posts directory
-						importPath = `/src/content/posts/${prefixRemoved}`;
-					}
-				} else if (src.startsWith("../")) {
-					// Path like ../assets/images/xxx -> relative to /src/content/
-					const cleaned = src.replace(/^\.\.\//, "");
-					importPath = `/src/content/${cleaned}`;
-				} else {
-					// Handle direct filename (no ./ prefix) - assume it's in the same directory as the post
-					const postPath = post.id; // This gives us the full path like "bestimageapi/index.md"
-					const postDir = postPath.includes("/")
-						? postPath.split("/")[0]
-						: "";
-
-					if (postDir) {
-						// For posts in subdirectories
-						importPath = `/src/content/posts/${postDir}/${src}`;
-					} else {
-						// For posts directly in posts directory
-						importPath = `/src/content/posts/${src}`;
-					}
-				}
+				const importPath = path.posix.normalize(path.posix.join(postDir, src));
 
 				const imageMod = await imagesGlob[importPath]?.()?.then(
 					(res) => res.default,

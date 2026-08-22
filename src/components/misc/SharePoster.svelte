@@ -361,6 +361,10 @@ function closeModal() {
 	showModal = false;
 }
 
+function handleModalKeydown(event: KeyboardEvent) {
+	if (event.key === "Escape") closeModal();
+}
+
 let copied = false;
 const COPY_FEEDBACK_DURATION = 2000;
 
@@ -409,8 +413,17 @@ function portal(node: HTMLElement) {
 </button>
 
 {#if showModal}
-  <div use:portal class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-opacity" on:click={closeModal}>
-    <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl transform transition-all" on:click|stopPropagation>
+  <div
+    use:portal
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-opacity"
+    role="dialog"
+    aria-modal="true"
+    aria-label={i18n(I18nKey.shareArticle)}
+    tabindex="-1"
+    on:click|self={closeModal}
+    on:keydown={handleModalKeydown}
+  >
+    <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl transform transition-all">
       
       <div class="p-6 flex justify-center bg-gray-50 dark:bg-gray-900 min-h-[200px] items-center">
         {#if posterImage}

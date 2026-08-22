@@ -2,6 +2,7 @@
 	import VolumeButton from "../atoms/VolumeButton.svelte";
 	import VolumeSlider from "../atoms/VolumeSlider.svelte";
 	import type { Action } from "svelte/action";
+	import type { Snippet } from "svelte";
 
 	interface Props {
 		volume: number;
@@ -12,6 +13,7 @@
 		onSliderPointerDown: (event: PointerEvent) => void;
 		onSliderKeyDown: (event: KeyboardEvent) => void;
 		ariaLabel: string;
+		children?: Snippet;
 	}
 
 	let {
@@ -23,6 +25,7 @@
 		onSliderPointerDown,
 		onSliderKeyDown,
 		ariaLabel,
+		children,
 	}: Props = $props();
 </script>
 
@@ -36,5 +39,5 @@
 		onkeydown={onSliderKeyDown}
 		{ariaLabel}
 	/>
-	<slot />
+	{@render children?.()}
 </div>
