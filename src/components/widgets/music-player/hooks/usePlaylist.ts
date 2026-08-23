@@ -40,7 +40,10 @@ export function previousSong(state: PlaylistState): number {
 		: state.playlist.length - 1;
 }
 
-export function nextSong(state: PlaylistState): number {
+export function nextSong(
+	state: PlaylistState,
+	autoPlay: boolean = true,
+): number {
 	if (state.playlist.length <= 1) return state.currentIndex;
 
 	let newIndex: number;

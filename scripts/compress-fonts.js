@@ -1006,33 +1006,18 @@ async function compressFonts() {
 		// 用于收集所有错误
 		const errors = [];
 
-		// 同一个字体可能同时服务 ASCII 和 CJK。合并字符集后只压缩一次，
-		// 避免重复做昂贵的子集化，并防止后一次输出覆盖前一次。
-		const fontJobs = new Map();
+		// 遍历所有需要压缩的字体
 		for (const fontConfig of fonts) {
-			for (const fontFile of fontConfig.files) {
-				const job = fontJobs.get(fontFile) || {
-					fontFile,
-					types: [],
-					characters: new Set(),
-				};
-				job.types.push(fontConfig.type);
-				const text = fontConfig.type === "asciiFont" ? asciiText : cjkText;
-				for (const character of text) job.characters.add(character);
-				fontJobs.set(fontFile, job);
-			}
-		}
+			// 根据字体类型选择字符集
+			const text = fontConfig.type === "asciiFont" ? asciiText : cjkText;
 
-		for (const job of fontJobs.values()) {
-				const { fontFile } = job;
-				const text = Array.from(job.characters).join("");
+			for (const fontFile of fontConfig.files) {
 				const fontSrc = path.join(__dirname, "../public/assets/font", fontFile);
 				const ext = path.extname(fontFile).toLowerCase();
 				const baseName = path.basename(fontFile, ext);
 
 				if (!fs.existsSync(fontSrc)) {
-					const fontTypes = job.types.join(", ");
-					const errorMsg = `❌ Config error [${fontTypes}]: Font file does not exist   In config: "${fontFile}"\n   Expected path: public/assets/font/${fontFile}\n   \n   Please check:\n   1. Is the filename correct (case sensitive)?\n   2. Is the file in public/assets/font/?\n   3. Are the localFonts entries in src/config.ts correct?`;
+					const errorMsg = `❌ Config error [${fontConfig.type}]: Font file does not exist   In config: "${fontFile}"\n   Expected path: public/assets/font/${fontFile}\n   \n   Please check:\n   1. Is the filename correct (case sensitive)?\n   2. Is the file in public/assets/font/?\n   3. Is ${fontConfig.type}.localFonts in src/config.ts correct?`;
 
 					errors.push(errorMsg);
 					console.log(`\n${errorMsg}\n`);
@@ -1100,6 +1085,7 @@ async function compressFonts() {
 				} else {
 					console.log(`⚠ Unsupported font format, skipping: ${fontFile}`);
 				}
+			}
 		}
 
 		// 输出总结

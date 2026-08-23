@@ -29,17 +29,6 @@ import { remarkContent } from "./src/plugins/remark-content.mjs";
 import { rehypeImageWidth } from "./src/plugins/rehype-image-width.mjs";
 import rehypeExternalLinks from "rehype-external-links";
 import { remarkFixGithubAdmonitions } from "./src/plugins/remark-fix-github-admonitions.js";
-import { visit } from "unist-util-visit";
-
-function remarkNormalizeCodeLanguages() {
-	return (tree) => {
-		visit(tree, "code", (node) => {
-			if (!node.lang) return;
-			const language = node.lang.toLowerCase();
-			node.lang = language === "bin" ? "text" : language;
-		});
-	};
-}
 
 // https://astro.build/config
 export default defineConfig({
@@ -134,7 +123,6 @@ export default defineConfig({
 	],
 	markdown: {
 		remarkPlugins: [
-			remarkNormalizeCodeLanguages,
 			remarkMath,
 			remarkContent,
 			remarkFixGithubAdmonitions,
@@ -191,6 +179,9 @@ export default defineConfig({
 		],
 	},
 	vite: {
+		// Verilog source files can live beside posts. Treat them as assets so
+		// broad image/content globs never ask Rollup to parse them as JavaScript.
+		assetsInclude: ["**/*.v"],
 		build: {
 			// 静态资源处理优化，防止小图片转 base64 导致 HTML 体积过大（可选，根据需要调整）
 			assetsInlineLimit: 4096,

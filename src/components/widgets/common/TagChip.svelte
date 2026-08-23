@@ -1,22 +1,19 @@
 <script lang="ts">
-	import type { Snippet } from "svelte";
-
 	interface Props {
 		href?: string;
 		label?: string;
 		class?: string;
-		children?: Snippet;
 	}
-	let { href, label, class: className = "", children }: Props = $props();
+	let { href, label, class: className = "" }: Props = $props();
 </script>
 
 {#if href}
 	<a {href} aria-label={label} class="tag-chip {className}">
-		{@render children?.()}
+		<slot />
 	</a>
 {:else}
 	<span class="tag-chip {className}">
-		{@render children?.()}
+		<slot />
 	</span>
 {/if}
 

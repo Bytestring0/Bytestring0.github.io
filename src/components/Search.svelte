@@ -232,13 +232,6 @@ onDestroy(() => {
             const input = document.getElementById("search-input-desktop") as HTMLInputElement;
             input?.focus();
         }}
-		onkeydown={(event) => {
-			if (event.key === "Enter" || event.key === " ") {
-				event.preventDefault();
-				const input = document.getElementById("search-input-desktop") as HTMLInputElement;
-				input?.focus();
-			}
-		}}
     >
         <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none {isDesktopSearchExpanded ? 'left-3' : 'left-1/2 -translate-x-1/2'} transition top-1/2 -translate-y-1/2 {isDesktopSearchExpanded ? 'text-black/30 dark:text-white/30' : ''}"></Icon>
         <input id="search-input-desktop" placeholder={i18n(I18nKey.search)} bind:value={keywordDesktop}

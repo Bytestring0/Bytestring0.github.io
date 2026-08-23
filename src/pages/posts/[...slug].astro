@@ -96,11 +96,6 @@ const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 const { remarkPluginFrontmatter } = await render(entry);
 
-const localImages = import.meta.glob<ImageMetadata>(
-	"../../**/*.{avif,gif,jpeg,jpg,png,svg,webp}",
-	{ import: "default" },
-);
-
 // Process cover image for SharePoster
 let posterCoverUrl = entry.data.image;
 if (entry.data.image) {
@@ -112,10 +107,13 @@ if (entry.data.image) {
 	);
 	if (isLocal) {
 		const basePath = getFileDirFromPath(entry.filePath || "");
+		const files = import.meta.glob<ImageMetadata>("../../**", {
+			import: "default",
+		});
 		let normalizedPath = path
 			.normalize(path.join("../../", basePath, entry.data.image))
 			.replace(/\\/g, "/");
-		const file = localImages[normalizedPath];
+		const file = files[normalizedPath];
 		if (file) {
 			const img = await file();
 			posterCoverUrl = img.src;
@@ -143,10 +141,13 @@ if (profileConfig.avatar) {
 		profileConfig.avatar.startsWith("data:")
 	);
 	if (isLocal) {
+		const files = import.meta.glob<ImageMetadata>("../../**", {
+			import: "default",
+		});
 		let normalizedPath = path
 			.normalize(path.join("../../", profileConfig.avatar))
 			.replace(/\\/g, "/");
-		const file = localImages[normalizedPath];
+		const file = files[normalizedPath];
 		if (file) {
 			const img = await file();
 			posterAvatarUrl = img.src;
