@@ -1,4 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>E1硬件描述语言</title><link>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e1/e1%E7%A1%AC%E4%BB%B6%E6%8F%8F%E8%BF%B0%E8%AF%AD%E8%A8%80/</link><guid isPermaLink="true">https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e1/e1%E7%A1%AC%E4%BB%B6%E6%8F%8F%E8%BF%B0%E8%AF%AD%E8%A8%80/</guid><pubDate>Fri, 21 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>E3Linux系统安装和基本使用</title><link>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</guid><pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate><content:encoded/></item><item><title>关于Multisim无法访问数据库的问题</title><link>https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</guid><pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;[NOTE] 打开一年多没用的Multisim遇到了Multisim无法访问数据库的问题，重装了新版本还是没有解决，Codex找了半天没定位到问题，最后在CSDN上找到了解决方案。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;问题描述&lt;/h1&gt;
+&lt;p&gt;打开Multisim弹出报错，无法使用其中的任何元件。&lt;/p&gt;
+&lt;p&gt;管理员启动无效。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://bytestring.top/_astro/multisim_err.DpmcDFSv_ZNytxd.webp&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;解决方案&lt;/h1&gt;
+&lt;p&gt;进入&lt;code&gt;C:\ProgramData\National Instruments\Circuit Design Suite\xx.x&lt;/code&gt;，找到目录下的&lt;code&gt;database&lt;/code&gt;文件夹，右键选择&lt;code&gt;属性&lt;/code&gt;，取消勾选&lt;code&gt;只读&lt;/code&gt;，点击&lt;code&gt;应用&lt;/code&gt;，然后重新启动Multisim。&lt;/p&gt;
+&lt;p&gt;不过再次打开database的属性会发现又变成了只读，下次再打开Multisim也要重复上述的步骤，不知道为什么，感觉很神奇，不过总算能用了。&lt;/p&gt;
+</content:encoded></item><item><title>E1硬件描述语言</title><link>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e1/e1%E7%A1%AC%E4%BB%B6%E6%8F%8F%E8%BF%B0%E8%AF%AD%E8%A8%80/</link><guid isPermaLink="true">https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e1/e1%E7%A1%AC%E4%BB%B6%E6%8F%8F%E8%BF%B0%E8%AF%AD%E8%A8%80/</guid><pubDate>Fri, 21 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;[NOTE]
 HDLbits好像不保存代码，注意保存（被坑了！！！）&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1005,7 +1015,7 @@ JSX Card B
 &amp;lt;/div&amp;gt;
 &amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;p&gt;如果这篇文章能正常构建并渲染，说明当前内容集合已经可以处理 &lt;code&gt;.mdx&lt;/code&gt; 文件。&lt;/p&gt;
-</content:encoded></item><item><title>SSD1619A墨水屏驱动</title><link>https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</guid><description>使用ESP-IDF编写的墨水屏驱动</description><pubDate>Sat, 09 May 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;最近想做一个墨水屏的小项目玩玩，就去淘了一个4.2寸的墨水屏，看标签是大连佳显的屏，去官网找到了驱动IC是SSD1619A，正好写一个底层驱动。&lt;/p&gt;
+</content:encoded></item><item><title>SSD1619A墨水屏驱动</title><link>https://bytestring.top/posts/stm32/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/stm32/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</guid><description>使用ESP-IDF编写的墨水屏驱动</description><pubDate>Sat, 09 May 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;最近想做一个墨水屏的小项目玩玩，就去淘了一个4.2寸的墨水屏，看标签是大连佳显的屏，去官网找到了驱动IC是SSD1619A，正好写一个底层驱动。&lt;/p&gt;
 &lt;h1&gt;阅读数据手册&lt;/h1&gt;
 &lt;p&gt;数据手册可以从&lt;code&gt;6 Functional Block&lt;/code&gt;开始看&lt;/p&gt;
 &lt;h2&gt;引脚定义&lt;/h2&gt;

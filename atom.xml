@@ -5,8 +5,43 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2026-08-22T14:23:53.599Z</updated>
+  <updated>2026-08-23T09:37:12.767Z</updated>
   <language>zh_CN</language>
+  <entry>
+    <title>E3Linux系统安装和基本使用</title>
+    <link href="https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</id>
+    <published>2026-08-23T00:00:00.000Z</published>
+    <updated>2026-08-23T00:00:00.000Z</updated>
+    <summary></summary>
+    <content type="html"><![CDATA[]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+  </entry>
+  <entry>
+    <title>关于Multisim无法访问数据库的问题</title>
+    <link href="https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</id>
+    <published>2026-08-23T00:00:00.000Z</published>
+    <updated>2026-08-23T00:00:00.000Z</updated>
+    <summary></summary>
+    <content type="html"><![CDATA[<blockquote>
+<p>[NOTE] 打开一年多没用的Multisim遇到了Multisim无法访问数据库的问题，重装了新版本还是没有解决，Codex找了半天没定位到问题，最后在CSDN上找到了解决方案。</p>
+</blockquote>
+<h1>问题描述</h1>
+<p>打开Multisim弹出报错，无法使用其中的任何元件。</p>
+<p>管理员启动无效。</p>
+<p><img src="https://bytestring.top/_astro/multisim_err.DpmcDFSv_ZNytxd.webp" alt="alt text" /></p>
+<h1>解决方案</h1>
+<p>进入<code>C:\ProgramData\National Instruments\Circuit Design Suite\xx.x</code>，找到目录下的<code>database</code>文件夹，右键选择<code>属性</code>，取消勾选<code>只读</code>，点击<code>应用</code>，然后重新启动Multisim。</p>
+<p>不过再次打开database的属性会发现又变成了只读，下次再打开Multisim也要重复上述的步骤，不知道为什么，感觉很神奇，不过总算能用了。</p>
+]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+    <category term="杂项"></category>
+  </entry>
   <entry>
     <title>E1硬件描述语言</title>
     <link href="https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e1/e1%E7%A1%AC%E4%BB%B6%E6%8F%8F%E8%BF%B0%E8%AF%AD%E8%A8%80/" rel="alternate" type="text/html"/>
@@ -1094,8 +1129,8 @@ JSX Card B
   </entry>
   <entry>
     <title>SSD1619A墨水屏驱动</title>
-    <link href="https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/" rel="alternate" type="text/html"/>
-    <id>https://bytestring.top/posts/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</id>
+    <link href="https://bytestring.top/posts/stm32/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/stm32/ssd1619a%E5%A2%A8%E6%B0%B4%E5%B1%8F%E9%A9%B1%E5%8A%A8/</id>
     <published>2026-05-09T00:00:00.000Z</published>
     <updated>2026-05-09T00:00:00.000Z</updated>
     <summary>使用ESP-IDF编写的墨水屏驱动</summary>
