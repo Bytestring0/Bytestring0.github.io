@@ -1,4 +1,448 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>E3Linux系统安装和基本使用</title><link>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</guid><pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate><content:encoded/></item><item><title>关于Multisim无法访问数据库的问题</title><link>https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</guid><pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>Matlab入门</title><link>https://bytestring.top/posts/matlab/matlab%E5%85%A5%E9%97%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/matlab/matlab%E5%85%A5%E9%97%A8/</guid><pubDate>Mon, 24 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;[NOTE]参考https://matlabacademy.mathworks.com/&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Matlab&lt;/h1&gt;
+&lt;h2&gt;基础语法&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Create Evenly Spaced Vectors
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+Task 1
+x = [1 2 3]
+
+
+Task 2
+y = [1:10]
+
+
+Task 3
+
+z = 1:0.5:5
+
+
+Task 4
+
+a = 3:2:13
+
+Task 5
+b = linspace(1,10,5)
+
+Task 6
+b = b&apos;
+
+
+Task 7
+
+c = (5:2:9)&apos;
+
+
+Further Practice
+
+linspace(1,2*pi,100)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Create Arrays with Functions
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+Task 1
+
+x = rand(5)
+
+Task 2
+y = rand(5,1)
+
+
+Task 3
+
+z = zeros(6,3)
+
+Further Practice
+rand(size(x))
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Index into Arrays
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code sets up the activity.
+v = linspace(0,1,5)
+load datafile
+data
+
+Task 1
+
+x = v(2)
+
+Task 2
+
+y = v(end)
+
+Task 3
+z = v(end-1)
+
+
+Task 4
+
+a = data(6,3)
+
+Task 5
+b = data(end,3)
+
+
+Further Practice
+
+data(8)
+idx = 8
+data(8)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Extract Multiple Elements
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code sets up the activity.
+load datafile
+data
+
+Task 1
+
+density = data(:,2)
+
+Task 2
+
+volumes = data(:,end-1:end)
+
+Task 3
+
+p = density(2:5)
+
+Further Practice
+
+density([1 3 6])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Change Values in Arrays
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code sets up the interaction.
+load datafile
+data
+v2 = data(:,end)
+
+Task 1
+
+v2(1) = 0.5
+
+Task 2
+
+data(1,end) = 0.5
+
+Further Practice
+
+data(:,1) = data(:,2)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Perform Array Operations on Vectors
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code sets up the interaction.
+load datafile
+density = data(:,2);
+v1 = data(:,3)
+v2 = data(:,4)
+
+Task 1
+r = v1 + 1
+
+
+Task 2
+
+vs = v1 + v2
+
+Task 3
+
+va = vs / 2
+
+Task 4
+
+vm = max(va)
+
+Task 5
+
+vr = round(va)
+
+Task 6
+mass = density .* va
+
+
+Further Practice
+x = [1 2; 3 4; 5 6; 7 8].*[1;2;3;4]
+size(x)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Request Multiple Outputs in Function Calls
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code sets up the activity.
+load datafile
+data
+v1 = data(:,3);
+v2 = data(:,4);
+
+Task 1
+
+dsize = size(data)
+
+Task 2
+[dr,dc] = size(data)
+
+Task 3
+[vMax,ivMax] = max(v2)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;绘图&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Plot Vectors
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code sets up the interaction.
+load datafile
+sample = data(:,1);
+density = data(:,2);
+v1 = data(:,3);
+v2 = data(:,4);
+mass1 = density.*v1;
+mass2 = density.*v2;
+
+Task 1
+
+plot(sample,mass1);
+
+Task 2
+plot(sample,mass2,&quot;r*&quot;);
+
+Task 3
+hold on
+plot(sample,mass1,&quot;ms&quot;)
+
+Task 4
+
+hold off
+
+Task 5
+
+plot(v1)
+
+Task 6
+
+plot(v1,LineWidth=3)
+
+Task 7
+
+plot(sample,v1,&quot;r-o&quot;,LineWidth=4)
+
+Further Practice
+
+histogram(density,FaceColor=&quot;y&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Annotate Plots
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code creates data for the interaction.
+load datafile
+sample = data(:,1);
+density = data(:,2);
+v1 = data(:,3);
+v2 = data(:,4);
+mass1 = density.*v1;
+mass2 = density.*v2;
+
+This code creates the plot from the last activity.
+plot(sample,mass1,&quot;ms&quot;)
+hold on
+plot(sample,mass2,&quot;r*&quot;)
+hold off
+Task 1
+
+title(&quot;Sample Mass&quot;)
+Task 2
+
+ylabel(&quot;Mass (g)&quot;)
+Task 3
+
+legend(&quot;Exp A&quot;,&quot;Exp B&quot;)
+
+Further Practice
+bar(data(3,:))
+title(&quot;Sample &quot; + sample(3) + &quot; Data&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;数据导入和逻辑数组&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Import Data as a Table
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code loads the table that was imported with Import Tool.
+load datafile
+elements
+
+Task 1
+
+d = elements.Density
+
+Task 2 &amp;amp; 3
+
+elements.Mass = elements.Density .* elements.Volume1
+elements = sortrows(elements, &quot;Mass&quot;)
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Relational Operators
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code sets up the interaction.
+load datafile
+sample = data(:,1)
+v1 = data(:,3)
+
+Task 1
+
+x = pi &amp;lt; 4
+
+Task 2
+
+y = v1 &amp;lt; 4
+
+Task 3
+z = sample == 18
+
+
+Further Practice
+sample &amp;gt; 10 &amp;amp; sample &amp;lt;20
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Logical Indexing
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code sets up the interaction.
+load datafile
+sample = data(:,1);
+v1 = data(:,3)
+isGreater = v1 &amp;gt; 6
+
+Task 1
+x = v1(isGreater)
+
+
+Task 2
+y = v1(v1&amp;lt;4)
+
+
+Task 3
+
+z = sample(v1 &amp;lt; 4)
+
+Task 4
+v1(v1&amp;lt;4) = 0
+
+
+Further Practice
+
+data(data &amp;lt; 4) = 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;编程&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Decision Branching
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+Do not edit. This code creates a random number to test the if statement.
+doPlot = randi([0 1])
+This code loads the data.
+load datafile
+density = data(:,2);
+
+Task 1 &amp;amp; 2
+if doPlot == 1
+plot(density)
+title(&quot;Sample Densities&quot;)
+xticklabels(element)
+ylabel(&quot;Density (g/cm^3)&quot;)
+else
+    disp(&quot;The density of &quot; + element ...
+        + &quot; is &quot; + density)
+end
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Write a For Loop
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code loads the data for the interaction.
+load datafile
+density = data(:,2)
+
+Task 1–2
+hold on
+for idx = 1:7
+    plot(idx,density(idx),&quot;*&quot;)
+    pause(0.3)
+end
+hold off
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;恒星运动&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Project - Stellar Motion
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code loads the data and defines measurement parameters.
+load starData
+nObs = size(spectra,1)
+lambdaStart = 630.02
+lambdaDelta = 0.14
+
+Task 1
+lambdaEnd = lambdaStart + (nObs-1)*lambdaDelta
+lambda = (lambdaStart:lambdaDelta:lambdaEnd)
+
+Task 2 &amp;amp; 7
+s = spectra(:,2)
+
+Task 3
+plot(lambda,s,&quot;.-&quot;)
+xlabel(&quot;Wavelength&quot;)
+ylabel(&quot;Intensity&quot;)
+Task 4
+[sHa,idx] = min(s)
+lambdaHa = lambda(idx)
+Task 5
+hold on
+plot(lambdaHa,sHa,&quot;rs&quot;,MarkerSize=8)
+hold off
+
+Task 6
+z = lambdaHa/656.28 - 1
+speed = z*299792.458
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;恒星光谱&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Project - Compare Stellar Spectra
+Instructions are in the task pane to the left. Complete and submit each task one at a time.
+
+This code loads the data from the previous project.
+load starData
+
+Task 1
+[sHa,idx] = min(spectra);
+lambdaHa = lambda(idx);
+z = lambdaHa/656.28 - 1;
+speed = z*299792.458
+
+Tasks 2–4
+for v=1:7
+    s = spectra(:,v)
+    hold on
+    if speed(v)&amp;lt;=0
+        plot(lambda,s,&quot;--&quot;)
+    else
+        plot(lambda,s,LineWidth=3)
+
+    end
+end
+hold off
+
+Task 5
+legend(starnames)
+
+Task 6
+movaway = starnames(speed&amp;gt;0)
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Matlab机器学习入门之旅</title><link>https://bytestring.top/posts/matlab/matlab%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E4%B9%8B%E6%97%85/</link><guid isPermaLink="true">https://bytestring.top/posts/matlab/matlab%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E4%B9%8B%E6%97%85/</guid><pubDate>Mon, 24 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;&lt;/h1&gt;
+</content:encoded></item><item><title>E3Linux系统安装和基本使用</title><link>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</guid><pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate><content:encoded/></item><item><title>关于Multisim无法访问数据库的问题</title><link>https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</guid><pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;[NOTE] 打开一年多没用的Multisim遇到了Multisim无法访问数据库的问题，重装了新版本还是没有解决，Codex找了半天没定位到问题，最后在CSDN上找到了解决方案。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h1&gt;问题描述&lt;/h1&gt;
@@ -1513,7 +1957,7 @@ GPIO_Init(GPIOA, &amp;amp;gpioDef);
 &lt;a href=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d5140aa.png&quot;&gt;&lt;img src=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d5140aa.png&quot; alt=&quot;v2-c831328330e77e8fceaed58b97c3e1e9_r.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;h1&gt;STM32的片上资源&lt;/h1&gt;
 &lt;p&gt;&lt;a href=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d525fcb.png&quot;&gt;&lt;img src=&quot;https://youke1.picui.cn/s1/2025/11/11/691327d525fcb.png&quot; alt=&quot;3243597-20230718205357471-678861497.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
-</content:encoded></item><item><title>数学物理方法之分离变量法</title><link>https://bytestring.top/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</guid><description>pde.</description><pubDate>Wed, 05 Nov 2025 21:28:08 GMT</pubDate><content:encoded>&lt;p&gt;!!我的天呐数学物理方法大人，吓哭了!!&lt;/p&gt;
+</content:encoded></item><item><title>数学物理方法之分离变量法</title><link>https://bytestring.top/posts/%E5%B7%A5%E7%A7%91%E5%9F%BA%E6%9C%AC%E5%8A%9F/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</link><guid isPermaLink="true">https://bytestring.top/posts/%E5%B7%A5%E7%A7%91%E5%9F%BA%E6%9C%AC%E5%8A%9F/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E6%B3%95%E4%B9%8B%E5%88%86%E7%A6%BB%E5%8F%98%E9%87%8F%E6%B3%95/</guid><description>pde.</description><pubDate>Wed, 05 Nov 2025 21:28:08 GMT</pubDate><content:encoded>&lt;p&gt;!!我的天呐数学物理方法大人，吓哭了!!&lt;/p&gt;
 &lt;h1&gt;弦振动问题求解&lt;/h1&gt;
 &lt;p&gt;$$
 \begin{aligned}
