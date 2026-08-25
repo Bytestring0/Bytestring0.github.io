@@ -441,7 +441,80 @@ legend(starnames)
 Task 6
 movaway = starnames(speed&amp;gt;0)
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Matlab机器学习入门之旅</title><link>https://bytestring.top/posts/matlab/matlab%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E4%B9%8B%E6%97%85/</link><guid isPermaLink="true">https://bytestring.top/posts/matlab/matlab%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E4%B9%8B%E6%97%85/</guid><pubDate>Mon, 24 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;&lt;/h1&gt;
+</content:encoded></item><item><title>Matlab机器学习入门之旅</title><link>https://bytestring.top/posts/matlab/matlab%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E4%B9%8B%E6%97%85/</link><guid isPermaLink="true">https://bytestring.top/posts/matlab/matlab%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E4%B9%8B%E6%97%85/</guid><pubDate>Mon, 24 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;导入数据&lt;/h1&gt;
+&lt;h2&gt;导入字母&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;letter = readtable(&quot;s.txt&quot;)
+plot(letter.X,letter.Y)
+axis([-1 1 -1 1])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;image.png&quot; alt=&quot;alt text&quot; /&gt;
+&lt;img src=&quot;image-1.png&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;导入多个字母&lt;/h2&gt;
+&lt;p&gt;以上是字母的单个文件，实际上训练数据的组织方式是不同的。在这个案例中数据的组织方式如下：
+&lt;img src=&quot;image-2.png&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;letterds = datastore(&quot;user*_r_*.txt&quot;)
+data = read(letterds) % read是一个类似迭代器的东西，每次读入的是下一个文件
+plot(data.X,data.Y)
+axis([-1 1 -1 1])
+
+data = readall(letterds) % 如果想要获得所有文件，使用readall
+plot(data.X,data.Y)
+axis([-1 1 -1 1])
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;提取特征&lt;/h1&gt;
+&lt;p&gt;机器学习算法需要大量的观测值，每个观测值应包含若干的特征。&lt;/p&gt;
+&lt;p&gt;要应用机器学习算法，首先需要将原始数据变换为一组特征。&lt;/p&gt;
+&lt;h2&gt;提取字母特征&lt;/h2&gt;
+&lt;p&gt;什么算是一个字母的特征呢？&lt;/p&gt;
+&lt;p&gt;有的字母写的时间长，有的短，时间可以是一个特征；有的字母比较长（l），有的比较扁（m），长和宽也可以作为特征；有的字母一笔完成（o），有的可能需要两笔（t），笔画数量也是一个特征。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;timeToWrite = letter.Time(end)
+letterHeight = range(letter.Y)
+letterWidth = range(letter.X)
+numStrokes = sum(ismissing(letter.P))
+features = table(timeToWrite,letterWidth,letterWidth)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;从多个文件中提取特征&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;ls(&quot;*.txt&quot;)
+
+letterds = datastore(&quot;*.txt&quot;)
+
+featds = transform(letterds,@extractLetterFeatures)
+
+data = readall(featds)
+
+c = extractBetween(letterds.Files,&quot;_&quot;,&quot;_&quot;)
+
+data.character = categorical(c)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;拆分数据以进行验证&lt;/h1&gt;
+&lt;p&gt;&lt;img src=&quot;image-3.png&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;训练与验证&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;image-4.png&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;交叉验证&lt;/h2&gt;
+&lt;p&gt;在 k 折交叉验证中，数据随机拆分为 k 组，这些组称为折。其中一折保留为验证集以测量性能，而其余数据用于训练。然后，该过程重复进行，每次保留一个不同折用于验证，直到所有折都用作一次验证集。所有折的平均准确度即为验证准确度。&lt;/p&gt;
+&lt;h1&gt;分类模型&lt;/h1&gt;
+&lt;p&gt;分类模型指将特征空间划分为若干区域，并将每个区域标注为所需的输出类别之一。如何确定划分方式？通过获取训练数据并应用一个称为机器学习方法的给定过程来确定。这里机器学习方法可以看作一个描述如何从给定数据生成模型的方案。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;image-5.png&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;平面的划分并没有绝对“正确”的方式。不同分类算法会导致不同划分方式。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;image-6.png&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;超参数&lt;/h2&gt;
+&lt;h1&gt;评估模型性能&lt;/h1&gt;
+&lt;p&gt;准确度、训练时间、混淆矩阵（每个格子表示被分类的类型数量）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;image-7.png&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;模型的改进&lt;/h1&gt;
+&lt;p&gt;可以从下图的任一一个方面进行改进以获得更高性能的模型。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;image-8.png&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;采集更多、更准确的样本&lt;/li&gt;
+&lt;li&gt;查找和删除对提高模型性能帮助不大的特征，变换和减少特征数量，同时保留数据中的相关信息&lt;/li&gt;
+&lt;li&gt;根据可用的数据量和计算资源，决定使用训练集和测试集，或使用交叉验证&lt;/li&gt;
+&lt;li&gt;选择合适的模型和超参数&lt;/li&gt;
+&lt;li&gt;根据不同场景考虑不同的评估方式，比如假正率和假负率&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;总结&lt;/h1&gt;
+&lt;p&gt;以上介绍的是分类，如果要预测的输出是数值，例如房屋价格，则属于回归而不是分类。许多用于分类的机器学习方法经调整可用于回归。无论采用哪种方式，构建这些类型的预测模型都称为有监督学习。“有监督”指基于已知正确输出的示例训练模型。&lt;/p&gt;
+&lt;p&gt;对于某些应用，如图像、语音和文本，提出理想的特征具有挑战性。这时可以采用深度学习，深度学习是一种特定的机器学习方法，它使用神经网络来提取特征并进行预测。&lt;/p&gt;
 </content:encoded></item><item><title>E3Linux系统安装和基本使用</title><link>https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/%E4%B8%80%E7%94%9F%E4%B8%80%E8%8A%AF/e%E9%98%B6%E6%AE%B5/e3/e3linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</guid><pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate><content:encoded/></item><item><title>关于Multisim无法访问数据库的问题</title><link>https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E5%85%B3%E4%BA%8Emultisim%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</guid><pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;[NOTE] 打开一年多没用的Multisim遇到了Multisim无法访问数据库的问题，重装了新版本还是没有解决，Codex找了半天没定位到问题，最后在CSDN上找到了解决方案。&lt;/p&gt;
 &lt;/blockquote&gt;
