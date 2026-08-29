@@ -5,8 +5,35 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2026-08-25T15:45:21.319Z</updated>
+  <updated>2026-08-29T16:33:09.611Z</updated>
   <language>zh_CN</language>
+  <entry>
+    <title>超辉夜姬老哥的开挂代码</title>
+    <link href="https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E8%B6%85%E8%BE%89%E5%A4%9C%E5%A7%AC%E8%80%81%E5%93%A5%E7%9A%84%E5%BC%80%E6%8C%82%E4%BB%A3%E7%A0%81/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E8%B6%85%E8%BE%89%E5%A4%9C%E5%A7%AC%E8%80%81%E5%93%A5%E7%9A%84%E5%BC%80%E6%8C%82%E4%BB%A3%E7%A0%81/</id>
+    <published>2026-08-30T00:00:00.000Z</published>
+    <updated>2026-08-30T00:00:00.000Z</updated>
+    <summary></summary>
+    <content type="html"><![CDATA[<p><img src="https://bytestring.top/_astro/image.CTLtCoUx_ZVeUpM.webp" alt="alt text" /></p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;math.h&gt; // INFINITY
+
+typedef struct {
+    char name[20];
+    double stats[3]; // HP,Attack,Defense
+}Character;
+void set_infinite_status(Character *c){
+    for(int i=0;i&lt;3;i++){
+        c-&gt;stats[i] = INFINITY;
+    }
+}
+</code></pre>
+<p>然而开挂也没打过对面</p>
+]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+  </entry>
   <entry>
     <title>Matlab入门</title>
     <link href="https://bytestring.top/posts/matlab/matlab%E5%85%A5%E9%97%A8/" rel="alternate" type="text/html"/>

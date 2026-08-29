@@ -1,4 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>Matlab入门</title><link>https://bytestring.top/posts/matlab/matlab%E5%85%A5%E9%97%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/matlab/matlab%E5%85%A5%E9%97%A8/</guid><pubDate>Mon, 24 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Bytestring Blog</title><description>Share</description><link>https://bytestring.top/</link><language>zh_CN</language><item><title>超辉夜姬老哥的开挂代码</title><link>https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E8%B6%85%E8%BE%89%E5%A4%9C%E5%A7%AC%E8%80%81%E5%93%A5%E7%9A%84%E5%BC%80%E6%8C%82%E4%BB%A3%E7%A0%81/</link><guid isPermaLink="true">https://bytestring.top/posts/%E6%9D%82%E9%A1%B9/%E8%B6%85%E8%BE%89%E5%A4%9C%E5%A7%AC%E8%80%81%E5%93%A5%E7%9A%84%E5%BC%80%E6%8C%82%E4%BB%A3%E7%A0%81/</guid><pubDate>Sun, 30 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;https://bytestring.top/_astro/image.CTLtCoUx_ZVeUpM.webp&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;math.h&amp;gt; // INFINITY
+
+typedef struct {
+    char name[20];
+    double stats[3]; // HP,Attack,Defense
+}Character;
+void set_infinite_status(Character *c){
+    for(int i=0;i&amp;lt;3;i++){
+        c-&amp;gt;stats[i] = INFINITY;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然而开挂也没打过对面&lt;/p&gt;
+</content:encoded></item><item><title>Matlab入门</title><link>https://bytestring.top/posts/matlab/matlab%E5%85%A5%E9%97%A8/</link><guid isPermaLink="true">https://bytestring.top/posts/matlab/matlab%E5%85%A5%E9%97%A8/</guid><pubDate>Mon, 24 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;[NOTE]参考https://matlabacademy.mathworks.com/&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h1&gt;Matlab&lt;/h1&gt;
