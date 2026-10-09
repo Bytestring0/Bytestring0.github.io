@@ -1,0 +1,74 @@
+{
+  "mizuki-workbench:home": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "H"
+    }
+  ],
+  "mizuki-workbench:new-post": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "N"
+    }
+  ],
+  "mizuki-workbench:toggle-publish": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "P"
+    }
+  ],
+  "mizuki-workbench:pi": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "A"
+    }
+  ],
+  "quickadd:choice:mizuki-inbox": [
+    {
+      "modifiers": [
+        "Mod",
+        "Alt"
+      ],
+      "key": "I"
+    }
+  ],
+  "daily-notes": [
+    {
+      "modifiers": [
+        "Mod",
+        "Alt"
+      ],
+      "key": "D"
+    }
+  ],
+  "insert-template": [
+    {
+      "modifiers": [
+        "Mod",
+        "Alt"
+      ],
+      "key": "T"
+    }
+  ],
+  "omnisearch:show-modal": [
+    {
+      "modifiers": [
+        "Mod",
+        "Alt"
+      ],
+      "key": "F"
+    }
+  ]
+}

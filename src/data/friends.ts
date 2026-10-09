@@ -41,7 +41,7 @@ export const friendsData: FriendItem[] = [
 		title: "XY's blog",
 		imgurl: "https://ill-formed.com/images/avatar.jpeg",
 		desc: "曹安公路首席饭桶，二十多岁，是学生。",
-		siteurl: "https://jerrymain.top/",
+		siteurl: "https://ill-formed.com/",
 		tags: ["Blog"],
 	},
 ];

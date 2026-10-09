@@ -1,0 +1,11 @@
+.custom-md .obsidian-callout { margin: 1.2rem 0; padding: 1rem 1.2rem; border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); border-left: 4px solid var(--primary); border-radius: .7rem; background: color-mix(in srgb, var(--primary) 7%, transparent); }
+.custom-md .obsidian-callout-title { color: var(--primary); font-weight: 700; margin-bottom: .5rem; }
+.custom-md details.obsidian-callout > summary { cursor: pointer; }
+.custom-md .obsidian-callout-warning, .custom-md .obsidian-callout-caution { border-left-color: #e5a15d; }
+.custom-md .obsidian-callout-danger, .custom-md .obsidian-callout-failure { border-left-color: #e36f87; }
+.custom-md .obsidian-transclusion { border-radius: .7rem; padding: .7rem 1.2rem; background: var(--codeblock-bg); font-style: normal; }
+.custom-md .obsidian-transclusion p::before, .custom-md .obsidian-transclusion p::after { content: none; }
+.custom-md .obsidian-markmap { width: 100%; min-height: 320px; border-radius: .7rem; border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); overflow: hidden; }
+.custom-md .obsidian-markmap > svg { width: 100%; height: 420px; }
+.custom-md .markmap-foreign { color: var(--text-color); font-family: inherit; }
+.custom-md [id^="obsidian-block-"] { scroll-margin-top: 6rem; }

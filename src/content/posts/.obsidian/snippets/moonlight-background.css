@@ -1,0 +1,2 @@
+/* Match VS Code Background Cover: same image, 20%, center/cover, no blur. */
+body::before{content:"";position:fixed;inset:0;background-image:url("app://1106061b9fb11f24f72f780f15127b6e3241/D:/AstroBlog/mizuki/src/content/posts/.obsidian/snippets/maomaolove.png");background-size:cover;background-position:center;background-repeat:no-repeat;opacity:.2;mix-blend-mode:lighten;pointer-events:none;z-index:100;}

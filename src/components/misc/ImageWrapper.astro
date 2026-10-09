@@ -1,5 +1,6 @@
 ---
 import path from "node:path";
+import publishedImages from "virtual:mizuki-published-images";
 
 interface Props {
 	id?: string;
@@ -30,13 +31,11 @@ const isPublic = src.startsWith("/");
 // biome-ignore lint/suspicious/noImplicitAnyLet: <check later>
 let img: ImageMetadata | undefined;
 if (isLocal) {
-	const files = import.meta.glob<ImageMetadata>("../../**", {
-		import: "default",
-	});
+	const files = publishedImages;
 	let normalizedPath = path
 		.normalize(path.join("../../", basePath, src))
 		.replace(/\\/g, "/");
-	const file = files[normalizedPath];
+	const file = files[normalizedPath.replace("../../", "/src/")];
 	if (!file) {
 		console.error(
 			`\n[ERROR] Image file not found: ${normalizedPath.replace("../../", "src/")}`,

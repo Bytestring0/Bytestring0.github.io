@@ -297,7 +297,9 @@ const toggles = [
 				</aside>
 			</div>
 
-			<ExperienceFooter entry={entry} />
+			<div class="sw-license">
+				<ExperienceFooter entry={entry} />
+			</div>
 		</ArticleContent>
 
 		<PageComments entry={entry} class="sw-comments" />
@@ -1087,10 +1089,14 @@ const toggles = [
 			display: none;
 		}
 
+		[data-article-design="311e5ff458fc9b199069"] .sw-license,
 		[data-article-design="311e5ff458fc9b199069"] .sw-comments,
 		[data-article-design="311e5ff458fc9b199069"] .sw-pagination {
 			width: min(100% - 2.5rem, 84rem);
 			margin-inline: auto;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-license {
+			margin-top: 3rem;
 		}
 		[data-article-design="311e5ff458fc9b199069"] .sw-comments {
 			margin-top: 3.5rem;
@@ -1120,6 +1126,7 @@ const toggles = [
 			}
 			[data-article-design="311e5ff458fc9b199069"] .sw-hero,
 			[data-article-design="311e5ff458fc9b199069"] .sw-layout,
+			[data-article-design="311e5ff458fc9b199069"] .sw-license,
 			[data-article-design="311e5ff458fc9b199069"] .sw-comments,
 			[data-article-design="311e5ff458fc9b199069"] .sw-pagination {
 				width: calc(100% - 2rem);
@@ -1259,7 +1266,7 @@ const toggles = [
 			blankTimer = 0;
 			loop = 0;
 			lastPaint = 0;
-			inputs = {
+			inputs: Record<InputKey, InputSlot> = {
 				"1": { position: false, stable: false, candidate: false, timer: 0 },
 				"2": { position: false, stable: false, candidate: false, timer: 0 },
 				"3": { position: false, stable: false, candidate: false, timer: 0 },

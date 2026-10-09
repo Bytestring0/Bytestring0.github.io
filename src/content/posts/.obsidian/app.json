@@ -1,0 +1,14 @@
+{
+  "alwaysUpdateLinks": true,
+  "newFileLocation": "root",
+  "attachmentFolderPath": "./images",
+  "useMarkdownLinks": false,
+  "promptDelete": false,
+  "showUnsupportedFiles": true,
+  "readableLineLength": true,
+  "showLineNumber": true,
+  "spellcheck": false,
+  "defaultViewMode": "source",
+  "livePreview": true,
+  "newLinkFormat": "relative"
+}

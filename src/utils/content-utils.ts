@@ -7,7 +7,7 @@ import { initPostIdMap } from "@utils/permalink-utils";
 // // Retrieve posts and sort them by publication date
 async function getRawSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
+		return data.publish !== false && (import.meta.env.PROD ? data.draft !== true : true);
 	});
 
 	const sorted = allBlogPosts.sort((a, b) => {
@@ -77,7 +77,7 @@ export type Tag = {
 
 export async function getTagList(): Promise<Tag[]> {
 	const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
+		return data.publish !== false && (import.meta.env.PROD ? data.draft !== true : true);
 	});
 
 	const countMap: { [key: string]: number } = {};
@@ -104,7 +104,7 @@ export type Category = {
 
 export async function getCategoryList(): Promise<Category[]> {
 	const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
+		return data.publish !== false && (import.meta.env.PROD ? data.draft !== true : true);
 	});
 	const count: { [key: string]: number } = {};
 	allBlogPosts.forEach((post: { data: { category: string | null } }) => {

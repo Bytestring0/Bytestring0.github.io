@@ -23,6 +23,7 @@ import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
 import { pathsEqual, url } from "../utils/url-utils";
 import "../styles/main.css";
+import "../styles/variables.styl";
 import "../styles/mobile-navbar.css";
 import "../styles/wallpaper-navbar-transparent.css";
 import "../styles/fancybox-custom.css";
@@ -201,6 +202,9 @@ const mapleFontFaceCss = `
 			window.analyticsLoaded = window.analyticsLoaded || false;
 			
 			function loadAnalytics() {
+				// Local previews must not pollute production analytics or wait on
+				// third-party collectors while validating an article.
+				if (["localhost", "127.0.0.1", "::1"].includes(location.hostname)) return;
 				if (window.analyticsLoaded) return;
 				window.analyticsLoaded = true;
 				

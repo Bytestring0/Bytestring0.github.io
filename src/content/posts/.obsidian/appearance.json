@@ -1,0 +1,13 @@
+{
+  "baseFontSize": 17,
+  "theme": "obsidian",
+  "cssTheme": "",
+  "textFontFamily": "Maple Mono Normal NF CN SemiBold",
+  "monospaceFontFamily": "Maple Mono Normal NF CN SemiBold",
+  "interfaceFontFamily": "Maple Mono Normal NF CN SemiBold",
+  "enabledCssSnippets": [
+    "moonlight-mizuki",
+    "moonlight-background"
+  ],
+  "nativeMenus": false
+}

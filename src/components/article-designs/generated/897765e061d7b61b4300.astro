@@ -1128,7 +1128,6 @@ const railLabels = [
 				this.railObserver?.disconnect();
 				this.controller?.abort();
 				cancelAnimationFrame(this.frame);
-				window.clearTimeout(this.revealTimer);
 				this.revealTimers.forEach((timer) => window.clearTimeout(timer));
 			}
 		}

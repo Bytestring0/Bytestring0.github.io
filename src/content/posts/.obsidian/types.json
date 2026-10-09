@@ -1,0 +1,10 @@
+{
+  "types": {
+    "publish": "checkbox",
+    "draft": "checkbox",
+    "published": "date",
+    "updated": "date",
+    "tags": "tags",
+    "aliases": "aliases"
+  }
+}

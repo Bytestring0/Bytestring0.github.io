@@ -6,6 +6,7 @@ export type FilmAssets = {
 	output: T.Texture;
 	background: T.Texture;
 	source: T.Texture;
+	pixel?: number[];
 };
 type Vec = [number, number, number];
 const v = (p: Vec) => new T.Vector3(...p);
@@ -371,6 +372,64 @@ function makeFiber() {
 		}
 		packets.instanceMatrix.needsUpdate = true;
 	};
+	return root;
+}
+function makeTransceiver() {
+	const root = new T.Group();
+	root.position.y = 4;
+	block(root, [7, 1.3, 4], [0, 0, -1], metal, 0.18);
+	for (let i = 0; i < 18; i++)
+		block(
+			root,
+			[6.3, 0.05, 0.065],
+			[0, 0.72, -2.7 + i * 0.2],
+			chrome,
+			0.018,
+		);
+	const plugs: T.Group[] = [];
+	for (let i = 0; i < 4; i++) {
+		const x = (i - 1.5) * 1.6;
+		block(root, [1.25, 0.85, 0.1], [x, 0, 1.03], black, 0.12);
+		ring(root, 0.31, 0.055, [x, 0, 1.11], gold);
+		const p = new T.Group();
+		root.add(p);
+		plugs.push(p);
+		p.position.x = x;
+		const ferrule = mesh(
+			p,
+			new T.CylinderGeometry(0.27, 0.27, 0.7, 48),
+			chrome,
+			[0, 0, 0],
+		);
+		ferrule.rotation.x = Math.PI / 2;
+		block(p, [1, 0.7, 1.5], [0, 0, 0.95], black, 0.1);
+		block(p, [0.68, 0.055, 0.9], [0, 0.42, 1], chrome, 0.02);
+		cable(
+			p,
+			[
+				[0, 0, 1.75],
+				[0, 0, 3],
+				[x * 0.4, 0.6, 5],
+				[x * 0.7, 1.2, 7],
+			],
+			0.14,
+			i % 2 ? black : pcb,
+			120,
+		);
+		for (let j = 0; j < 8; j++)
+			ring(p, 0.15, 0.018, [0, 0, 1.85 + j * 0.09], metal);
+	}
+	screws(root, [
+		[-3.2, 0.7, -2.6],
+		[3.2, 0.7, -2.6],
+		[-3.2, 0.7, 0.65],
+		[3.2, 0.7, 0.65],
+	]);
+	root.userData.update = (t: number) =>
+		plugs.forEach((p, i) => {
+			p.position.z =
+				1.2 + (1 - ease(71.163 + i * 2.7, 74.803 + i * 2.7, t)) * 5;
+		});
 	return root;
 }
 function makeMicrophone() {
@@ -960,7 +1019,7 @@ function makeGlobe() {
 	};
 	return root;
 }
-function makePixelChamber(assets: FilmAssets) {
+function makePixelChamber(assets: FilmAssets, macro = false) {
 	const root = new T.Group();
 	root.position.y = 4;
 	block(root, [11.4, 6.7, 0.18], [0, 0, 0], black, 0.12);
@@ -977,7 +1036,28 @@ function makePixelChamber(assets: FilmAssets) {
 					],
 					s: [0.069, 0.255, 0.025],
 				});
-	instances(root, new RoundedBoxGeometry(1, 1, 1, 2, 0.08), black, cells);
+	if (macro) {
+		const rgb = assets.pixel ?? [95, 81, 78];
+		for (let channel = 0; channel < 3; channel++) {
+			const c = new T.Color(
+				channel === 0 ? 0xff0000 : channel === 1 ? 0x00ff00 : 0x004aff,
+			).multiplyScalar(rgb[channel] / 255);
+			const material = new T.MeshStandardMaterial({
+				color: c,
+				emissive: c,
+				emissiveIntensity: 2.3,
+				metalness: 0.12,
+				roughness: 0.35,
+			});
+			instances(
+				root,
+				new RoundedBoxGeometry(1, 1, 1, 2, 0.08),
+				material,
+				cells.filter((_, i) => i % 3 === channel),
+			);
+		}
+	} else
+		instances(root, new RoundedBoxGeometry(1, 1, 1, 2, 0.08), black, cells);
 	for (let i = 0; i < 32; i++)
 		traces.push([
 			[(i - 15.5) * 0.34, -3.2, -0.2],
@@ -997,7 +1077,7 @@ function makePixelChamber(assets: FilmAssets) {
 		[0, 0, 0.22],
 	);
 	root.userData.update = (t: number) => {
-		screen.material.opacity = ease(241.8, 245.263, t);
+		screen.material.opacity = macro ? 0 : ease(241.8, 245.263, t);
 	};
 	return root;
 }
@@ -1065,6 +1145,7 @@ export function buildFilmWorld(world: number, assets: FilmAssets) {
 	if (world === 5) return makeOptics(assets);
 	if (world === 10) return makeFiber();
 	if (world === 11) return makeMicrophone();
+	if (world === 15) return makeTransceiver();
 	if (world === 8) return makeVault(assets);
 	if (world === 6) return makeDataCenter();
 	if (world === 7) return makeNeural();
@@ -1072,7 +1153,8 @@ export function buildFilmWorld(world: number, assets: FilmAssets) {
 	if (world === 1) return makeDie();
 	if (world === 13) return makeAssembly();
 	if (world === 14) return makeGlobe();
-	if (world === 16 || world === 3) return makePixelChamber(assets);
+	if (world === 16 || world === 3)
+		return makePixelChamber(assets, world === 3);
 	if (world === 0) return makeMonitor(assets);
 	return new T.Group();
 }

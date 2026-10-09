@@ -1,0 +1,292 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { ArticleSource } from "../../../utils/article-source";
+import type { ImageMetadata } from "astro";
+import rawArticle from "../../../content/posts/杂谈/锐评北门食堂.md?raw";
+import styles from "../food-board/styles.css?raw";
+import {
+	tiers,
+	criteria,
+	parseMetadata,
+	cardHtml,
+	rankingHtml,
+} from "../food-board/model";
+import SourceBlock from "../SourceBlock.astro";
+import PageShell from "../PageShell.astro";
+import PageNavigation from "../PageNavigation.astro";
+import PageTOC from "../PageTOC.astro";
+import PageComments from "../PageComments.astro";
+import PageFooter from "../PageFooter.astro";
+import PagePagination from "../PagePagination.astro";
+import ArticleContent from "../ArticleContent.astro";
+import ExperienceFooter from "../ExperienceFooter.astro";
+interface Props {
+	entry: CollectionEntry<"posts">;
+	article: ArticleSource;
+	designKey: string;
+}
+const { entry, article, designKey } = Astro.props;
+const images = import.meta.glob<{ default: ImageMetadata }>(
+	"../../../content/posts/杂谈/images/*.{png,jpg,jpeg,webp}",
+	{ eager: true },
+);
+const cards = parseMetadata(rawArticle).map((card) => {
+	const image = Object.entries(images).find(
+		([path]) => path.split("/").pop() === card.imageUrl.split("/").pop(),
+	);
+	return { ...card, imageDisplay: image?.[1].default.src || card.imageUrl };
+});
+const sourceBlocks = article.blocks.filter((block) =>
+	/<pre\b/.test(block.html),
+);
+const introBlocks = article.blocks.filter(
+	(block) => !sourceBlocks.includes(block),
+);
+---
+
+<PageShell entry={entry} designKey={designKey} class="food-page">
+	<PageNavigation class="food-navigation" />
+	<div class="food-body">
+		<ArticleContent entry={entry} article={article}>
+			<header class="food-header">
+				<div class="article-date">
+					<span class="date-line"></span><time
+						datetime={entry.data.published.toISOString()}
+						>{
+							entry.data.published
+								.toISOString()
+								.slice(0, 10)
+								.replaceAll("-", " / ")
+						}</time
+					><span>吃的 · 杂谈</span>
+				</div>
+				<div class="heading-line">
+					<h1 data-pagefind-meta="title">{entry.data.title}</h1><span
+						class="header-stamp"
+						aria-hidden="true">北门<br />食评</span
+					>
+				</div>
+				<div class="food-intro" data-pagefind-body>
+					{introBlocks.map((block) => <SourceBlock block={block} />)}
+				</div>
+			</header>
+			<nav class="food-shortcuts" aria-label="页面导航">
+				<a href="#tier-board">分档板 ↗</a><a href="#food-ranking"
+					>排行榜 ↗</a
+				><PageTOC class="food-toc" label="文章目录" />
+			</nav>
+			<food-postcard-board data-storage-key={`food-board:${designKey}`}>
+				<script
+					is:inline
+					type="application/json"
+					data-board-seed
+					set:html={JSON.stringify(cards).replace(/</g, "\\u003c")}
+				/>
+				<section
+					id="tier-board"
+					class="board-section"
+					aria-labelledby="board-title"
+				>
+					<div class="section-heading">
+						<div>
+							<h2 id="board-title">北门食评分档板</h2>
+						</div>
+					</div>
+					<div class="board-toolbar">
+						<div class="board-actions">
+							<button
+								type="button"
+								class="primary-action"
+								data-action="add">＋ 新建卡片</button
+							><button type="button" data-action="import"
+								>导入 JSON</button
+							><button type="button" data-action="export-json"
+								>导出 JSON</button
+							><button type="button" data-action="export-image"
+								>导出分档图片 ↗</button
+							><button
+								type="button"
+								class="reset-action"
+								data-action="reset">还原</button
+							>
+						</div>
+					</div>
+					<input
+						type="file"
+						accept="application/json,.json"
+						data-import-file
+						hidden
+					/>
+					<div class="tier-board" data-tier-board>
+						{
+							tiers.map((tier) => (
+								<section
+									class="tier-row"
+									data-tier={tier}
+									aria-label={`${tier}档`}
+								>
+									<>
+										<div class="tier-label">
+											<>
+												<strong>{tier}</strong>
+											</>
+										</div>
+										<div
+											class="tier-cards"
+											data-tier-zone={tier}
+										>
+											{cards
+												.filter(
+													(card) =>
+														card.overall.tier ===
+														tier,
+												)
+												.map((card) => (
+													<Fragment
+														set:html={cardHtml(
+															card,
+														)}
+													/>
+												))}
+										</div>
+									</>
+								</section>
+							))
+						}
+					</div>
+
+					<p
+						class="board-status"
+						data-status
+						role="status"
+						aria-live="polite"
+					>
+					</p>
+				</section>
+				<section
+					id="food-ranking"
+					class="ranking-section"
+					aria-labelledby="ranking-title"
+				>
+					<div class="section-heading">
+						<div>
+							<h2 id="ranking-title">北门排行榜</h2>
+						</div><p>按综合评价排序</p>
+					</div><ol
+						class="ranking-list"
+						data-ranking-list
+						set:html={rankingHtml(cards)}
+					/>
+				</section>
+				<dialog class="card-dialog" aria-labelledby="new-card-title">
+					<form data-card-form>
+						<div class="dialog-heading">
+							<div>
+								<p id="new-card-title" class="dialog-title">
+									新建食评明信片
+								</p>
+							</div><button
+								type="button"
+								data-action="close-dialog"
+								aria-label="关闭">×</button
+							>
+						</div>
+						<label class="form-field"
+							>名字<input
+								name="name"
+								maxlength="80"
+								required
+								placeholder="这次吃了什么？"
+							/></label
+						>
+						<div class="form-grid">
+							<label class="form-field"
+								>图片网址<input
+									name="imageUrl"
+									type="url"
+									placeholder="https://…（可选）"
+								/></label
+							><label class="form-field"
+								>或上传图片<input
+									name="imageFile"
+									type="file"
+									accept="image/png,image/jpeg,image/webp,image/gif"
+								/></label
+							>
+						</div>
+						<p class="form-note">上传图片不写入 JSON。</p>
+						<label class="form-field"
+							>一句话评价<textarea
+								name="summary"
+								maxlength="1000"
+								rows="3"
+								placeholder="口味、份量，或者一点私心……"
+								required></textarea></label
+						>
+						<div class="form-grid">
+							<label class="form-field"
+								>放进哪一档<select name="tier"
+									>{
+										tiers.map((tier) => (
+											<option>{tier}</option>
+										))
+									}</select
+								></label
+							><label class="form-field"
+								>综合印象<div class="slider-field">
+									<input
+										name="score"
+										type="range"
+										min="0"
+										max="5"
+										step="0.1"
+										value="3"
+										aria-label="综合印象"
+									/><output>中规中矩</output>
+								</div></label
+							>
+						</div>
+						<fieldset class="form-ratings">
+							<legend>四项评分</legend>{
+								Object.entries(criteria).map(([key, label]) => (
+									<label>
+										<>
+											<span>{label}</span>
+											<input
+												name={key}
+												type="range"
+												min="0"
+												max="5"
+												step="0.5"
+												value="3"
+												aria-label={label}
+											/>
+											<output>中规中矩</output>
+										</>
+									</label>
+								))
+							}
+						</fieldset>
+						<div class="dialog-footer">
+							<button type="submit" class="primary-action"
+								>加入分档板 ↗</button
+							>
+						</div>
+					</form>
+				</dialog>
+			</food-postcard-board>
+			<div hidden aria-hidden="true" class="food-metadata-source">
+				{sourceBlocks.map((block) => <SourceBlock block={block} />)}
+			</div>
+			<ExperienceFooter entry={entry} />
+		</ArticleContent>
+		<PageComments entry={entry} class="food-comments" /><PagePagination
+			entry={entry}
+			class="food-pagination"
+		/><PageFooter />
+	</div>
+	<style is:inline set:html={styles}></style>
+	<script>
+		import "../food-board/client";
+	</script>
+</PageShell>

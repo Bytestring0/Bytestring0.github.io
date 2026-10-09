@@ -27,7 +27,8 @@ try {
 	}
 
 	const message = `chore: deploy ${getTimestamp()}`;
-	run(`git commit -m "${message}"`);
+	if (hasChanges) run(`git commit -m "${message}"`);
+	else console.log("没有新的文件修改，继续推送已有提交。");
 	run("git push");
 
 	console.log("\n部署完成 ✅");

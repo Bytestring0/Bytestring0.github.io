@@ -1,0 +1,9 @@
+{
+  "id": "mizuki-workbench",
+  "name": "Mizuki 博客工作台",
+  "version": "1.0.0",
+  "minAppVersion": "1.7.0",
+  "description": "博客命令按钮、直接写入 posts、公开开关与离线思维导图",
+  "author": "Local",
+  "isDesktopOnly": true
+}

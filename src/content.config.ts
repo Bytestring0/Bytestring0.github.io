@@ -1,14 +1,17 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { obsidianPosts } from "../scripts/obsidian/loader.mjs";
 
 const postsCollection = defineCollection({
-	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
+	loader: obsidianPosts(),
 	schema: z.object({
 		title: z.string(),
 		published: z.date(),
 		updated: z.date().optional(),
 		draft: z.boolean().optional().default(false),
+		publish: z.boolean().optional().default(true),
+		aliases: z.union([z.string(), z.array(z.string())]).optional(),
 		// Opt in to a saved, agent-authored article experience. Never generates at runtime.
 		create: z.boolean().optional().default(false),
 		description: z.string().optional().default(""),

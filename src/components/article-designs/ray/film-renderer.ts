@@ -122,6 +122,9 @@ export class FilmRenderer {
 	}
 	setProgram(data: ProgramFrame) {
 		this.trace = data.trace;
+		this.assets.pixel = data.trace.lanes.find(
+			(l) => l.pixel[0] === data.trace.pixel[0],
+		)?.bytes;
 		for (const [texture, bytes] of [
 			[this.image, data.pixels],
 			[this.back, data.background],

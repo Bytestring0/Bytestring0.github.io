@@ -1,0 +1,10 @@
+import { build } from 'esbuild';
+import fs from 'node:fs';
+import path from 'node:path';
+const root=path.resolve(import.meta.dirname,'../..');
+const output=path.join(root,'src/content/posts/.obsidian/plugins/mizuki-workbench');
+fs.mkdirSync(output,{recursive:true});
+await build({entryPoints:[path.join(import.meta.dirname,'workbench.js')],outfile:path.join(output,'main.js'),bundle:true,format:'cjs',platform:'browser',target:'es2022',external:['obsidian','electron','node:child_process','node:fs','node:path'],minify:true});
+fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({id:'mizuki-workbench',name:'Mizuki 博客工作台',version:'1.0.0',minAppVersion:'1.7.0',description:'博客命令按钮、直接写入 posts、公开开关与离线思维导图',author:'Local',isDesktopOnly:true},null,2));
+fs.writeFileSync(path.join(output,'styles.css'),`.mizuki-workbench{border:1px solid var(--background-modifier-border);border-radius:16px;padding:20px;background:var(--background-secondary)}.mizuki-workbench-caption{color:var(--text-muted);margin-top:0}.mizuki-workbench-buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px}.mizuki-workbench-buttons button{height:auto;min-height:42px;white-space:normal}.mizuki-deploy{color:var(--text-on-accent)!important;background:var(--interactive-accent)!important}.mizuki-command-log{max-height:230px;overflow:auto;white-space:pre-wrap;font-size:12px;background:var(--background-primary);padding:12px;border-radius:8px;margin-top:16px}`);
+console.log('Built Mizuki workbench');

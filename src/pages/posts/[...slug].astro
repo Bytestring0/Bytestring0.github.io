@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import path from "node:path";
+import publishedImages from "virtual:mizuki-published-images";
 import Comment from "@components/comment/index.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
@@ -110,13 +111,11 @@ if (entry.data.image) {
 	);
 	if (isLocal) {
 		const basePath = getFileDirFromPath(entry.filePath || "");
-		const files = import.meta.glob<ImageMetadata>("../../**", {
-			import: "default",
-		});
+		const files = publishedImages;
 		let normalizedPath = path
 			.normalize(path.join("../../", basePath, entry.data.image))
 			.replace(/\\/g, "/");
-		const file = files[normalizedPath];
+		const file = files[normalizedPath.replace("../../", "/src/")];
 		if (file) {
 			const img = await file();
 			posterCoverUrl = img.src;
@@ -144,13 +143,11 @@ if (profileConfig.avatar) {
 		profileConfig.avatar.startsWith("data:")
 	);
 	if (isLocal) {
-		const files = import.meta.glob<ImageMetadata>("../../**", {
-			import: "default",
-		});
+		const files = publishedImages;
 		let normalizedPath = path
 			.normalize(path.join("../../", profileConfig.avatar))
 			.replace(/\\/g, "/");
-		const file = files[normalizedPath];
+		const file = files[normalizedPath.replace("../../", "/src/")];
 		if (file) {
 			const img = await file();
 			posterAvatarUrl = img.src;

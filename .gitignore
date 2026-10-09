@@ -2,6 +2,7 @@
 dist/
 
 # generated types
+.files/
 .astro/
 demo
 plans
@@ -32,6 +33,26 @@ pnpm-debug.log*
 
 package-lock.json
 bun.lockb
+
+# Obsidian portable preferences; exclude credentials, sessions and runtime state.
+src/content/posts/**/.obsidian/plugins/*/data.json
+src/content/posts/**/.obsidian/plugins/*/conversations*
+src/content/posts/**/.obsidian/plugins/*/chat-*
+src/content/posts/**/.obsidian/plugins/*/history*
+src/content/posts/**/.obsidian/plugins/*/*.jsonl
+src/content/posts/**/.obsidian/workspace*.json
+src/content/posts/**/.obsidian/cache/
+src/content/posts/**/.obsidian/plugins/drawio-editor/offline-editor/
+src/content/posts/**/.trash/
+public/_obsidian/
+src/content/posts/**/.obsidian/plugins/*/main.js
+src/content/posts/**/.obsidian/plugins/*/styles.css
+src/content/posts/**/.obsidian/plugins/*/webapp/
+src/content/posts/**/.obsidian/plugins/*/*.json
+!src/content/posts/**/.obsidian/plugins/*/manifest.json
+src/content/posts/**/.obsidian/plugins/*/sessions/
+src/content/posts/**/.obsidian/plugins/*/pi-sessions/
+src/content/posts/**/.obsidian/plugins/*/chat-history/
 yarn.lock
 
 # ide

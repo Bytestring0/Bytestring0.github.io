@@ -1,6 +1,7 @@
 import { getImage } from "astro:assets";
+import publishedImages from "virtual:mizuki-published-images";
 // import { getCollection } from "astro:content";
-import type { APIContext, ImageMetadata } from "astro";
+import type { APIContext } from "astro";
 import MarkdownIt from "markdown-it";
 import { parse as htmlParser } from "node-html-parser";
 import sanitizeHtml from "sanitize-html";
@@ -12,9 +13,7 @@ import { initPostIdMap } from "@/utils/permalink-utils";
 const markdownParser = new MarkdownIt();
 
 // get dynamic import of images as a map collection
-const imagesGlob = import.meta.glob<{ default: ImageMetadata }>(
-	"/src/content/**/*.{jpeg,jpg,png,gif,webp}", // include posts and assets
-);
+const imagesGlob = Object.fromEntries(Object.entries(publishedImages).map(([key,load]) => [key,async () => ({default:await load()})]));
 
 export async function GET(context: APIContext) {
 	if (!context.site) {
@@ -43,7 +42,7 @@ export async function GET(context: APIContext) {
 
 	for (const post of posts) {
 		// convert markdown to html string, ensure post.body is a string
-		const body = markdownParser.render(String(post.body ?? ""));
+		const body = post.rendered?.html ?? markdownParser.render(String(post.body ?? ""));
 		// convert html string to DOM-like structure
 		const html = htmlParser.parse(body);
 		// hold all img tags in variable images

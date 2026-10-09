@@ -16,7 +16,9 @@ import rehypeSlug from "rehype-slug";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
-import { siteConfig } from "./src/config.ts";
+import { siteConfig, permalinkConfig } from "./src/config.ts";
+import obsidianIntegration from "./scripts/obsidian/integration.mjs";
+import { remarkObsidian } from "./src/plugins/remark-obsidian.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
@@ -40,6 +42,7 @@ export default defineConfig({
 	output: "static",
 
 	integrations: [
+		obsidianIntegration(),
 		articleDesignIntegration(),
 		umami({
 		}),
@@ -125,6 +128,7 @@ export default defineConfig({
 	],
 	markdown: {
 		remarkPlugins: [
+			[remarkObsidian, { permalink: permalinkConfig }],
 			remarkMath,
 			remarkContent,
 			remarkFixGithubAdmonitions,
@@ -181,6 +185,8 @@ export default defineConfig({
 		],
 	},
 	vite: {
+		optimizeDeps: { include: ["markmap-view"] },
+		server: { watch: { ignored: ["**/src/content/posts/**/.obsidian/**", "**/src/content/posts/**/.trash/**"] } },
 		// Verilog source files can live beside posts. Treat them as assets so
 		// broad image/content globs never ask Rollup to parse them as JavaScript.
 		assetsInclude: ["**/*.v"],

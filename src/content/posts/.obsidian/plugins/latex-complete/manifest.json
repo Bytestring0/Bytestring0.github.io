@@ -1,0 +1,9 @@
+{
+  "id": "latex-complete",
+  "name": "LaTeX Complete",
+  "version": "0.1.0",
+  "minAppVersion": "1.13.7",
+  "description": "Autocomplete LaTeX commands in math expressions with Chinese and English descriptions and configurable completion keys.",
+  "author": "Yetchill",
+  "isDesktopOnly": false
+}
