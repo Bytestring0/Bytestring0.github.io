@@ -28,6 +28,8 @@ import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 import Encryptor from "../../components/Encryptor.astro";
+import ArticleExperience from "../../components/article-designs/ArticleExperience.astro";
+import { getArticleDesign } from "../../utils/article-design";
 
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
@@ -93,6 +95,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+const articleDesign = await getArticleDesign(entry);
 const { Content, headings } = await render(entry);
 const { remarkPluginFrontmatter } = await render(entry);
 
@@ -182,6 +185,11 @@ const jsonLd = {
 };
 ---
 
+{articleDesign ? (
+    <ArticleExperience entry={entry} headings={headings} design={articleDesign}>
+        <Fragment slot="source"><Content /></Fragment>
+    </ArticleExperience>
+) : (
 <MainGridLayout
     banner={entry.data.image}
     title={entry.data.title}
@@ -500,3 +508,4 @@ const jsonLd = {
         </a>
     </div>
 </MainGridLayout>
+)}

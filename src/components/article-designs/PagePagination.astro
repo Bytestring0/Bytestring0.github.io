@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getPostUrlBySlug } from "../../utils/url-utils";
+interface Props {
+	entry: CollectionEntry<"posts">;
+	class?: string;
+}
+const { entry, class: className } = Astro.props;
+---
+
+<nav data-blog-pagination class={className} aria-label="相邻文章">
+	{
+		entry.data.nextSlug && (
+			<a href={getPostUrlBySlug(entry.data.nextSlug)} rel="next">
+				← {entry.data.nextTitle}
+			</a>
+		)
+	}
+	{
+		entry.data.prevSlug && (
+			<a href={getPostUrlBySlug(entry.data.prevSlug)} rel="prev">
+				{entry.data.prevTitle} →
+			</a>
+		)
+	}
+</nav>

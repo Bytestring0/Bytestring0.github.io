@@ -57,6 +57,11 @@
 					"type": "boolean"
 				},
 				{
+					"title": "专属文章前端",
+					"name": "create",
+					"type": "boolean"
+				},
+				{
 					"title": "comment",
 					"name": "comment",
 					"type": "boolean"

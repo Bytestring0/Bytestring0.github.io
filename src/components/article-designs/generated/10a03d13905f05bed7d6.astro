@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { ArticleSource } from "../../../utils/article-source";
+import PageShell from "../PageShell.astro";
+import PageNavigation from "../PageNavigation.astro";
+import PageTOC from "../PageTOC.astro";
+import PageComments from "../PageComments.astro";
+import PagePagination from "../PagePagination.astro";
+import PageFooter from "../PageFooter.astro";
+import ArticleContent from "../ArticleContent.astro";
+import SourceBlock from "../SourceBlock.astro";
+import RayPlayer from "../ray/RayPlayer.astro";
+import styles from "../ray/styles.css?raw";
+interface Props {
+	entry: CollectionEntry<"posts">;
+	article: ArticleSource;
+	designKey: string;
+}
+const { entry, article, designKey } = Astro.props;
+---
+
+<PageShell entry={entry} designKey={designKey} class="ray-page">
+	<style is:inline set:html={styles}></style>
+	<PageNavigation class="ray-navigation" />
+	<ArticleContent entry={entry} article={article} class="ray-article">
+		<RayPlayer />
+		<div class="ray-colophon" data-pagefind-body>
+			<div class="ray-source-title">
+				{
+					article.blocks.map((block) => (
+						<SourceBlock block={block} prose={false} />
+					))
+				}
+			</div><PageTOC class="ray-toc" label="目次" />
+		</div>
+	</ArticleContent>
+	<div class="ray-afterword">
+		<PageComments entry={entry} /><PagePagination
+			entry={entry}
+			class="ray-pagination"
+		/><PageFooter />
+	</div>
+</PageShell>

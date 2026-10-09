@@ -1,0 +1,6 @@
+interface:
+  display_name: "Mizuki 文章前端"
+  short_description: "读文确认后设计整个文章页面，自由编排导航、目录、评论和复杂交互"
+  default_prompt: "使用 $mizuki-article-frontend 为当前文章创作专属前端，先与我确认设计方向。"
+policy:
+  allow_implicit_invocation: true

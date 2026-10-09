@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { MarkdownHeading } from "astro";
+import type { ArticleDesign } from "../../utils/article-design";
+import { splitArticleSource } from "../../utils/article-source";
+import CompletePage from "./CompletePage.astro";
+
+interface Props {
+	entry: CollectionEntry<"posts">;
+	headings: MarkdownHeading[];
+	design: ArticleDesign;
+}
+const { entry, headings, design } = Astro.props;
+const article = splitArticleSource(await Astro.slots.render("source"));
+const Experience = design.Component;
+---
+
+<CompletePage
+	article={article}
+	encrypted={Boolean(entry.data.encrypted && entry.data.password)}
+	><Experience
+		entry={entry}
+		headings={headings}
+		article={article}
+		designKey={design.key}
+	/></CompletePage
+>

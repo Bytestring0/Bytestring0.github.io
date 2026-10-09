@@ -1,0 +1,15 @@
+---
+import type { ArticleSource } from "../../utils/article-source";
+import { verifyArticleSource } from "../../utils/article-source";
+interface Props {
+	article: ArticleSource;
+	class?: string;
+}
+const { article, class: className } = Astro.props;
+const html = await Astro.slots.render("default");
+verifyArticleSource(article, html);
+---
+
+<article id="post-container" class={className}>
+	<Fragment set:html={html} />
+</article>

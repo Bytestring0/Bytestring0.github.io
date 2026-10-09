@@ -1,0 +1,9 @@
+---
+import Footer from "../Footer.astro";
+interface Props {
+	class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<footer data-blog-footer class={className}><slot><Footer /></slot></footer>

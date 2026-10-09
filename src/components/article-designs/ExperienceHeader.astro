@@ -1,0 +1,40 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostMeta from "../PostMeta.astro";
+import ImageWrapper from "../misc/ImageWrapper.astro";
+import { getFileDirFromPath } from "../../utils/url-utils";
+import { siteConfig } from "../../config";
+
+interface Props {
+	entry: CollectionEntry<"posts">;
+}
+const { entry } = Astro.props;
+---
+
+<header class="experience-header">
+	<h1
+		class="text-black/90 dark:text-white/90"
+		data-pagefind-body
+		data-pagefind-weight="10"
+		data-pagefind-meta="title"
+	>
+		{entry.data.title}
+	</h1>
+	<PostMeta
+		className="mb-5"
+		published={entry.data.published}
+		updated={entry.data.updated}
+		tags={entry.data.tags}
+		category={entry.data.category || undefined}
+		id={entry.id}
+	/>
+	{
+		entry.data.image && siteConfig.showCoverInContent && (
+			<ImageWrapper
+				src={entry.data.image}
+				basePath={getFileDirFromPath(entry.filePath || "")}
+				class="mb-8 rounded-xl"
+			/>
+		)
+	}
+</header>

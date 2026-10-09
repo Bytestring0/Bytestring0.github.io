@@ -1,0 +1,13 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Comments from "../comment/index.astro";
+interface Props {
+	entry: CollectionEntry<"posts">;
+	class?: string;
+}
+const { entry, class: className } = Astro.props;
+---
+
+<section data-blog-comments class={className} aria-label="评论">
+	<slot><Comments post={entry} /></slot>
+</section>

@@ -1,0 +1,138 @@
+---
+interface Props {
+	class?: string;
+	label?: string;
+}
+const { class: className, label = "目录" } = Astro.props;
+---
+
+<article-page-toc
+	data-blog-toc
+	class:list={["text-black/75 dark:text-white/75", className]}
+>
+	<details open>
+		<summary><slot>{label}</slot></summary><ol aria-label={label}></ol>
+	</details>
+</article-page-toc>
+<style is:inline>
+	[data-blog-toc] {
+		display: block;
+	}
+	[data-blog-toc] summary {
+		cursor: pointer;
+		font-weight: 600;
+		margin-bottom: 0.75rem;
+	}
+	[data-blog-toc] ol {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		max-height: 65vh;
+		overflow: auto;
+	}
+	[data-blog-toc] a {
+		display: block;
+		padding: 0.35rem 0.5rem 0.35rem
+			calc(0.5rem + var(--toc-depth, 0) * 0.7rem);
+		color: inherit;
+		overflow-wrap: anywhere;
+	}
+	[data-blog-toc] a:hover,
+	[data-blog-toc] a:focus-visible {
+		color: var(--primary);
+	}
+</style>
+<script>
+	import { getArticleHeadings } from "../../utils/article-page-client";
+	class ArticlePageTOC extends HTMLElement {
+		observer?: MutationObserver;
+		controller?: AbortController;
+		frame = 0;
+		signature = "";
+		connectedCallback() {
+			this.controller = new AbortController();
+			const refresh = () => {
+				cancelAnimationFrame(this.frame);
+				this.frame = requestAnimationFrame(() => this.refresh());
+			};
+			this.observer = new MutationObserver((mutations) => {
+				if (
+					mutations.some((mutation) =>
+						[...mutation.addedNodes, ...mutation.removedNodes].some(
+							(node) =>
+								node instanceof Element &&
+								(node.matches(
+									"#post-container, h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]",
+								) ||
+									node.querySelector(
+										"#post-container, h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]",
+									)),
+						),
+					)
+				)
+					refresh();
+			});
+			this.observer.observe(this.closest("main") || document.body, {
+				childList: true,
+				subtree: true,
+			});
+			document.addEventListener("article:content-ready", refresh, {
+				signal: this.controller.signal,
+			});
+			this.addEventListener(
+				"click",
+				(event) => {
+					const link = (
+						event.target as Element
+					).closest<HTMLAnchorElement>("a[href^='#']");
+					if (!link) return;
+					const id = decodeURIComponent(link.hash.slice(1));
+					const target = document.getElementById(id);
+					const request = new CustomEvent("article:toc-navigate", {
+						bubbles: true,
+						cancelable: true,
+						detail: { id, target },
+					});
+					if (!this.dispatchEvent(request)) event.preventDefault();
+				},
+				{ signal: this.controller.signal },
+			);
+			refresh();
+		}
+		refresh() {
+			const entries = getArticleHeadings().map(({ id, text, depth }) => ({
+				id,
+				text,
+				depth,
+			}));
+			const signature = JSON.stringify(entries);
+			if (signature === this.signature) return;
+			this.signature = signature;
+			const list = this.querySelector("ol");
+			if (!list) return;
+			const minimum = Math.min(...entries.map((entry) => entry.depth));
+			list.replaceChildren(
+				...entries.map((entry) => {
+					const item = document.createElement("li");
+					const link = document.createElement("a");
+					link.href = `#${encodeURIComponent(entry.id)}`;
+					link.textContent = entry.text;
+					item.style.setProperty(
+						"--toc-depth",
+						String(entry.depth - minimum),
+					);
+					item.append(link);
+					return item;
+				}),
+			);
+		}
+		disconnectedCallback() {
+			this.observer?.disconnect();
+			this.controller?.abort();
+			cancelAnimationFrame(this.frame);
+			this.signature = "";
+		}
+	}
+	if (!customElements.get("article-page-toc"))
+		customElements.define("article-page-toc", ArticlePageTOC);
+</script>

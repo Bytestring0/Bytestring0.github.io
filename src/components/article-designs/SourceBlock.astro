@@ -1,0 +1,20 @@
+---
+import type { SourceBlock } from "../../utils/article-source";
+
+interface Props {
+	block: SourceBlock;
+	class?: string;
+	prose?: boolean;
+}
+const { block, class: className, prose = true } = Astro.props;
+---
+
+<div
+	data-source-block={block.id}
+	class:list={[
+		"custom-md markdown-content",
+		{ "prose dark:prose-invert prose-base !max-w-none": prose },
+		className,
+	]}
+	set:html={block.html}
+/>

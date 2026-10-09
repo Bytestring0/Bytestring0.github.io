@@ -54,7 +54,12 @@ const config = {
   }
   
   // 页面加载时初始化
-  document.addEventListener('DOMContentLoaded', initTwikoo);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTwikoo, { once: true });
+  } else {
+    // Swup may load this component for the first time after DOMContentLoaded.
+    initTwikoo();
+  }
   
   // Swup 页面切换后重新初始化
   if (window.swup && window.swup.hooks) {

@@ -1,0 +1,162 @@
+---
+import type { CollectionEntry } from "astro:content";
+import {
+	groupArticleBlocks,
+	type ArticleSource,
+} from "../../../utils/article-source";
+import SourceBlock from "../SourceBlock.astro";
+import PageShell from "../PageShell.astro";
+import PageNavigation from "../PageNavigation.astro";
+import PageTOC from "../PageTOC.astro";
+import PageComments from "../PageComments.astro";
+import PageFooter from "../PageFooter.astro";
+import PagePagination from "../PagePagination.astro";
+import ArticleContent from "../ArticleContent.astro";
+import ExperienceHeader from "../ExperienceHeader.astro";
+import ExperienceFooter from "../ExperienceFooter.astro";
+
+interface Props {
+	entry: CollectionEntry<"posts">;
+	article: ArticleSource;
+	designKey: string;
+}
+const { entry, article, designKey } = Astro.props;
+const groups = groupArticleBlocks(article);
+---
+
+<PageShell entry={entry} designKey={designKey}>
+	<PageNavigation class="page-navigation" />
+	<div class="page-body">
+		<div class="page-layout">
+			<ArticleContent
+				entry={entry}
+				article={article}
+				class="lab-experience"
+			>
+				<ExperienceHeader entry={entry} />
+				<div class="lab-chapters" data-pagefind-body>
+					{
+						groups.map((blocks, index) => (
+							<section class="lab-chapter">
+								<span class="chapter-index" aria-hidden="true">
+									{String(index + 1).padStart(2, "0")}
+								</span>
+								<div>
+									{blocks.map((block) => (
+										<SourceBlock block={block} />
+									))}
+								</div>
+							</section>
+						))
+					}
+				</div>
+				<ExperienceFooter entry={entry} />
+			</ArticleContent>
+			<aside class="page-toc"><PageTOC /></aside>
+		</div>
+		<PageComments entry={entry} class="page-comments" />
+		<PagePagination entry={entry} class="page-pagination" />
+		<PageFooter />
+	</div>
+
+	<style is:inline>
+		[data-article-design="__DESIGN_KEY__"] .page-navigation {
+			position: sticky;
+			top: 0;
+			z-index: 50;
+			background: var(--card-bg);
+			border-bottom: 1px solid var(--line-divider);
+		}
+		[data-article-design="__DESIGN_KEY__"]
+			.page-navigation
+			#navbar
+			> div:last-child {
+			max-width: none;
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-body {
+			width: min(calc(100% - 3rem), 90rem);
+			margin: 2.5rem auto;
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-layout {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) 16rem;
+			gap: clamp(1.5rem, 3vw, 3rem);
+			align-items: start;
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-toc {
+			position: sticky;
+			top: 6rem;
+			padding: 1.25rem;
+			border: 1px solid var(--line-divider);
+			border-radius: var(--radius-large);
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-comments {
+			margin-top: 3rem;
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-pagination {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			gap: 1rem;
+			margin: 2rem 0;
+			color: var(--primary);
+		}
+		@media (max-width: 900px) {
+			[data-article-design="__DESIGN_KEY__"] .page-body {
+				width: calc(100% - 1.5rem);
+				margin-top: 1.25rem;
+			}
+			[data-article-design="__DESIGN_KEY__"] .page-layout {
+				grid-template-columns: minmax(0, 1fr);
+			}
+			[data-article-design="__DESIGN_KEY__"] .page-toc {
+				position: static;
+				grid-row: 1;
+			}
+		}
+
+		[data-article-design="__DESIGN_KEY__"] .lab-experience {
+			padding: clamp(1rem, 3vw, 3rem);
+		}
+		[data-article-design="__DESIGN_KEY__"] .experience-header {
+			padding: 1.5rem;
+			border: 1px solid var(--line-divider);
+			border-radius: var(--radius-large);
+			background: var(--card-bg);
+			margin-bottom: 2.5rem;
+		}
+		[data-article-design="__DESIGN_KEY__"] .experience-header > h1 {
+			font-size: clamp(1.75rem, 3vw, 3rem);
+			line-height: 1.35;
+			font-weight: 750;
+			margin-bottom: 1.5rem;
+		}
+		[data-article-design="__DESIGN_KEY__"] .lab-chapter {
+			display: grid;
+			grid-template-columns: 3rem minmax(0, 1fr);
+			gap: 1.5rem;
+			padding-block: 1.5rem;
+			border-top: 1px solid var(--line-divider);
+		}
+		[data-article-design="__DESIGN_KEY__"] .chapter-index {
+			color: var(--primary);
+			font-family: ui-monospace, monospace;
+			font-size: 1.5rem;
+			padding-top: 1.2rem;
+		}
+		[data-article-design="__DESIGN_KEY__"]
+			.lab-chapter
+			[data-source-block] {
+			margin-block: 1rem;
+		}
+		@media (max-width: 600px) {
+			[data-article-design="__DESIGN_KEY__"] .lab-chapter {
+				grid-template-columns: minmax(0, 1fr);
+				gap: 0;
+			}
+			[data-article-design="__DESIGN_KEY__"] .chapter-index {
+				font-size: 1rem;
+			}
+		}
+	</style>
+</PageShell>

@@ -1,0 +1,147 @@
+---
+import type { CollectionEntry } from "astro:content";
+import {
+	groupArticleBlocks,
+	type ArticleSource,
+} from "../../../utils/article-source";
+import SourceBlock from "../SourceBlock.astro";
+import PageShell from "../PageShell.astro";
+import PageNavigation from "../PageNavigation.astro";
+import PageTOC from "../PageTOC.astro";
+import PageComments from "../PageComments.astro";
+import PageFooter from "../PageFooter.astro";
+import PagePagination from "../PagePagination.astro";
+import ArticleContent from "../ArticleContent.astro";
+import ExperienceHeader from "../ExperienceHeader.astro";
+import ExperienceFooter from "../ExperienceFooter.astro";
+
+interface Props {
+	entry: CollectionEntry<"posts">;
+	article: ArticleSource;
+	designKey: string;
+}
+const { entry, article, designKey } = Astro.props;
+const groups = groupArticleBlocks(article);
+---
+
+<PageShell entry={entry} designKey={designKey}>
+	<PageNavigation class="page-navigation" />
+	<div class="page-body">
+		<div class="page-layout">
+			<ArticleContent
+				entry={entry}
+				article={article}
+				class="story-experience"
+			>
+				<ExperienceHeader entry={entry} />
+				<div class="story-scenes" data-pagefind-body>
+					{
+						groups.map((blocks) => (
+							<section class="story-scene">
+								{blocks.map((block) => (
+									<SourceBlock block={block} />
+								))}
+							</section>
+						))
+					}
+				</div>
+				<ExperienceFooter entry={entry} />
+			</ArticleContent>
+			<aside class="page-toc"><PageTOC /></aside>
+		</div>
+		<PageComments entry={entry} class="page-comments" />
+		<PagePagination entry={entry} class="page-pagination" />
+		<PageFooter />
+	</div>
+
+	<style is:inline>
+		[data-article-design="__DESIGN_KEY__"] .page-navigation {
+			position: sticky;
+			top: 0;
+			z-index: 50;
+			background: var(--card-bg);
+			border-bottom: 1px solid var(--line-divider);
+		}
+		[data-article-design="__DESIGN_KEY__"]
+			.page-navigation
+			#navbar
+			> div:last-child {
+			max-width: none;
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-body {
+			width: min(calc(100% - 3rem), 90rem);
+			margin: 2.5rem auto;
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-layout {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) 16rem;
+			gap: clamp(1.5rem, 3vw, 3rem);
+			align-items: start;
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-toc {
+			position: sticky;
+			top: 6rem;
+			padding: 1.25rem;
+			border: 1px solid var(--line-divider);
+			border-radius: var(--radius-large);
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-comments {
+			margin-top: 3rem;
+		}
+		[data-article-design="__DESIGN_KEY__"] .page-pagination {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			gap: 1rem;
+			margin: 2rem 0;
+			color: var(--primary);
+		}
+		@media (max-width: 900px) {
+			[data-article-design="__DESIGN_KEY__"] .page-body {
+				width: calc(100% - 1.5rem);
+				margin-top: 1.25rem;
+			}
+			[data-article-design="__DESIGN_KEY__"] .page-layout {
+				grid-template-columns: minmax(0, 1fr);
+			}
+			[data-article-design="__DESIGN_KEY__"] .page-toc {
+				position: static;
+				grid-row: 1;
+			}
+		}
+
+		[data-article-design="__DESIGN_KEY__"] .story-experience {
+			padding: clamp(1.25rem, 3vw, 3rem);
+		}
+		[data-article-design="__DESIGN_KEY__"] .experience-header {
+			max-width: 54rem;
+			margin: 2rem 0 4rem;
+			padding-left: 1.5rem;
+			border-left: 2px solid var(--primary);
+		}
+		[data-article-design="__DESIGN_KEY__"] .experience-header > h1 {
+			max-width: 20ch;
+			font-size: clamp(2rem, 4vw, 4rem);
+			line-height: 1.4;
+			font-weight: 650;
+			margin-bottom: 1.5rem;
+		}
+		[data-article-design="__DESIGN_KEY__"] .story-scene {
+			max-width: none;
+			margin: 0 auto 3rem;
+			padding: clamp(1rem, 3vw, 2.5rem);
+			background: var(--card-bg);
+			border-radius: var(--radius-large);
+		}
+		[data-article-design="__DESIGN_KEY__"]
+			.story-scene
+			[data-source-block] {
+			margin-block: 1.1rem;
+		}
+		[data-article-design="__DESIGN_KEY__"] .story-scene blockquote {
+			font-style: normal;
+			padding-left: 1.5rem;
+			border-left-color: var(--primary);
+		}
+	</style>
+</PageShell>

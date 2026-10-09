@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from "astro:content";
+import License from "../misc/License.astro";
+import { licenseConfig } from "../../config";
+
+interface Props {
+	entry: CollectionEntry<"posts">;
+}
+const { entry } = Astro.props;
+---
+
+{
+	licenseConfig.enable && (
+		<License
+			title={entry.data.title}
+			id={entry.id}
+			pubDate={entry.data.published}
+			author={entry.data.author}
+			sourceLink={entry.data.sourceLink}
+			licenseName={entry.data.licenseName}
+			licenseUrl={entry.data.licenseUrl}
+			class="mt-8 mb-6 rounded-xl"
+		/>
+	)
+}

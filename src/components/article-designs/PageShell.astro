@@ -1,0 +1,78 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { profileConfig, siteConfig } from "../../config";
+import { formatDateToYYYYMMDD } from "../../utils/date-utils";
+interface Props {
+	entry: CollectionEntry<"posts">;
+	designKey: string;
+	class?: string;
+}
+const { entry, designKey, class: className } = Astro.props;
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	headline: entry.data.title,
+	description: entry.data.description || entry.data.title,
+	keywords: entry.data.tags,
+	author: { "@type": "Person", name: profileConfig.name, url: Astro.site },
+	datePublished: formatDateToYYYYMMDD(entry.data.published),
+	inLanguage: (entry.data.lang || siteConfig.lang).replace("_", "-"),
+};
+---
+
+<Layout
+	title={entry.data.title}
+	description={entry.data.description}
+	lang={entry.data.lang}
+	banner={entry.data.image}
+	setOGTypeArticle={true}
+	postSlug={entry.id}
+>
+	<Fragment slot="head">
+		<script
+			is:inline
+			type="application/ld+json"
+			set:html={JSON.stringify(jsonLd)}
+		/>
+		<slot name="head" />
+	</Fragment>
+	<main
+		id="swup-container"
+		data-article-page={designKey}
+		data-article-design={designKey}
+		class={className}
+	>
+		<style is:inline>
+			[data-article-page] {
+				width: 100%;
+				min-height: 100vh;
+				min-width: 0;
+				font-size: 18px;
+			}
+			@media (max-width: 900px) {
+				[data-article-page] {
+					font-size: 16px;
+				}
+			}
+			[data-article-page] [data-source-block] {
+				font-size: inherit;
+			}
+			[data-article-page] #post-container {
+				min-width: 0;
+				overflow-wrap: anywhere;
+			}
+			[data-article-page] #post-container [id] {
+				scroll-margin-top: 6rem;
+			}
+			@media print {
+				[data-article-page] [data-source-block] {
+					opacity: 1 !important;
+					transform: none !important;
+					animation: none !important;
+				}
+			}
+		</style>
+		<slot />
+	</main>
+</Layout>

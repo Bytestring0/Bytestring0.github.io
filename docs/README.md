@@ -6,6 +6,8 @@
 
 ### 核心文档
 
+- **[ARTICLE_DESIGN.md](./ARTICLE_DESIGN.md)** - 使用 `create` 与专属 skill 创作文章页面
+
 - **[../README.zh.md](../README.zh.md)** - 项目主文档 (简体中文)
   - 快速开始
   - 功能特性

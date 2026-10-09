@@ -36,6 +36,14 @@ export const friendsData: FriendItem[] = [
 		siteurl: "https://jerrymain.top/",
 		tags: ["Blog", "Personal"],
 	},
+	{
+		id: 4,
+		title: "XY's blog",
+		imgurl: "https://ill-formed.com/images/avatar.jpeg",
+		desc: "曹安公路首席饭桶，二十多岁，是学生。",
+		siteurl: "https://jerrymain.top/",
+		tags: ["Blog"],
+	},
 ];
 
 // 获取所有友情链接数据

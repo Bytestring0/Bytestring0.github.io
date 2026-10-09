@@ -1,0 +1,11 @@
+---
+import Navbar from "../Navbar.astro";
+interface Props {
+	class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<header data-blog-navigation class={className}>
+	<slot><Navbar class="w-full" /></slot>
+</header>

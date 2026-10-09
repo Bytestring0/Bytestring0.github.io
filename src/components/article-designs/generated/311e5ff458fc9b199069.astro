@@ -1,0 +1,1917 @@
+---
+import type { CollectionEntry } from "astro:content";
+import {
+	groupArticleBlocks,
+	type ArticleSource,
+} from "../../../utils/article-source";
+import SourceBlock from "../SourceBlock.astro";
+import PageShell from "../PageShell.astro";
+import PageNavigation from "../PageNavigation.astro";
+import PageTOC from "../PageTOC.astro";
+import PageComments from "../PageComments.astro";
+import PageFooter from "../PageFooter.astro";
+import PagePagination from "../PagePagination.astro";
+import ArticleContent from "../ArticleContent.astro";
+import ExperienceFooter from "../ExperienceFooter.astro";
+import PostMeta from "../../PostMeta.astro";
+
+interface Props {
+	entry: CollectionEntry<"posts">;
+	article: ArticleSource;
+	designKey: string;
+}
+const { entry, article, designKey } = Astro.props;
+
+/* 原文按 h1/h2 分组：第一组是标题与引言，其余每组一章。 */
+const groups = groupArticleBlocks(article, 2);
+const firstGroup = groups[0] ?? [];
+const titleBlock = firstGroup[0]?.tag === "h1" ? firstGroup[0] : null;
+const introBlocks = titleBlock ? firstGroup.slice(1) : firstGroup;
+const chapterGroups = titleBlock ? groups.slice(1) : groups;
+const chapters = chapterGroups.map((blocks) => {
+	const head = blocks[0];
+	const heading =
+		head?.headingId && /^h[12]$/.test(head.tag) ? head.headingId : "";
+	return { blocks, headingId: heading };
+});
+
+/* 面板初始字形：上电默认 000010。JS 里使用同一张字形表。 */
+const SEGMENTS: Record<string, string> = {
+	"0": "abcdef",
+	"1": "bc",
+	"2": "abdeg",
+	"3": "abcdg",
+	"4": "bcfg",
+	"5": "acdfg",
+	"6": "acdefg",
+	"7": "abc",
+	"8": "abcdefg",
+	"9": "abcdfg",
+};
+const SEG_ORDER = ["a", "b", "c", "d", "e", "f", "g"];
+const POWER_ON_DIGITS = "000010".split("");
+
+const toggles = [
+	{ key: "1", label: "K1", role: "反光板 + 许可" },
+	{ key: "2", label: "K2", role: "许可" },
+	{ key: "3", label: "K3", role: "许可" },
+];
+---
+
+<PageShell entry={entry} designKey={designKey} class="sw-page-shell">
+	<PageNavigation class="sw-nav" />
+
+	<shutter-wire-page class="sw-page">
+		<ArticleContent entry={entry} article={article} class="sw-content">
+			<!-- ── 规格头 + 面板演示 ───────────────────────────── -->
+			<header class="sw-hero">
+				<div class="sw-hero-head">
+					<p class="sw-kicker">
+						<span class="sw-kicker-led" aria-hidden="true"></span>
+						ShutterWire · STM32L051C8T6
+					</p>
+					<div data-pagefind-body>
+						{
+							titleBlock ? (
+								<SourceBlock
+									block={titleBlock}
+									prose={false}
+									class="sw-title-block"
+								/>
+							) : (
+								<h1 data-pagefind-meta="title">{entry.data.title}</h1>
+							)
+						}
+					</div>
+					<PostMeta
+						className="sw-meta"
+						published={entry.data.published}
+						updated={entry.data.updated}
+						tags={entry.data.tags}
+						category={entry.data.category || undefined}
+						id={entry.id}
+					/>
+				</div>
+
+				<!-- 面板演示：按文中 K1–K7 与状态机规则联动 -->
+				<shutter-wire-panel class="sw-panel" data-pagefind-ignore>
+					<div class="sw-panel-bar">
+						<span class="sw-panel-tag">面板演示</span>
+						<span class="sw-panel-legend"
+							>指示灯：绿＝对应接点闭合，红＝未闭合</span
+						>
+					</div>
+
+					<div class="sw-case">
+						<div class="sw-case-controls">
+							{
+								toggles.map((item) => (
+									<div class="sw-slot">
+										<span
+											class="sw-led is-red"
+											data-sw-led={item.key}
+											aria-hidden="true"
+										/>
+										<button
+											type="button"
+											class="sw-switch"
+											data-sw-toggle={item.key}
+											role="switch"
+											aria-checked="false"
+											aria-label={`${item.label} 钮子开关，${item.role}`}
+										>
+											<span class="sw-bezel" aria-hidden="true">
+												<span class="sw-lever" />
+											</span>
+											<span class="sw-slot-label">
+												<span class="sw-slot-key">{item.label}</span>
+												<span class="sw-slot-role">{item.role}</span>
+											</span>
+										</button>
+									</div>
+								))
+							}
+							<div class="sw-slot sw-slot-shutter">
+								<span
+									class="sw-led is-red"
+									data-sw-led="7"
+									aria-hidden="true"
+								/>
+								<button
+									type="button"
+									class="sw-latch"
+									data-sw-shutter
+									aria-pressed="false"
+									aria-label="K7 自锁快门按钮"
+								>
+									<span class="sw-latch-cap" aria-hidden="true" />
+									<span class="sw-slot-label">
+										<span class="sw-slot-key">K7</span>
+										<span class="sw-slot-role">快门（自锁）</span>
+									</span>
+								</button>
+							</div>
+						</div>
+
+						<div class="sw-display">
+							<div class="sw-digits" data-sw-digits aria-hidden="true">
+								{
+									POWER_ON_DIGITS.map((char, index) => (
+										<span class="sw-digit" data-sw-digit={index}>
+											{SEG_ORDER.map((seg) => (
+												<i
+													class:list={[
+														"sw-seg",
+														`sw-seg-${seg}`,
+														{ "is-on": SEGMENTS[char].includes(seg) },
+													]}
+												/>
+											))}
+										</span>
+									))
+								}
+							</div>
+							<dl class="sw-readout" aria-live="off">
+								<div>
+									<dt>状态</dt>
+									<dd data-sw-phase>待机 IDLE</dd>
+								</div>
+								<div>
+									<dt>余量</dt>
+									<dd data-sw-remain>2560 tick · 10.000 s</dd>
+								</div>
+								<div>
+									<dt>IN1–OUT1</dt>
+									<dd data-sw-out1>断开</dd>
+								</div>
+								<div>
+									<dt>IN2–OUT2</dt>
+									<dd data-sw-out2>断开</dd>
+								</div>
+								<div>
+									<dt>调时</dt>
+									<dd data-sw-unit>选中 秒</dd>
+								</div>
+							</dl>
+						</div>
+
+						<div class="sw-case-keys">
+							<div class="sw-key">
+								<button
+									type="button"
+									class="sw-key-cap"
+									data-sw-key="4"
+									aria-label="K4 增加选中单位的时间"
+									><span aria-hidden="true">＋</span></button
+								>
+								<span class="sw-slot-key">K4</span>
+								<span class="sw-slot-role">增加</span>
+							</div>
+							<div class="sw-key">
+								<button
+									type="button"
+									class="sw-key-cap"
+									data-sw-key="5"
+									aria-label="K5 确认并切换单位，长按两秒退出暂停"
+									><span aria-hidden="true">◉</span></button
+								>
+								<span class="sw-slot-key">K5</span>
+								<span class="sw-slot-role">确认 / 切换</span>
+							</div>
+							<div class="sw-key">
+								<button
+									type="button"
+									class="sw-key-cap"
+									data-sw-key="6"
+									aria-label="K6 减少选中单位的时间"
+									><span aria-hidden="true">－</span></button
+								>
+								<span class="sw-slot-key">K6</span>
+								<span class="sw-slot-role">减少</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="sw-panel-foot">
+						<p class="sw-note" data-sw-note aria-live="polite">
+							上电初始状态：K1～K3 弹起，K7 弹起，设定 10 秒。
+						</p>
+						<div class="sw-panel-actions">
+							<p class="sw-hint">
+								点开关＝闭合接点；点 K7＝一次操作；按住 K4／K6 约
+								600 ms 连调；按住 K5 两秒退出暂停。
+							</p>
+							<button type="button" class="sw-power" data-sw-power>
+								重新上电
+							</button>
+						</div>
+					</div>
+				</shutter-wire-panel>
+
+				<p class="sw-disclaimer">
+					面板按文中 K1–K7、逐输入消抖 31.25 ms、四状态机与 1/256
+					s 余量规则实现，只用于对照阅读；文中的硬件验证状态以原文为准。
+				</p>
+			</header>
+
+			<!-- ── 正文 ─────────────────────────────────────── -->
+			<div class="sw-layout">
+				<div class="sw-chapters" data-pagefind-body>
+					{
+						introBlocks.length > 0 && (
+							<section
+								class="sw-chapter sw-intro"
+								data-sw-chapter="intro"
+							>
+								<span class="sw-probe" aria-hidden="true" />
+								<div class="sw-chapter-body">
+									{introBlocks.map((block) => (
+										<SourceBlock block={block} prose={false} />
+									))}
+								</div>
+							</section>
+						)
+					}
+					{
+						chapters.map((chapter, index) => (
+							<section
+								class="sw-chapter"
+								data-sw-chapter={index}
+								data-sw-heading={chapter.headingId}
+							>
+								<span class="sw-probe" aria-hidden="true" />
+								<div class="sw-chapter-body">
+									{chapter.blocks.map((block) => (
+										<SourceBlock block={block} prose={false} />
+									))}
+								</div>
+							</section>
+						))
+					}
+				</div>
+
+				<aside class="sw-side">
+					<div class="sw-side-sticky">
+						<PageTOC label="章节" class="sw-toc" />
+					</div>
+				</aside>
+			</div>
+
+			<ExperienceFooter entry={entry} />
+		</ArticleContent>
+
+		<PageComments entry={entry} class="sw-comments" />
+		<PagePagination entry={entry} class="sw-pagination" />
+		<PageFooter />
+	</shutter-wire-page>
+
+	<style is:inline>
+		/* ── tokens ───────────────────────────────────────── */
+		[data-article-design="311e5ff458fc9b199069"] {
+			--sw-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas,
+				monospace;
+			--sw-hair: var(--line-divider, rgba(128, 128, 128, 0.24));
+			--sw-plate: var(--card-bg, rgba(127, 127, 127, 0.06));
+			--sw-ink-soft: color-mix(in srgb, currentColor 72%, transparent);
+			--sw-ink-faint: color-mix(in srgb, currentColor 48%, transparent);
+			--sw-tint: color-mix(in srgb, var(--primary) 12%, transparent);
+			--sw-tint-strong: color-mix(in srgb, var(--primary) 30%, transparent);
+			--sw-red: #dd5a4d;
+			--sw-green: #38ac71;
+			--sw-display: #14161b;
+			/* 本文专用强调色：只要示仪器与导航的指示，与全站主题色分开。
+			   正文链接、发光显示仍用 --primary。 */
+			--sw-accent: #0c6a62;
+			--sw-accent-soft: color-mix(in srgb, var(--sw-accent) 16%, transparent);
+			--sw-accent-strong: color-mix(
+				in srgb,
+				var(--sw-accent) 42%,
+				transparent
+			);
+			/* 工程图纸网格：亮色像图纸台，暗色像未开灯的台架。
+			   纸底与主题 card-bg 混合，抬高不透明度以压平正文背后的全站纹理。 */
+			--sw-paper: color-mix(in srgb, var(--card-bg) 58%, #ffffff 42%);
+			--sw-grid-line: color-mix(in srgb, var(--sw-accent) 4%, transparent);
+			--sw-grid-line-strong: color-mix(
+				in srgb,
+				var(--sw-accent) 7%,
+				transparent
+			);
+		}
+		.dark [data-article-design="311e5ff458fc9b199069"] {
+			--sw-accent: #e0a45c;
+			--sw-ink-soft: color-mix(in srgb, currentColor 78%, transparent);
+			--sw-ink-faint: color-mix(in srgb, currentColor 56%, transparent);
+			--sw-paper: color-mix(in srgb, var(--card-bg) 58%, #04060a 42%);
+			--sw-grid-line: color-mix(in srgb, var(--sw-accent) 5%, transparent);
+			--sw-grid-line-strong: color-mix(
+				in srgb,
+				var(--sw-accent) 9%,
+				transparent
+			);
+		}
+
+		/* 背景：1rem 细网格 + 8rem 坐标线，强度保持“几乎看不见”。 */
+		[data-article-design="311e5ff458fc9b199069"] {
+			background-color: var(--sw-paper);
+			background-image:
+				linear-gradient(
+					to right,
+					var(--sw-grid-line) 1px,
+					transparent 1px
+				),
+				linear-gradient(
+					to bottom,
+					var(--sw-grid-line) 1px,
+					transparent 1px
+				),
+				linear-gradient(
+					to right,
+					var(--sw-grid-line-strong) 1px,
+					transparent 1px
+				),
+				linear-gradient(
+					to bottom,
+					var(--sw-grid-line-strong) 1px,
+					transparent 1px
+				);
+			background-size:
+				1rem 1rem,
+				1rem 1rem,
+				8rem 8rem,
+				8rem 8rem;
+		}
+
+		[data-article-design="311e5ff458fc9b199069"] .sw-page {
+			display: block;
+		}
+
+		/* ── 导航 ─────────────────────────────────────────── */
+		[data-article-design="311e5ff458fc9b199069"] .sw-nav {
+			position: sticky;
+			top: 0;
+			z-index: 60;
+			background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+			backdrop-filter: blur(12px);
+			border-bottom: 1px solid var(--sw-hair);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-nav #navbar > div:last-child {
+			max-width: none;
+		}
+
+		/* ── 规格头 ───────────────────────────────────────── */
+		[data-article-design="311e5ff458fc9b199069"] .sw-hero {
+			width: min(100% - 2.5rem, 84rem);
+			margin: 2.25rem auto 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-kicker {
+			display: flex;
+			align-items: center;
+			gap: 0.55rem;
+			margin: 0 0 0.85rem;
+			font-family: var(--sw-mono);
+			font-size: 0.8rem;
+			letter-spacing: 0.06em;
+			color: var(--sw-ink-soft);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-kicker-led {
+			width: 0.45rem;
+			height: 0.45rem;
+			border-radius: 50%;
+			background: var(--sw-accent);
+			box-shadow: 0 0 0.5rem var(--sw-accent-strong);
+			animation: sw-power-led 2.4s ease-in-out infinite;
+		}
+		@keyframes sw-power-led {
+			0%,
+			100% {
+				opacity: 0.45;
+			}
+			50% {
+				opacity: 1;
+			}
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-title-block h1 {
+			margin: 0;
+			font-size: clamp(1.75rem, 3.6vw, 2.85rem);
+			line-height: 1.3;
+			font-weight: 780;
+			letter-spacing: -0.015em;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-title-block h1 .anchor {
+			display: none;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-meta {
+			margin-top: 1rem;
+		}
+
+		/* ── 面板外壳 ─────────────────────────────────────── */
+		[data-article-design="311e5ff458fc9b199069"] .sw-panel {
+			display: block;
+			margin-top: 2rem;
+			padding: clamp(0.9rem, 2vw, 1.35rem);
+			border: 1px solid var(--sw-hair);
+			border-radius: var(--radius-large);
+			background:
+				linear-gradient(
+					color-mix(in srgb, currentColor 3%, transparent),
+					transparent
+				),
+				var(--sw-plate);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-panel-bar {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: baseline;
+			gap: 0.5rem 1rem;
+			padding-bottom: 0.7rem;
+			margin-bottom: 1rem;
+			border-bottom: 1px dashed var(--sw-hair);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-panel-tag {
+			font-family: var(--sw-mono);
+			font-size: 0.78rem;
+			font-weight: 600;
+			padding: 0.15rem 0.5rem;
+			border: 1px solid var(--sw-accent-strong);
+			border-radius: 999px;
+			color: var(--sw-accent);
+			background: var(--sw-accent-soft);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-panel-legend,
+		[data-article-design="311e5ff458fc9b199069"] .sw-hint,
+		[data-article-design="311e5ff458fc9b199069"] .sw-disclaimer {
+			font-size: 0.83rem;
+			line-height: 1.7;
+			color: var(--sw-ink-soft);
+			margin: 0;
+		}
+
+		[data-article-design="311e5ff458fc9b199069"] .sw-case {
+			display: grid;
+			gap: clamp(1rem, 2.2vw, 1.6rem);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-case-controls {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 0.5rem;
+			align-items: start;
+			max-width: 46rem;
+			margin-inline: auto;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-slot {
+			display: grid;
+			justify-items: center;
+			gap: 0.4rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-slot-shutter {
+			grid-column: 4;
+		}
+
+		[data-article-design="311e5ff458fc9b199069"] .sw-led {
+			width: 1.05rem;
+			height: 1.05rem;
+			border-radius: 50%;
+			border: 1px solid var(--sw-hair);
+			background-image: radial-gradient(
+				circle at 34% 28%,
+				rgba(255, 255, 255, 0.72),
+				transparent 58%
+			);
+			background-color: color-mix(in srgb, currentColor 22%, transparent);
+			transition:
+				background-color 0.18s ease,
+				box-shadow 0.18s ease;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-led.is-red {
+			background-color: var(--sw-red);
+			box-shadow: 0 0 0.5rem color-mix(in srgb, var(--sw-red) 55%, transparent);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-led.is-green {
+			background-color: var(--sw-green);
+			box-shadow: 0 0 0.5rem
+				color-mix(in srgb, var(--sw-green) 55%, transparent);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-led.is-off {
+			background-color: color-mix(in srgb, currentColor 16%, transparent);
+			box-shadow: none;
+		}
+
+		[data-article-design="311e5ff458fc9b199069"] .sw-switch,
+		[data-article-design="311e5ff458fc9b199069"] .sw-latch,
+		[data-article-design="311e5ff458fc9b199069"] .sw-key-cap,
+		[data-article-design="311e5ff458fc9b199069"] .sw-power {
+			-webkit-tap-highlight-color: transparent;
+			font: inherit;
+			color: inherit;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-switch,
+		[data-article-design="311e5ff458fc9b199069"] .sw-latch {
+			display: grid;
+			justify-items: center;
+			gap: 0.45rem;
+			padding: 0.3rem 0.25rem;
+			background: none;
+			border: 0;
+			cursor: pointer;
+			border-radius: 0.6rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] :is(
+				.sw-switch,
+				.sw-latch,
+				.sw-key-cap,
+				.sw-power
+			):focus-visible {
+			outline: 2px solid var(--primary);
+			outline-offset: 2px;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-bezel {
+			position: relative;
+			width: 1.45rem;
+			height: 2.1rem;
+			border-radius: 0.4rem;
+			border: 1px solid var(--sw-hair);
+			background: linear-gradient(
+				color-mix(in srgb, currentColor 17%, transparent),
+				color-mix(in srgb, currentColor 7%, transparent)
+			);
+			box-shadow:
+				inset 0 2px 5px rgba(0, 0, 0, 0.3),
+				0 1px 0 rgba(255, 255, 255, 0.12);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-lever {
+			position: absolute;
+			left: 50%;
+			top: 0.16rem;
+			width: 1rem;
+			height: 1rem;
+			margin-left: -0.5rem;
+			border-radius: 50%;
+			background:
+				radial-gradient(
+					circle at 34% 28%,
+					rgba(255, 255, 255, 0.8),
+					transparent 60%
+				),
+				linear-gradient(#c8cdd6, #8b919b);
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+			transition:
+				top 0.14s ease,
+				box-shadow 0.14s ease;
+		}
+		[data-article-design="311e5ff458fc9b199069"]
+			.sw-switch[aria-checked="true"]
+			.sw-lever {
+			top: 0.9rem;
+			box-shadow:
+				0 1px 1px rgba(0, 0, 0, 0.4),
+				inset 0 1px 2px rgba(255, 255, 255, 0.35);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-latch-cap {
+			display: block;
+			width: 1.6rem;
+			height: 1.6rem;
+			border-radius: 0.32rem;
+			border: 1px solid var(--sw-hair);
+			background: linear-gradient(
+				color-mix(in srgb, currentColor 12%, transparent),
+				color-mix(in srgb, currentColor 4%, transparent)
+			);
+			box-shadow:
+				0 1px 0 rgba(0, 0, 0, 0.22),
+				inset 0 1px 0 rgba(255, 255, 255, 0.22);
+			transition:
+				transform 0.12s ease,
+				box-shadow 0.12s ease,
+				border-color 0.12s ease;
+		}
+		[data-article-design="311e5ff458fc9b199069"]
+			.sw-latch[aria-pressed="true"]
+			.sw-latch-cap {
+			transform: translateY(1px) scale(0.96);
+			border-color: color-mix(in srgb, var(--primary) 55%, var(--sw-hair));
+			box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.32);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-slot-label {
+			display: grid;
+			gap: 0.1rem;
+			justify-items: center;
+			text-align: center;
+			line-height: 1.3;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-slot-key {
+			font-family: var(--sw-mono);
+			font-size: 0.8rem;
+			font-weight: 650;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-slot-role {
+			font-size: 0.7rem;
+			color: var(--sw-ink-faint);
+		}
+
+		/* ── 数码管与读数 ─────────────────────────────────── */
+		[data-article-design="311e5ff458fc9b199069"] .sw-display {
+			display: grid;
+			grid-template-columns: auto minmax(0, 1fr);
+			align-items: center;
+			gap: clamp(1rem, 3vw, 2rem);
+			padding: clamp(0.85rem, 2vw, 1.15rem) clamp(1rem, 2.4vw, 1.5rem);
+			border-radius: var(--radius-large);
+			background: var(--sw-display);
+			border: 1px solid color-mix(in srgb, var(--sw-display) 60%, var(--sw-hair));
+			box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.45);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-digits {
+			display: flex;
+			align-items: center;
+			gap: 0.34rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-digit {
+			position: relative;
+			width: clamp(1.1rem, 3.4vw, 1.95rem);
+			aspect-ratio: 1 / 1.72;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-digit:nth-child(3),
+		[data-article-design="311e5ff458fc9b199069"] .sw-digit:nth-child(5) {
+			margin-left: 0.4rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-seg {
+			position: absolute;
+			background-color: rgba(255, 255, 255, 0.07);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-seg.is-on {
+			background-color: var(--primary);
+			box-shadow: 0 0 0.4rem
+				color-mix(in srgb, var(--primary) 62%, transparent);
+		}
+		[data-article-design="311e5ff458fc9b199069"] :is(
+				.sw-seg-a,
+				.sw-seg-d,
+				.sw-seg-g
+			) {
+			left: 10%;
+			width: 80%;
+			height: 11%;
+			clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%);
+		}
+		[data-article-design="311e5ff458fc9b199069"] :is(
+				.sw-seg-b,
+				.sw-seg-c,
+				.sw-seg-e,
+				.sw-seg-f
+			) {
+			width: 12%;
+			height: 39%;
+			clip-path: polygon(50% 0, 100% 8%, 100% 92%, 50% 100%, 0 92%, 0 8%);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-seg-a {
+			top: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-seg-g {
+			top: 44.5%;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-seg-d {
+			bottom: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] :is(.sw-seg-f, .sw-seg-b) {
+			top: 2.5%;
+		}
+		[data-article-design="311e5ff458fc9b199069"] :is(.sw-seg-e, .sw-seg-c) {
+			bottom: 2.5%;
+		}
+		[data-article-design="311e5ff458fc9b199069"] :is(.sw-seg-f, .sw-seg-e) {
+			left: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] :is(.sw-seg-b, .sw-seg-c) {
+			right: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-digit.is-blinking {
+			animation: sw-blink 1s steps(1, end) infinite;
+		}
+		@keyframes sw-blink {
+			0%,
+			50% {
+				opacity: 1;
+			}
+			50.01%,
+			100% {
+				opacity: 0.12;
+			}
+		}
+		[data-article-design="311e5ff458fc9b199069"]
+			.sw-digits.is-blanked
+			.sw-seg {
+			background-color: rgba(255, 255, 255, 0.055);
+			box-shadow: none;
+			transition: none;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-readout {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+			gap: 0.55rem 1.1rem;
+			margin: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-readout > div {
+			min-width: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-readout dt {
+			font-size: 0.68rem;
+			letter-spacing: 0.08em;
+			color: rgba(255, 255, 255, 0.42);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-readout dd {
+			margin: 0.15rem 0 0;
+			font-family: var(--sw-mono);
+			font-size: 0.85rem;
+			color: color-mix(in srgb, var(--primary) 78%, #fff);
+			font-variant-numeric: tabular-nums;
+		}
+
+		/* ── 调时按键 ─────────────────────────────────────── */
+		[data-article-design="311e5ff458fc9b199069"] .sw-case-keys {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: clamp(0.75rem, 4vw, 2rem);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-key {
+			display: grid;
+			justify-items: center;
+			gap: 0.25rem;
+			min-width: 3.6rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-key-cap {
+			width: 2.1rem;
+			height: 2.1rem;
+			border-radius: 50%;
+			border: 1px solid var(--sw-hair);
+			background: linear-gradient(
+				color-mix(in srgb, currentColor 12%, transparent),
+				color-mix(in srgb, currentColor 4%, transparent)
+			);
+			box-shadow:
+				0 1px 0 rgba(0, 0, 0, 0.22),
+				inset 0 1px 0 rgba(255, 255, 255, 0.22);
+			cursor: pointer;
+			display: grid;
+			place-items: center;
+			font-size: 0.85rem;
+			line-height: 1;
+			transition:
+				transform 0.1s ease,
+				box-shadow 0.1s ease;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-key-cap:active,
+		[data-article-design="311e5ff458fc9b199069"] .sw-key-cap.is-down {
+			transform: translateY(1px) scale(0.96);
+			box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+		}
+
+		[data-article-design="311e5ff458fc9b199069"] .sw-panel-foot {
+			margin-top: 1.1rem;
+			padding-top: 0.9rem;
+			border-top: 1px dashed var(--sw-hair);
+			display: grid;
+			gap: 0.6rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-note {
+			margin: 0;
+			font-size: 0.86rem;
+			line-height: 1.7;
+			color: var(--sw-accent);
+			min-height: 1.4em;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-panel-actions {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.6rem 1.25rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-power {
+			padding: 0.35rem 0.85rem;
+			border-radius: 999px;
+			border: 1px solid var(--sw-hair);
+			background: var(--sw-plate);
+			font-size: 0.8rem;
+			cursor: pointer;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-power:hover {
+			border-color: var(--sw-tint-strong);
+			color: var(--primary);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-disclaimer {
+			margin-top: 0.8rem;
+			max-width: 56rem;
+		}
+
+		/* ── 正文与目录 ───────────────────────────────────── */
+		[data-article-design="311e5ff458fc9b199069"] .sw-layout {
+			width: min(100% - 2.5rem, 84rem);
+			margin: 2.75rem auto 0;
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) 17.5rem;
+			gap: clamp(1.5rem, 3vw, 2.75rem);
+			align-items: start;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapters {
+			min-width: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter {
+			display: grid;
+			grid-template-columns: 2.1rem minmax(0, 1fr);
+			column-gap: 0.85rem;
+			padding-top: 2rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter + .sw-chapter {
+			margin-top: 2.5rem;
+			border-top: 1px solid var(--sw-hair);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-intro {
+			padding-top: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-probe {
+			position: relative;
+			display: block;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-probe::before {
+			content: "";
+			position: absolute;
+			left: 0.5rem;
+			top: 1.6rem;
+			bottom: 0.35rem;
+			width: 1px;
+			background: var(--sw-hair);
+			transition: background-color 0.25s ease;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-probe::after {
+			content: "";
+			position: absolute;
+			left: 0.28rem;
+			top: 0.5rem;
+			width: 0.45rem;
+			height: 0.45rem;
+			border-radius: 2px;
+			border: 1px solid var(--sw-hair);
+			background: var(--sw-plate);
+			transition:
+				background-color 0.25s ease,
+				border-color 0.25s ease,
+				box-shadow 0.25s ease;
+		}
+		[data-article-design="311e5ff458fc9b199069"]
+			.sw-chapter.is-current
+			.sw-probe::before {
+			background: var(--sw-accent-strong);
+		}
+		[data-article-design="311e5ff458fc9b199069"]
+			.sw-chapter.is-current
+			.sw-probe::after {
+			background: var(--sw-accent);
+			border-color: var(--sw-accent);
+			box-shadow: 0 0 0.45rem var(--sw-accent-strong);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body {
+			min-width: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"]
+			.sw-chapter.is-pending {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter.is-revealed {
+			transition:
+				opacity 0.5s ease,
+				transform 0.5s ease;
+		}
+
+		/* 原文排版（prose 关闭后自定） */
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body h2 {
+			margin: 0 0 1.35rem;
+			font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+			line-height: 1.42;
+			font-weight: 720;
+			letter-spacing: -0.01em;
+			scroll-margin-top: 6rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body h3 {
+			margin: 2.1rem 0 0.9rem;
+			font-size: 1.12rem;
+			line-height: 1.5;
+			font-weight: 660;
+			scroll-margin-top: 6rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body h3::before {
+			content: "";
+			display: inline-block;
+			width: 0.28rem;
+			height: 0.85em;
+			margin-right: 0.5rem;
+			border-radius: 1px;
+			background: var(--primary);
+			vertical-align: -0.06em;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body :is(h2, h3) .anchor {
+			color: var(--sw-ink-faint);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body p {
+			margin: 1.05em 0;
+			line-height: 1.88;
+			max-width: 44rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body :is(ul, ol) {
+			margin: 1.05em 0;
+			padding-left: 1.35em;
+			line-height: 1.85;
+			max-width: 44rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body li {
+			margin: 0.35em 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body strong {
+			font-weight: 650;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body hr {
+			margin: 2rem 0;
+			border: 0;
+			border-top: 1px solid var(--sw-hair);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body .table-wrapper {
+			margin: 1.4rem 0;
+			min-width: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body .table-wrapper table {
+			min-width: 30rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body .expressive-code {
+			margin: 1.4rem 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body .mermaid-wrapper {
+			margin: 1.4rem 0;
+			min-width: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body img {
+			display: block;
+			max-width: 100%;
+			height: auto;
+			margin: 0.4rem 0;
+			padding: 0.45rem;
+			border: 1px solid var(--sw-hair);
+			border-radius: var(--radius-large);
+			background: #fff;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body p:has(> em:only-child) {
+			margin-top: -0.1rem;
+			font-size: 0.86rem;
+			line-height: 1.75;
+			color: var(--sw-ink-soft);
+		}
+		[data-article-design="311e5ff458fc9b199069"]
+			.sw-intro
+			.sw-chapter-body
+			blockquote {
+			max-width: 44rem;
+			margin: 0 0 1.6rem;
+			padding: 1rem 1.2rem;
+			border: 1px solid var(--sw-hair);
+			border-radius: var(--radius-large);
+			background: var(--sw-plate);
+			font-size: 0.92rem;
+			line-height: 1.8;
+			color: var(--sw-ink-soft);
+		}
+		[data-article-design="311e5ff458fc9b199069"]
+			.sw-intro
+			.sw-chapter-body
+			blockquote::before {
+			content: none;
+		}
+		[data-article-design="311e5ff458fc9b199069"]
+			.sw-intro
+			.sw-chapter-body
+			blockquote
+			p {
+			margin: 0;
+			max-width: none;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-intro .sw-chapter-body > [data-source-block] > p {
+			font-size: 1.06rem;
+			line-height: 1.92;
+			color: color-mix(in srgb, currentColor 84%, transparent);
+		}
+
+		/* ── 目录 ─────────────────────────────────────────── */
+		[data-article-design="311e5ff458fc9b199069"] .sw-side {
+			align-self: stretch;
+			min-width: 0;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-side-sticky {
+			position: sticky;
+			top: 5.5rem;
+			max-height: calc(100vh - 7rem);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-toc {
+			padding: 1rem 1.05rem;
+			border: 1px solid var(--sw-hair);
+			border-radius: var(--radius-large);
+			background: var(--sw-plate);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-toc summary {
+			font-family: var(--sw-mono);
+			font-size: 0.8rem;
+			letter-spacing: 0.08em;
+			color: var(--sw-ink-soft);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-toc ol {
+			max-height: calc(100vh - 12rem);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-toc a {
+			font-size: 0.83rem;
+			line-height: 1.5;
+			padding: 0.3rem 0.45rem 0.3rem
+				calc(0.45rem + var(--toc-depth, 0) * 0.7rem);
+			border-left: 2px solid transparent;
+			color: var(--sw-ink-soft);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-toc a:hover {
+			color: var(--primary);
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-toc a.is-current {
+			border-left-color: var(--sw-accent);
+			background: var(--sw-accent-soft);
+			color: var(--sw-accent);
+			font-weight: 600;
+		}
+		/* 首条目录项对应原文 h1（标题已在规格头出现），不再重复列出。 */
+		[data-article-design="311e5ff458fc9b199069"] .sw-toc ol > li:first-child {
+			display: none;
+		}
+
+		[data-article-design="311e5ff458fc9b199069"] .sw-comments,
+		[data-article-design="311e5ff458fc9b199069"] .sw-pagination {
+			width: min(100% - 2.5rem, 84rem);
+			margin-inline: auto;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-comments {
+			margin-top: 3.5rem;
+		}
+		[data-article-design="311e5ff458fc9b199069"] .sw-pagination {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			gap: 1rem;
+			margin: 2rem auto 3rem;
+		}
+
+		/* ── 响应式 ───────────────────────────────────────── */
+		@media (max-width: 1080px) {
+			[data-article-design="311e5ff458fc9b199069"] .sw-layout {
+				grid-template-columns: minmax(0, 1fr);
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-side {
+				grid-row: 1;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-side-sticky {
+				position: static;
+				max-height: none;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-toc ol {
+				max-height: 45vh;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-hero,
+			[data-article-design="311e5ff458fc9b199069"] .sw-layout,
+			[data-article-design="311e5ff458fc9b199069"] .sw-comments,
+			[data-article-design="311e5ff458fc9b199069"] .sw-pagination {
+				width: calc(100% - 2rem);
+			}
+		}
+		@media (max-width: 720px) {
+			[data-article-design="311e5ff458fc9b199069"] .sw-display {
+				grid-template-columns: minmax(0, 1fr);
+				justify-items: center;
+				gap: 0.9rem;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-readout {
+				width: 100%;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-chapter {
+				grid-template-columns: minmax(0, 1fr);
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-probe {
+				display: none;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body p,
+			[data-article-design="311e5ff458fc9b199069"] .sw-chapter-body :is(ul, ol),
+			[data-article-design="311e5ff458fc9b199069"] .sw-intro .sw-chapter-body blockquote {
+				max-width: none;
+			}
+		}
+		@media (max-width: 560px) {
+			[data-article-design="311e5ff458fc9b199069"] .sw-slot-role {
+				display: none;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-case-controls {
+				max-width: none;
+			}
+		}
+		@media (prefers-reduced-motion: reduce) {
+			[data-article-design="311e5ff458fc9b199069"] .sw-digit.is-blinking {
+				animation: none;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-kicker-led {
+				animation: none;
+				opacity: 1;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-chapter.is-pending {
+				opacity: 1;
+				transform: none;
+			}
+			[data-article-design="311e5ff458fc9b199069"] :is(
+					.sw-lever,
+					.sw-latch-cap,
+					.sw-key-cap,
+					.sw-led,
+					.sw-probe
+				),
+			[data-article-design="311e5ff458fc9b199069"] .sw-chapter.is-revealed {
+				transition: none;
+			}
+		}
+		@media print {
+			[data-article-design="311e5ff458fc9b199069"] {
+				background-image: none;
+				background-color: #fff;
+			}
+			[data-article-design="311e5ff458fc9b199069"] .sw-side,
+			[data-article-design="311e5ff458fc9b199069"] .sw-panel-foot {
+				display: none;
+			}
+			[data-article-design="311e5ff458fc9b199069"]
+				.sw-chapter:is(.is-pending, .is-revealed) {
+				opacity: 1;
+				transform: none;
+			}
+		}
+	</style>
+
+	<script>
+		type Phase = "IDLE" | "RUNNING" | "PAUSED" | "DONE";
+		type Unit = "h" | "m" | "s";
+		type InputKey = "1" | "2" | "3" | "7";
+
+		interface InputSlot {
+			position: boolean;
+			stable: boolean;
+			candidate: boolean;
+			timer: number;
+		}
+
+		const TICKS_PER_SECOND = 256;
+		const TICK_MS = 1000 / TICKS_PER_SECOND;
+		const DEFAULT_SECONDS = 10;
+		const MIN_SECONDS = 1;
+		const MAX_SECONDS = 99 * 3600 + 59 * 60 + 59;
+		const DEBOUNCE_MS = 31.25;
+		const LONG_PRESS_MS = 2000;
+		const REPEAT_DELAY_MS = 600;
+		const REPEAT_INTERVAL_MS = 100;
+		const BLANK_MS = 15000;
+		/* 与 Astro 前端里的字形表一致。 */
+		const SEG = [
+			"abcdef",
+			"bc",
+			"abdeg",
+			"abcdg",
+			"bcfg",
+			"acdfg",
+			"acdefg",
+			"abc",
+			"abcdefg",
+			"abcdfg",
+		];
+		const UNIT_ORDER: Unit[] = ["s", "h", "m"];
+		const UNIT_LABEL: Record<Unit, string> = { h: "时", m: "分", s: "秒" };
+		const UNIT_DIGITS: Record<Unit, number[]> = {
+			h: [0, 1],
+			m: [2, 3],
+			s: [4, 5],
+		};
+		const UNIT_SECONDS: Record<Unit, number> = { h: 3600, m: 60, s: 1 };
+		const PHASE_LABEL: Record<Phase, string> = {
+			IDLE: "待机 IDLE",
+			RUNNING: "运行 RUNNING",
+			PAUSED: "暂停 PAUSED",
+			DONE: "完成 DONE",
+		};
+
+		const pad2 = (value: number) =>
+			String(Math.max(0, Math.min(99, Math.trunc(value)))).padStart(2, "0");
+
+		class ShutterWirePanel extends HTMLElement {
+			controller?: AbortController;
+			phase: Phase = "IDLE";
+			remainingTicks = DEFAULT_SECONDS * TICKS_PER_SECOND;
+			presetTicks = DEFAULT_SECONDS * TICKS_PER_SECOND;
+			selected: Unit = "s";
+			runTicks = 0;
+			runStart = 0;
+			blanked = false;
+			blankTimer = 0;
+			loop = 0;
+			lastPaint = 0;
+			inputs = {
+				"1": { position: false, stable: false, candidate: false, timer: 0 },
+				"2": { position: false, stable: false, candidate: false, timer: 0 },
+				"3": { position: false, stable: false, candidate: false, timer: 0 },
+				"7": { position: false, stable: false, candidate: false, timer: 0 },
+			} satisfies Record<InputKey, InputSlot>;
+			cache: Record<string, string> = {};
+			segmentCache: string[] = ["", "", "", "", "", ""];
+
+			get el() {
+				return {
+					panel: this,
+					digits: this.querySelector<HTMLElement>("[data-sw-digits]"),
+					digitNodes: [
+						...this.querySelectorAll<HTMLElement>("[data-sw-digit]"),
+					],
+					phase: this.querySelector<HTMLElement>("[data-sw-phase]"),
+					remain: this.querySelector<HTMLElement>("[data-sw-remain]"),
+					out1: this.querySelector<HTMLElement>("[data-sw-out1]"),
+					out2: this.querySelector<HTMLElement>("[data-sw-out2]"),
+					unit: this.querySelector<HTMLElement>("[data-sw-unit]"),
+					note: this.querySelector<HTMLElement>("[data-sw-note]"),
+					shutter: this.querySelector<HTMLElement>("[data-sw-shutter]"),
+					power: this.querySelector<HTMLElement>("[data-sw-power]"),
+				};
+			}
+
+			connectedCallback() {
+				if (this.querySelector("[data-sw-digits]") === null) return;
+				this.controller = new AbortController();
+				const { signal } = this.controller;
+
+				const toggleButtons = [
+					...this.querySelectorAll<HTMLElement>("[data-sw-toggle]"),
+				];
+				for (const button of toggleButtons) {
+					const key = button.dataset.swToggle as InputKey;
+					button.addEventListener("click", () => this.operateSwitch(key), {
+						signal,
+					});
+					const slot = this.inputs[key];
+					slot.position = button.getAttribute("aria-checked") === "true";
+					slot.stable = slot.position;
+					slot.candidate = slot.position;
+				}
+
+				const shutter = this.el.shutter;
+				if (shutter) {
+					this.inputs["7"].position =
+						shutter.getAttribute("aria-pressed") === "true";
+					this.inputs["7"].stable = this.inputs["7"].position;
+					this.inputs["7"].candidate = this.inputs["7"].position;
+					shutter.addEventListener("click", () => this.operateSwitch("7"), {
+						signal,
+					});
+				}
+
+				const keyButton = (index: string) =>
+					this.querySelector<HTMLElement>(`[data-sw-key="${index}"]`);
+
+				const plus = keyButton("4");
+				const minus = keyButton("6");
+				const confirm = keyButton("5");
+				if (plus) this.bindRepeater(plus, () => this.stepTime(1));
+				if (minus) this.bindRepeater(minus, () => this.stepTime(-1));
+				if (confirm) this.bindConfirm(confirm);
+				this.el.power?.addEventListener("click", () => this.powerOn(), {
+					signal,
+				});
+
+				this.paint();
+				this.scheduleBlank();
+			}
+
+			disconnectedCallback() {
+				this.controller?.abort();
+				window.clearTimeout(this.blankTimer);
+				for (const key of ["1", "2", "3", "7"] as InputKey[])
+					window.clearTimeout(this.inputs[key].timer);
+				if (this.loop) cancelAnimationFrame(this.loop);
+				this.loop = 0;
+			}
+
+			/* ── 输入 ─────────────────────────────────────── */
+			operateSwitch(key: InputKey) {
+				this.wake();
+				const slot = this.inputs[key];
+				slot.position = !slot.position;
+				slot.candidate = slot.position;
+				this.paint();
+				window.clearTimeout(slot.timer);
+				slot.timer = window.setTimeout(
+					() => this.settleInput(key),
+					DEBOUNCE_MS,
+				);
+			}
+
+			settleInput(key: InputKey) {
+				const slot = this.inputs[key];
+				if (slot.candidate === slot.stable) {
+					this.setNote("电平回到原值：按反跳处理，不产生新操作。");
+					return;
+				}
+				slot.stable = slot.candidate;
+				if (key === "7") this.edgeOnK7();
+				else this.checkPermit();
+				this.paint();
+			}
+
+			permit() {
+				return (
+					this.inputs["1"].stable &&
+					this.inputs["2"].stable &&
+					this.inputs["3"].stable
+				);
+			}
+
+			checkPermit() {
+				const state = (["1", "2", "3"] as InputKey[])
+					.map((key) => `K${key}${this.inputs[key].stable ? "闭合" : "断开"}`)
+					.join("、");
+				if (this.phase === "RUNNING" && !this.permit()) {
+					this.pause();
+					this.setNote(
+						`${state}：许可失效，运行 → 暂停，余量 ${this.remainingTicks} tick 保留。`,
+					);
+					return;
+				}
+				this.setNote(`${state}：消抖 31.25 ms 后确认。`);
+			}
+
+			edgeOnK7() {
+				if (!this.permit()) {
+					this.setNote(
+						"许可条件未满足：这次 K7 操作被消耗，不留给之后补触发。",
+					);
+					return;
+				}
+				if (this.phase === "IDLE") {
+					this.startRun(this.presetTicks);
+					this.setNote("K7 操作：待机 → 运行，IN1–OUT1 接通并开始扣减余量。");
+					return;
+				}
+				if (this.phase === "RUNNING") {
+					this.pause();
+					this.setNote(
+						`K7 操作：运行 → 暂停，余量 ${this.remainingTicks} tick（${(
+							this.remainingTicks / TICKS_PER_SECOND
+						).toFixed(3)} s）保留。`,
+					);
+					return;
+				}
+				if (this.phase === "PAUSED") {
+					this.startRun(this.remainingTicks);
+					this.setNote("K7 操作：暂停 → 运行，从保存的余量继续扣减。");
+					return;
+				}
+				this.startRun(this.presetTicks);
+				this.setNote("K7 操作：完成 → 运行，重新从设定值开始。");
+			}
+
+			/* ── 调时 ─────────────────────────────────────── */
+			settingAllowed() {
+				return this.phase === "IDLE" || this.phase === "DONE";
+			}
+
+			tapConfirm() {
+				this.wake();
+				if (!this.settingAllowed()) {
+					this.setNote("运行和暂停期间不响应切换单位；长按 K5 两秒可退出暂停。");
+					return;
+				}
+				if (this.phase === "DONE") this.backToIdle();
+				this.selected =
+					UNIT_ORDER[(UNIT_ORDER.indexOf(this.selected) + 1) % UNIT_ORDER.length];
+				this.setNote(`K5 确认：选中单位切换到「${UNIT_LABEL[this.selected]}」。`);
+				this.paint();
+			}
+
+			holdConfirm() {
+				this.wake();
+				if (this.phase === "PAUSED" || this.phase === "DONE") {
+					this.backToIdle();
+					this.setNote("长按 K5 两秒：回到待机，保留设定值。");
+					this.paint();
+					return;
+				}
+				this.setNote("长按 K5 两秒只在暂停或完成后退出，当前状态无需退出。");
+			}
+
+			stepTime(direction: 1 | -1) {
+				this.wake();
+				if (!this.settingAllowed()) {
+					this.setNote("运行和暂停期间禁用加减，避免改写正在使用的余量。");
+					return;
+				}
+				if (this.phase === "DONE") this.backToIdle();
+				const step = UNIT_SECONDS[this.selected] * direction;
+				const current = Math.round(this.presetTicks / TICKS_PER_SECOND);
+				const next = Math.min(
+					MAX_SECONDS,
+					Math.max(MIN_SECONDS, current + step),
+				);
+				this.presetTicks = next * TICKS_PER_SECOND;
+				this.setNote(
+					`K${direction > 0 ? "4 加" : "6 减"}${UNIT_LABEL[this.selected]}：设定 ${this.formatTime(next)}。`,
+				);
+				this.paint();
+			}
+
+			backToIdle() {
+				this.phase = "IDLE";
+				this.remainingTicks = this.presetTicks;
+				this.scheduleBlank();
+			}
+
+			/* ── 运行、暂停、完成 ─────────────────────────── */
+			startRun(ticks: number) {
+				this.phase = "RUNNING";
+				this.runTicks = Math.max(1, ticks);
+				this.remainingTicks = this.runTicks;
+				this.runStart = performance.now();
+				this.blanked = false;
+				window.clearTimeout(this.blankTimer);
+				this.startLoop();
+				this.paint();
+			}
+
+			pause() {
+				this.remainingTicks = this.currentRemaining();
+				this.phase = "PAUSED";
+				this.stopLoop();
+				this.scheduleBlank();
+				this.paint();
+			}
+
+			currentRemaining() {
+				if (this.phase !== "RUNNING") return this.remainingTicks;
+				const consumed = Math.floor((performance.now() - this.runStart) / TICK_MS);
+				return Math.max(0, this.runTicks - consumed);
+			}
+
+			startLoop() {
+				if (this.loop) return;
+				this.lastPaint = 0;
+				this.loop = requestAnimationFrame(() => this.tick());
+			}
+
+			stopLoop() {
+				if (this.loop) cancelAnimationFrame(this.loop);
+				this.loop = 0;
+			}
+
+			tick() {
+				this.loop = 0;
+				if (this.phase !== "RUNNING") return;
+				const remaining = this.currentRemaining();
+				if (remaining <= 0) {
+					this.phase = "DONE";
+					this.remainingTicks = 0;
+					this.blanked = false;
+					this.setNote("到时：IN1–OUT1 断开，数码管显示 0，等待下一次 K7 操作。");
+					this.scheduleBlank();
+					this.paint();
+					return;
+				}
+				const now = performance.now();
+				if (now - this.lastPaint >= 50) this.paint();
+				this.loop = requestAnimationFrame(() => this.tick());
+			}
+
+			/* ── 上电与熄屏 ───────────────────────────────── */
+			powerOn() {
+				this.stopLoop();
+				window.clearTimeout(this.blankTimer);
+				for (const key of ["1", "2", "3", "7"] as InputKey[])
+					window.clearTimeout(this.inputs[key].timer);
+				for (const key of ["1", "2", "3", "7"] as InputKey[]) {
+					const slot = this.inputs[key];
+					slot.candidate = slot.position;
+					slot.stable = slot.position;
+				}
+				this.phase = "IDLE";
+				this.remainingTicks = this.presetTicks;
+				this.selected = "s";
+				this.blanked = false;
+				this.setNote(
+					this.inputs["7"].position
+						? "重新上电：各开关保持物理位置，K7 的电平不作为新边沿，因此不会自动接通快门。"
+						: "重新上电：各开关保持物理位置，K7 弹起，设定 10 秒。",
+				);
+				this.scheduleBlank();
+				this.paint();
+			}
+
+			wake() {
+				if (this.blanked) {
+					this.blanked = false;
+					this.setNote("操作唤醒：数码管与指示灯重新点亮。");
+				}
+				this.scheduleBlank();
+			}
+
+			scheduleBlank() {
+				window.clearTimeout(this.blankTimer);
+				this.blankTimer = 0;
+				if (this.phase === "RUNNING") return;
+				this.blankTimer = window.setTimeout(() => {
+					this.blanked = true;
+					this.setNote("15 s 无操作：数码管与四个指示灯一起熄灭，再次操作唤醒。");
+					this.paint();
+				}, BLANK_MS);
+			}
+
+			/* ── 按键手势 ─────────────────────────────────── */
+			bindRepeater(element: HTMLElement, step: () => void) {
+				const { signal } = this.controller!;
+				let delay = 0;
+				let interval = 0;
+				const stop = () => {
+					window.clearTimeout(delay);
+					window.clearInterval(interval);
+					delay = 0;
+					interval = 0;
+					element.classList.remove("is-down");
+				};
+				const start = () => {
+					stop();
+					element.classList.add("is-down");
+					window.setTimeout(step, DEBOUNCE_MS);
+					delay = window.setTimeout(() => {
+						interval = window.setInterval(step, REPEAT_INTERVAL_MS);
+					}, REPEAT_DELAY_MS);
+				};
+				element.addEventListener("pointerdown", start, { signal });
+				for (const type of ["pointerup", "pointercancel", "pointerleave"])
+					element.addEventListener(type, stop, { signal });
+				element.addEventListener(
+					"keydown",
+					(event) => {
+						if (event.key !== "Enter" && event.key !== " ") return;
+						event.preventDefault();
+						if (!event.repeat) start();
+					},
+					{ signal },
+				);
+				element.addEventListener(
+					"keyup",
+					(event) => {
+						if (event.key === "Enter" || event.key === " ") stop();
+					},
+					{ signal },
+				);
+				element.addEventListener("blur", stop, { signal });
+			}
+
+			bindConfirm(element: HTMLElement) {
+				const { signal } = this.controller!;
+				let hold = 0;
+				let long = false;
+				const stop = () => {
+					window.clearTimeout(hold);
+					hold = 0;
+					element.classList.remove("is-down");
+				};
+				const start = () => {
+					stop();
+					element.classList.add("is-down");
+					long = false;
+					hold = window.setTimeout(() => {
+						long = true;
+						this.holdConfirm();
+					}, LONG_PRESS_MS);
+				};
+				const end = () => {
+					const wasLong = long;
+					stop();
+					if (!wasLong) this.tapConfirm();
+				};
+				element.addEventListener("pointerdown", start, { signal });
+				element.addEventListener("pointerup", end, { signal });
+				for (const type of ["pointercancel", "pointerleave"])
+					element.addEventListener(type, stop, { signal });
+				element.addEventListener(
+					"keydown",
+					(event) => {
+						if (event.key !== "Enter" && event.key !== " ") return;
+						event.preventDefault();
+						if (!event.repeat) start();
+					},
+					{ signal },
+				);
+				element.addEventListener(
+					"keyup",
+					(event) => {
+						if (event.key === "Enter" || event.key === " ") end();
+					},
+					{ signal },
+				);
+				element.addEventListener("blur", stop, { signal });
+			}
+
+			/* ── 显示 ─────────────────────────────────────── */
+			formatTime(totalSeconds: number) {
+				const hours = Math.floor(totalSeconds / 3600);
+				const minutes = Math.floor((totalSeconds % 3600) / 60);
+				const seconds = totalSeconds % 60;
+				return `${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`;
+			}
+
+			displaySeconds() {
+				if (this.phase === "DONE") return 0;
+				if (this.phase === "IDLE") return Math.ceil(this.presetTicks / TICKS_PER_SECOND);
+				return Math.ceil(this.currentRemaining() / TICKS_PER_SECOND);
+			}
+
+			blinkDigits() {
+				if (this.blanked) return [];
+				if (this.phase === "PAUSED") return [0, 1, 2, 3, 4, 5];
+				if (this.phase === "IDLE") return UNIT_DIGITS[this.selected];
+				return [];
+			}
+
+			setText(key: string, node: Element | null, value: string) {
+				if (!node || this.cache[key] === value) return;
+				this.cache[key] = value;
+				node.textContent = value;
+			}
+
+			setState(
+				key: string,
+				node: Element | null,
+				name: string,
+				active: boolean,
+			) {
+				if (!node) return;
+				const stamp = `${name}:${active}`;
+				if (this.cache[key] === stamp) return;
+				this.cache[key] = stamp;
+				node.classList.toggle(name, active);
+			}
+
+			setNote(message: string) {
+				this.setText("note", this.el.note, message);
+			}
+
+			paint() {
+				const nodes = this.el;
+				const remaining = this.currentRemaining();
+				const seconds = this.displaySeconds();
+
+				/* 数码管 */
+				if (this.cache["blank"] !== String(this.blanked)) {
+					this.cache["blank"] = String(this.blanked);
+					this.segmentCache = ["", "", "", "", "", ""];
+				}
+				const text = `${pad2(Math.floor(seconds / 3600))}${pad2(
+					Math.floor((seconds % 3600) / 60),
+				)}${pad2(seconds % 60)}`;
+				const blink = this.blinkDigits();
+				nodes.digitNodes.forEach((digit, index) => {
+					const char = text[index];
+					if (this.segmentCache[index] !== char) {
+						this.segmentCache[index] = char;
+						const on = SEG[Number(char)] ?? "";
+						for (const element of digit.children) {
+							const segment = element.className.match(/sw-seg-([a-g])/)?.[1];
+							element.classList.toggle(
+								"is-on",
+								!this.blanked && Boolean(segment) && on.includes(segment!),
+							);
+						}
+					}
+					this.setState(
+						`digit${index}`,
+						digit,
+						"is-blinking",
+						blink.includes(index),
+					);
+				});
+				this.setState("blanked", nodes.digits, "is-blanked", this.blanked);
+
+				/* 指示灯：绿＝对应接点闭合，红＝未闭合 */
+				for (const key of ["1", "2", "3", "7"] as InputKey[]) {
+					const led = this.querySelector<HTMLElement>(`[data-sw-led="${key}"]`);
+					const closed = this.inputs[key].position;
+					this.setState(`led-off-${key}`, led, "is-off", this.blanked);
+					this.setState(
+						`led-green-${key}`,
+						led,
+						"is-green",
+						!this.blanked && closed,
+					);
+					this.setState(`led-red-${key}`, led, "is-red", !this.blanked && !closed);
+				}
+
+				/* 控件位置 */
+				for (const key of ["1", "2", "3"] as InputKey[]) {
+					const button = this.querySelector<HTMLElement>(
+						`[data-sw-toggle="${key}"]`,
+					);
+					const value = String(this.inputs[key].position);
+					if (button && button.getAttribute("aria-checked") !== value)
+						button.setAttribute("aria-checked", value);
+				}
+				if (
+					nodes.shutter &&
+					nodes.shutter.getAttribute("aria-pressed") !==
+						String(this.inputs["7"].position)
+				)
+					nodes.shutter.setAttribute(
+						"aria-pressed",
+						String(this.inputs["7"].position),
+					);
+
+				/* 读数 */
+				const closed = (key: InputKey) => this.inputs[key].stable;
+				this.setText("phase", nodes.phase, PHASE_LABEL[this.phase]);
+				this.setText(
+					"remain",
+					nodes.remain,
+					`${Math.round(remaining)} tick · ${(remaining / TICKS_PER_SECOND).toFixed(3)} s`,
+				);
+				this.setText(
+					"out1",
+					nodes.out1,
+					this.phase === "RUNNING" ? "接通" : "断开",
+				);
+				this.setText("out2", nodes.out2, closed("1") ? "接通" : "断开");
+				this.setText(
+					"unit",
+					nodes.unit,
+					this.settingAllowed()
+						? `选中 ${UNIT_LABEL[this.selected]}`
+						: "调时禁用",
+				);
+				this.lastPaint = performance.now();
+			}
+		}
+
+		if (!customElements.get("shutter-wire-panel"))
+			customElements.define("shutter-wire-panel", ShutterWirePanel);
+
+		class ShutterWirePage extends HTMLElement {
+			controller?: AbortController;
+			observer?: IntersectionObserver;
+			timers: number[] = [];
+			frame = 0;
+
+			connectedCallback() {
+				const chapters = [
+					...this.querySelectorAll<HTMLElement>("[data-sw-chapter]"),
+				];
+				if (!chapters.length) return;
+				this.controller = new AbortController();
+				const { signal } = this.controller;
+				const reduced = window.matchMedia("(prefers-reduced-motion: reduce)")
+					.matches;
+
+				/* 逐章出场：先全部可见，再叠加一次短促错峰，不把阅读交给滚动位置。 */
+				if (!reduced) {
+					for (const chapter of chapters) chapter.classList.add("is-pending");
+					requestAnimationFrame(() => {
+						chapters.forEach((chapter, index) => {
+							this.timers.push(
+								window.setTimeout(
+									() => {
+										chapter.classList.remove("is-pending");
+										chapter.classList.add("is-revealed");
+									},
+									Math.min(index * 45, 360),
+								),
+							);
+						});
+					});
+				}
+
+				/* 探针与目录高亮：只看当前进入视口的章节。 */
+				this.setCurrent(chapters[0]);
+				if ("IntersectionObserver" in window) {
+					this.observer = new IntersectionObserver(
+						(entries) => {
+							const visible = entries
+								.filter((entry) => entry.isIntersecting)
+								.sort(
+									(a, b) =>
+										a.boundingClientRect.top - b.boundingClientRect.top,
+								)[0];
+							if (visible) this.setCurrent(visible.target as HTMLElement);
+						},
+						{ rootMargin: "-15% 0px -55% 0px", threshold: 0 },
+					);
+					for (const chapter of chapters) this.observer.observe(chapter);
+				}
+
+				/* 窄屏把目录折起，避免正文被长目录推到很下面。 */
+				if (window.matchMedia("(max-width: 1080px)").matches) {
+					this.querySelector<HTMLDetailsElement>(".sw-toc details")?.removeAttribute(
+						"open",
+					);
+				}
+
+				const refresh = () => this.setCurrent(this.currentChapter());
+				document.addEventListener("article:content-ready", refresh, { signal });
+				window.addEventListener(
+					"resize",
+					() => {
+						cancelAnimationFrame(this.frame);
+						this.frame = requestAnimationFrame(refresh);
+					},
+					{ passive: true, signal },
+				);
+			}
+
+			disconnectedCallback() {
+				this.controller?.abort();
+				this.observer?.disconnect();
+				for (const timer of this.timers) window.clearTimeout(timer);
+				this.timers = [];
+				cancelAnimationFrame(this.frame);
+			}
+
+			currentChapter() {
+				const chapters = [
+					...this.querySelectorAll<HTMLElement>("[data-sw-chapter]"),
+				];
+				let found = chapters[0];
+				for (const chapter of chapters) {
+					if (chapter.getBoundingClientRect().top <= window.innerHeight * 0.4)
+						found = chapter;
+				}
+				return found;
+			}
+
+			setCurrent(chapter?: HTMLElement) {
+				if (!chapter) return;
+				for (const item of this.querySelectorAll<HTMLElement>(
+					"[data-sw-chapter]",
+				))
+					item.classList.toggle("is-current", item === chapter);
+				const id = chapter.dataset.swHeading || "";
+				for (const link of this.querySelectorAll<HTMLAnchorElement>(
+					".sw-toc a[href^='#']",
+				)) {
+					const match = decodeURIComponent(link.hash.slice(1)) === id && id !== "";
+					link.classList.toggle("is-current", match);
+					if (match) link.setAttribute("aria-current", "true");
+					else link.removeAttribute("aria-current");
+				}
+			}
+		}
+
+		if (!customElements.get("shutter-wire-page"))
+			customElements.define("shutter-wire-page", ShutterWirePage);
+	</script>
+</PageShell>

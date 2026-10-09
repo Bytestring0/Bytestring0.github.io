@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { ArticleSource } from "../../utils/article-source";
+import Encryptor from "../Encryptor.astro";
+import VerifiedArticle from "./VerifiedArticle.astro";
+interface Props {
+	entry: CollectionEntry<"posts">;
+	article: ArticleSource;
+	class?: string;
+}
+const { entry, article, class: className } = Astro.props;
+---
+
+{
+	entry.data.encrypted && entry.data.password ? (
+		<Encryptor password={entry.data.password}>
+			<VerifiedArticle article={article} class={className}>
+				<slot />
+			</VerifiedArticle>
+		</Encryptor>
+	) : (
+		<VerifiedArticle article={article} class={className}>
+			<slot />
+		</VerifiedArticle>
+	)
+}

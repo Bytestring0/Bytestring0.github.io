@@ -1,0 +1,42 @@
+---
+import { parse } from "node-html-parser";
+import type { ArticleSource } from "../../utils/article-source";
+import { verifyArticleSource } from "../../utils/article-source";
+interface Props {
+	article: ArticleSource;
+	encrypted: boolean;
+}
+const { article, encrypted } = Astro.props;
+const html = await Astro.slots.render("default");
+const page = parse(html);
+for (const selector of [
+	"html",
+	"body",
+	"main[data-article-page]",
+	"[data-blog-navigation]",
+	"[data-blog-toc]",
+	"[data-blog-comments]",
+]) {
+	if (page.querySelectorAll(selector).length !== 1)
+		throw new Error(
+			`整页设计必须恰好包含一个 ${selector}，请使用 PageShell 和博客组件接口。`,
+		);
+}
+if (page.querySelectorAll("main").length !== 1)
+	throw new Error("整页设计只允许一个 main，以兼容页面切换。");
+if (encrypted) {
+	if (
+		page.querySelectorAll("[data-source-block]").length ||
+		!page.querySelector("#password-protection")
+	)
+		throw new Error(
+			"加密文章必须通过 ArticleContent 加密，不能明文输出原文。",
+		);
+} else {
+	if (page.querySelectorAll("#post-container").length !== 1)
+		throw new Error("请使用 ArticleContent 提供唯一的原文容器。");
+	verifyArticleSource(article, html);
+}
+---
+
+<Fragment set:html={html} />

@@ -1,0 +1,257 @@
+---
+import audioUrl from "../../../content/posts/杂项/ray.mp3?url";
+import { chapters, lyrics, formatTime } from "./score";
+---
+
+<ray-audiovisual
+	tabindex="0"
+	aria-label="ray — オーディオビジュアルプレイヤー"
+	class="is-intro"
+>
+	<svg class="ray-symbols" aria-hidden="true"
+		><defs>
+			<symbol id="ray-play" viewBox="0 0 24 24"
+				><path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"
+				></path></symbol
+			>
+			<symbol id="ray-pause" viewBox="0 0 24 24"
+				><path d="M8 5v14M16 5v14" stroke-width="3"></path></symbol
+			>
+			<symbol id="ray-restart" viewBox="0 0 24 24"
+				><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"></path></symbol
+			>
+			<symbol id="ray-volume" viewBox="0 0 24 24"
+				><path
+					d="m11 4-6 5H2v6h3l6 5ZM16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14"
+				></path></symbol
+			>
+			<symbol id="ray-expand" viewBox="0 0 24 24"
+				><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"></path></symbol
+			>
+		</defs></svg
+	>
+	<div class="ray-stage" data-stage>
+		<div class="ray-poster" aria-hidden="true">
+			<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+				<rect width="1200" height="700" fill="#050c13"></rect>
+				<g
+					transform="translate(650 320) rotate(-24) skewX(18)"
+					fill="#102330"
+					stroke="#315469"
+					stroke-width="1"
+				>
+					<rect x="-240" y="-180" width="480" height="360"></rect>
+					<rect
+						x="-210"
+						y="-150"
+						width="120"
+						height="220"
+						fill="#163e50"></rect>
+					<path
+						d="M-65 -100H55V-60H140V40H20V110H-65Z"
+						fill="none"
+						stroke="#80d7e5"></path>
+					<rect x="70" y="55" width="120" height="90" fill="#4c3422"
+					></rect>
+					<rect
+						x="-65"
+						y="-145"
+						width="220"
+						height="30"
+						fill="#1d2f45"></rect>
+				</g>
+			</svg>
+		</div>
+		<canvas data-gpu aria-hidden="true"></canvas><canvas
+			data-dust
+			aria-hidden="true"></canvas>
+		<div class="ray-grain" aria-hidden="true"></div><div
+			class="ray-frame"
+			aria-hidden="true"
+		>
+		</div>
+		<div class="ray-topline">
+			<span class="ray-logotype">ray<span class="ray-dot"></span></span
+			><span class="ray-scene"
+				><span data-chapter-number>01</span><i></i><span
+					data-chapter-name
+					lang="ja">起動</span
+				></span
+			><span class="ray-length">04:41</span>
+		</div>
+
+		<div class="ray-opening" aria-hidden="true">
+			<span class="ray-opening-caption" lang="ja">光の始まりには</span
+			><div class="ray-title">
+				RAY<span class="ray-title-period">.</span>
+			</div><span class="ray-opening-sub">FROM SIGNAL TO MEMORY</span>
+		</div>
+		<div class="ray-ending" lang="ja" aria-hidden="true">
+			<span>この光の始まりには</span><strong>君がいる</strong>
+		</div>
+		<div class="ray-subtitles" lang="ja">
+			<p data-lyric></p><span class="ray-lyric-stroke" aria-hidden="true"
+			></span>
+		</div>
+		<button
+			class="ray-start"
+			data-action="play"
+			aria-label="再生"
+			aria-pressed="false"
+			><span class="ray-start-disc"
+				><svg><use href="#ray-play"></use></svg></span
+			><span>PLAY FILM</span><span
+				class="ray-start-line"
+				aria-hidden="true"></span></button
+		>
+		<div class="ray-bottomline" aria-hidden="true">
+			<span></span><span>RAY / AUDIOVISUAL FILM</span>
+		</div>
+	</div>
+	<div class="ray-transport">
+		<div class="ray-scrubber">
+			<div class="ray-cue-ticks" aria-hidden="true">
+				{
+					chapters
+						.slice(1)
+						.map((c) => (
+							<i style={`left:${(c.time / 281.152) * 100}%`} />
+						))
+				}
+			</div><input
+				data-progress
+				type="range"
+				min="0"
+				max="281.152"
+				value="0"
+				step="0.01"
+				aria-label="再生位置"
+			/>
+		</div>
+		<div class="ray-control-row">
+			<div class="ray-control-group">
+				<button
+					class="ray-play-button"
+					data-action="play"
+					aria-label="再生"
+					aria-pressed="false"
+					><svg class="ray-play-icon"
+						><use href="#ray-play"></use></svg
+					><svg class="ray-pause-icon"
+						><use href="#ray-pause"></use></svg
+					></button
+				><button
+					data-action="restart"
+					aria-label="最初から"
+					title="最初から"
+					><svg><use href="#ray-restart"></use></svg></button
+				><span class="ray-time"
+					><span data-clock>00:00</span><span
+						class="ray-time-separator">/</span
+					>04:41</span
+				>
+			</div>
+			<div class="ray-control-group ray-options">
+				<div class="ray-volume">
+					<button
+						data-action="mute"
+						aria-label="ミュート"
+						aria-pressed="false"
+						><svg><use href="#ray-volume"></use></svg></button
+					><input
+						data-volume
+						type="range"
+						min="0"
+						max="1"
+						step="0.05"
+						value="0.8"
+						aria-label="音量"
+					/>
+				</div><button
+					data-action="lyrics"
+					aria-label="字幕の表示"
+					aria-pressed="true"
+					title="字幕"><span class="ray-cc">CC</span></button
+				><button
+					class="ray-motion"
+					data-action="motion"
+					data-motion
+					aria-label="動きを抑える"
+					aria-pressed="false"
+					title="動きを抑える"><span lang="ja">静止</span></button
+				><button
+					data-action="fullscreen"
+					aria-label="全画面"
+					aria-pressed="false"
+					title="全画面 (F)"
+					><svg><use href="#ray-expand"></use></svg></button
+				>
+			</div>
+		</div>
+		<p class="ray-status" data-status role="status"></p>
+		<audio preload="metadata" controls aria-label="ray 音源"
+			><source src={audioUrl} type="audio/mp4" /></audio
+		>
+		<noscript
+			><p class="ray-noscript">
+				映像の再生には JavaScript
+				が必要です。音源は上のプレイヤーで再生できます。
+			</p></noscript
+		>
+	</div>
+	<nav class="ray-chapters" aria-label="シーン選択">
+		{
+			chapters.map((c, i) => (
+				<button
+					data-seek={c.time}
+					data-chapter
+					aria-current={i === 0 ? "true" : "false"}
+				>
+					<>
+						<span class="ray-chapter-index">
+							{String(i + 1).padStart(2, "0")}
+						</span>
+						<span class="ray-chapter-title" lang="ja">
+							{c.title}
+						</span>
+						<span class="ray-chapter-time">
+							{formatTime(c.time)}
+						</span>
+					</>
+				</button>
+			))
+		}
+	</nav>
+	<div class="ray-score-bottom">
+		<p class="ray-shortcuts">
+			<kbd>SPACE</kbd> 再生 <span>·</span>
+			<kbd>← →</kbd> シーク <span>·</span>
+			<kbd>F</kbd> 全画面
+		</p><details class="ray-lyric-sheet">
+			<summary
+				><span>LYRICS</span><span class="ray-sheet-plus">+</span
+				></summary
+			><div lang="ja">
+				{
+					lyrics.map((cue) => (
+						<button data-seek={cue.time} data-lyric-row>
+							<>
+								<time>{formatTime(cue.time)}</time>
+								<span>{cue.text}</span>
+								<span
+									class="ray-sheet-arrow"
+									aria-hidden="true"
+								>
+									↗
+								</span>
+							</>
+						</button>
+					))
+				}
+			</div>
+		</details>
+	</div>
+</ray-audiovisual>
+<script>
+	import "./player";
+</script>
