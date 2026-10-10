@@ -30,6 +30,7 @@ export default class MizukiWorkbench extends Plugin {
   async onload(){
     this.settings={...defaults,...await this.loadData()};this.repo=path.resolve(this.app.vault.adapter.getBasePath(),'../../..');
     if(!fs.existsSync(path.join(this.repo,'astro.config.mjs')))throw new Error('Mizuki 工作台需要打开博客的 src/content/posts 目录');
+    this.applyBackground();
     this.logs=[];this.logViews=new Set();this.jobs=new Map();this.previewUrl=`http://127.0.0.1:${this.settings.port}/`;this.status=this.addStatusBarItem();this.updateStatus();this.addRibbonIcon('house','博客工作台',()=>this.home());
     this.addRibbonIcon('file-plus','新建笔记 / 文章',()=>new NewPostModal(this).open());
     this.addRibbonIcon('send','切换当前笔记是否公开',()=>this.togglePublish());
@@ -54,6 +55,16 @@ export default class MizukiWorkbench extends Plugin {
     this.app.workspace.onLayoutReady(()=>{this.piCommands.install();this.home();});
   }
   today(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+  applyBackground(){
+    // Obsidian's app:// resource host changes between launches. Resolve it in
+    // the running vault instead of persisting a stale URL in the CSS snippet.
+    const property='--mizuki-background-image';
+    const style=document.body.style;
+    const previous=style.getPropertyValue(property);
+    const image=`url(${JSON.stringify(this.app.vault.adapter.getResourcePath('.obsidian/snippets/maomaolove.png'))})`;
+    style.setProperty(property,image);
+    this.register(()=>{if(style.getPropertyValue(property)===image){if(previous)style.setProperty(property,previous);else style.removeProperty(property);}});
+  }
   async home(){const file=this.app.vault.getAbstractFileByPath('00-博客工作台.md');if(file){const leaf=this.app.workspace.getLeaf(false);await leaf.openFile(file);await leaf.setViewState({type:'markdown',state:{file:file.path,mode:'preview'}});}}
   append(message){message=message.replace(/\x1b\[[0-9;]*m/g,'');this.logs.push(message);if(this.logs.join('').length>40000)this.logs=this.logs.slice(-100);for(const view of this.logViews){view.setText(this.logs.join(''));view.scrollTop=view.scrollHeight;}}
   updateStatus(){this.status.setText(this.jobs.size ? '博客：'+[...this.jobs.keys()].join(' / ') : '博客工作台 · 就绪');}

@@ -38,6 +38,8 @@ VS Code 与 Obsidian 打开的是同一份 Markdown。保存后，另一个编�
 
 Obsidian 使用与 VS Code 对齐的 Moonlight 配色、Maple Mono 字体和猫猫背景。博客保持“无壁纸”配置。
 
+背景图片保存在 `.obsidian/snippets/maomaolove.png`，由 Mizuki 工作台在每次启动时获取有效的图片地址。保留工作台插件与 `moonlight-background` CSS 片段启用；不要把某次启动的 `app://...` 地址写死在 CSS 中，否则重启后可能失效。
+
 ## 快捷键速查
 
 以下按键已配置在这台电脑的 Obsidian 中。`Ctrl` 是 Windows 的修饰键；这些配置不会修改 VS Code 的按键。

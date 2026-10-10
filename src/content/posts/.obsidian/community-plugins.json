@@ -7,5 +7,6 @@
   "templater-obsidian",
   "omnisearch",
   "pi-agent",
-  "latex-complete"
+  "latex-complete",
+  "notebook-navigator"
 ]

@@ -246,6 +246,11 @@ export const navBarConfig: NavBarConfig = {
 					url: "/tags/",
 					icon: "material-symbols:tag-rounded",
 				},
+				{
+					name: "记录",
+					url: "/records/",
+					icon: "material-symbols:book-2-outline-rounded",
+				},
 			],
 		},
 		// 支持自定义导航栏链接，支持多级菜单

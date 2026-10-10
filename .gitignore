@@ -6,6 +6,9 @@ dist/
 .astro/
 demo
 plans
+# local agent instructions and skills
+.agent/
+.agents/
 # dependencies
 node_modules/
 

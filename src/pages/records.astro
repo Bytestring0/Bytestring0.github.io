@@ -1,0 +1,19 @@
+---
+import AIDiary, { type DiaryDay } from "../components/AIDiary.svelte";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+
+const files = import.meta.glob<DiaryDay>("../content/AIDairy/*.json", {
+	eager: true,
+	import: "default",
+});
+const days = Object.values(files)
+	.filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day.date) && Array.isArray(day.entries))
+	.sort((a, b) => a.date.localeCompare(b.date));
+const today = new Intl.DateTimeFormat("sv-SE", {
+	timeZone: "Asia/Shanghai",
+}).format(new Date());
+---
+
+<MainGridLayout title="记录" description="翻一页日记，看看今天留下的小小记录。">
+	<AIDiary days={days} today={today} client:load />
+</MainGridLayout>
