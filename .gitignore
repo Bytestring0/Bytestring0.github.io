@@ -9,6 +9,7 @@ plans
 # local agent instructions and skills
 .agent/
 .agents/
+AGENTS.md
 # dependencies
 node_modules/
 
@@ -72,3 +73,4 @@ src/data/bangumi-data.json
 
 # Bilibili generated data
 src/data/bilibili-data.json
+
