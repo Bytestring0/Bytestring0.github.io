@@ -336,4 +336,36 @@ category: 微电子笔记
 
 插件升级前保留 Git 和 `.obsidian` 备份。日常不需要启动所有绘图编辑器；文本写作时关闭不用的绘图标签，保持少量常用标签页即可。
 
+## 启动速度与插件加载
+
+已安装现成的 **Lazy Loader**。在「设置 → Lazy Loader」可以为每个插件选择 Instant、Short delay、Long delay 或 Disable plugin。
+
+- 写作必需的目录导航、LaTeX Suite、LaTeX Complete、QuickAdd、Templater、Pi 和博客工作台立即加载。
+- Omnisearch 在约 2 秒后加载；这段时间仍可使用原生搜索。
+- Excalidraw 和 Draw.io 在约 5 秒后加载，插件之间另有少量错峰间隔。刚启动时绘图命令可能暂未出现。
+- 启动时恢复上次工作区，不再强制打开博客工作台。需要工作台时点击左侧房子图标，或 `Ctrl+P` 搜索「打开博客工作台」。
+
+下次完整重启开始使用此配置。要持续关闭某个插件，请在 **Lazy Loader 设置**中选 Disable plugin；只在第三方插件页面关闭，可能会被 Lazy Loader 再次启用。卸载 Lazy Loader 后，需要在第三方插件页面重新启用之前延迟加载的插件。
+
+原生启动耗时统计入口是「设置 → 常规 → 高级」中的秒表按钮。延迟加载减少的是最初进入编辑器的等待，绘图和搜索插件仍需要在后台完成初始化；尚未测量本机重启后的具体提速幅度。
+
+## 自行接入外部文件夹
+
+已安装 **Folder Bridge 2.15.4**，这是现成的第三方插件，尚未进入官方社区插件市场。你可以完全通过设置管理目录，不需要修改脚本。
+
+1. 打开「设置 → Folder Bridge」，选择 **Add mount point**（也可使用插件的文件夹加号入口）。
+2. 选择 **Local filesystem**。Real path 填实际 Windows 文件夹，例如 `D:\课程笔记`；Virtual path 填左侧显示的位置，例如 `外部资料/课程笔记`。
+3. 验证路径并添加，需要编辑时不要勾选只读。只有明确添加的外部路径会被接入。
+4. 在左侧原生「文件列表」展开该虚拟目录，打开 Markdown。保存会写回原来的文件夹。Notebook Navigator 仍保留；若它没有立即显示新目录，先使用原生文件列表。
+
+外部文件保留原地，不会复制到博客 posts，也不会因这个虚拟挂载自动进入博客构建、Git 提交或发布。博客工作台的公开开关和新建文章分类只处理实际博客内容。要发布外部笔记，需要自行把要发布的内容和附件放入 posts。
+
+不要把虚拟显示路径当作实际磁盘路径传给终端或 Pi CLI；涉及外部笔记时明确提供真实路径。外部目录下的新建、编辑与附件路径由 Obsidian 和 Folder Bridge 处理，博客新建按钮仍写入 posts。
+
+已忽略 `.git`、`node_modules`、`.obsidian`、`.astro`、`dist` 和 `.cache` 等目录，减少扫描开销。建议只接入笔记文件夹，并用插件的文件过滤、文件数量上限控制大型目录。该版本作者尚未完成 Windows 原生编辑与保存兼容性验证，首次使用先接入一个小目录确认自己的工作流程。
+
+原生可用 Windows 符号链接或目录联接，但没有 VS Code 式的「添加文件夹到工作区」界面。Obsidian 官方列有链接监听、跨盘移动和同步限制，本仓库没有创建这类链接。
+
+插件说明：[Lazy Loader](https://github.com/alangrainger/obsidian-lazy-plugins)、[Folder Bridge](https://github.com/tescolopio/Obsidian_FolderBridge)、[原生目录链接限制](https://obsidian.md/help/symlinks)。
+
 [[00-博客工作台|回到博客工作台]]
