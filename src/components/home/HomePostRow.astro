@@ -1,0 +1,195 @@
+---
+import { Icon } from "astro-icon/components";
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+import { getFileDirFromPath, getPostUrl } from "@/utils/url-utils";
+import { formatDateToYYYYMMDD } from "@/utils/date-utils";
+import ImageWrapper from "../misc/ImageWrapper.astro";
+
+interface Props {
+	entry: CollectionEntry<"posts">;
+	index: number;
+	style?: string;
+}
+
+const { entry, index, style } = Astro.props;
+const { title, published, tags, category, image, description } = entry.data;
+const url = getPostUrl(entry);
+const hasCover = Boolean(image);
+const { remarkPluginFrontmatter } = await render(entry);
+const summary = description || remarkPluginFrontmatter.excerpt || "";
+const visibleTags = (tags || []).slice(0, 3);
+---
+
+<article class="post-row post-card-item" style={style}>
+	<a class="post-row-link" href={url} aria-label={title}>
+		<div class="post-row-body">
+			<div class="post-row-meta">
+				<span class="post-row-date">{formatDateToYYYYMMDD(published)}</span>
+				{category && <span class="post-row-cat">{category}</span>}
+			</div>
+
+			<h2 class="post-row-title">{title}</h2>
+
+			{summary && <p class="post-row-desc">{summary}</p>}
+
+			<div class="post-row-foot">
+				{visibleTags.map((tag) => (
+					<span class="chip">#{tag.trim()}</span>
+				))}
+				<span class="post-row-arrow">
+					<Icon name="material-symbols:arrow-forward-rounded" />
+				</span>
+			</div>
+		</div>
+
+		{hasCover && (
+			<div class="post-row-cover">
+				<ImageWrapper
+					src={image}
+					basePath={getFileDirFromPath(entry.filePath || "")}
+					alt={`${title} 封面`}
+					class="w-full h-full"
+				/>
+			</div>
+		)}
+	</a>
+</article>
+
+<style>
+	.post-row + .post-row {
+		border-top: 1px solid rgb(var(--n-4));
+	}
+
+	.post-row:first-child .post-row-link {
+		padding-top: 1.1rem;
+	}
+
+	.post-row-link {
+		display: flex;
+		gap: 1.5rem;
+		align-items: flex-start;
+		padding: 1.35rem 0.4rem 1.35rem 0.25rem;
+		border-radius: var(--r-md);
+		transition:
+			background-color 180ms var(--ease),
+			padding-left 220ms var(--ease);
+	}
+
+	.post-row-link:hover {
+		background: rgb(var(--n-1) / 0.75);
+		padding-left: 0.6rem;
+	}
+
+	.post-row-body {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.post-row-meta {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75rem;
+		margin-bottom: 0.55rem;
+	}
+
+	.post-row-date {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.02em;
+		color: rgb(var(--n-7));
+		font-variant-numeric: tabular-nums;
+	}
+
+	.post-row-cat {
+		font-size: 0.72rem;
+		color: rgb(var(--n-7));
+	}
+
+	.post-row-cat::before {
+		content: "· ";
+	}
+
+	.post-row-title {
+		margin: 0;
+		font-size: 1.08rem;
+		font-weight: 500;
+		line-height: 1.45;
+		letter-spacing: -0.01em;
+		color: rgb(var(--n-10));
+		transition: color 150ms var(--ease);
+	}
+
+	.post-row-link:hover .post-row-title {
+		color: rgb(var(--accent));
+	}
+
+	.post-row-desc {
+		margin: 0.5rem 0 0;
+		font-size: 0.88rem;
+		line-height: 1.8;
+		color: rgb(var(--n-8));
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.post-row-foot {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.85rem;
+	}
+
+	.post-row-arrow {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		margin-left: auto;
+		color: rgb(var(--n-6));
+		opacity: 0;
+		transform: translateX(-0.25rem);
+		transition:
+			opacity 150ms var(--ease),
+			transform 150ms var(--ease),
+			color 150ms var(--ease);
+	}
+
+	.post-row-link:hover .post-row-arrow {
+		opacity: 1;
+		transform: translateX(0);
+		color: rgb(var(--accent));
+	}
+
+	.post-row-cover {
+		flex: none;
+		width: 11rem;
+		height: 7rem;
+		border-radius: var(--r-md);
+		overflow: hidden;
+		border: 1px solid rgb(var(--n-4));
+	}
+
+	@media (max-width: 768px) {
+		.post-row-link {
+			gap: 0.9rem;
+			padding: 1.25rem 0;
+		}
+
+		.post-row-cover {
+			width: 5.5rem;
+			height: 4.25rem;
+		}
+
+		.post-row-title {
+			font-size: 1.02rem;
+		}
+
+		.post-row-desc {
+			-webkit-line-clamp: 2;
+			font-size: 0.84rem;
+		}
+	}
+</style>

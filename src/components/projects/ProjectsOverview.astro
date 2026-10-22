@@ -1,0 +1,116 @@
+---
+import github from "../../data/github-repos.json";
+
+interface Repo {
+	name: string;
+	url: string;
+	description: string;
+	language: string;
+	pushedAt: string;
+	fork: boolean;
+}
+
+const repos = (github.repos as Repo[]).filter((repo) => !repo.fork);
+const count = repos.length;
+
+const languages = new Map<string, number>();
+for (const repo of repos) {
+	if (repo.language) languages.set(repo.language, (languages.get(repo.language) ?? 0) + 1);
+}
+const topLanguages = [...languages.entries()]
+	.sort((a, b) => b[1] - a[1])
+	.slice(0, 6);
+---
+
+<dl class="proj-overview">
+	<div>
+		<dt>公开仓库</dt>
+		<dd>{count}</dd>
+	</div>
+	<div>
+		<dt>主要语言</dt>
+		<dd class="proj-langs">
+			{topLanguages.map(([name]) => <span>{name}</span>)}
+		</dd>
+	</div>
+	<div>
+		<dt>数据来源</dt>
+		<dd class="proj-source">
+			<a href={`https://github.com/${github.user}`} target="_blank" rel="noopener noreferrer">
+				github.com/{github.user}
+			</a>
+		</dd>
+	</div>
+</dl>
+
+<style>
+	.proj-overview {
+		display: grid;
+		grid-template-columns: 8rem minmax(0, 1fr) auto;
+		gap: 1.5rem;
+		align-items: end;
+		margin: 0 0 2rem;
+		padding-bottom: 1.25rem;
+		border-bottom: 1px solid rgb(var(--n-4));
+	}
+
+	.proj-overview div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+
+	.proj-overview dt {
+		font-family: var(--font-mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgb(var(--n-7));
+	}
+
+	.proj-overview dd {
+		margin: 0;
+		font-family: var(--font-serif);
+		font-size: 1.5rem;
+		line-height: 1.15;
+		color: rgb(var(--n-10));
+		font-variant-numeric: tabular-nums;
+	}
+
+	.proj-langs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		font-family: var(--font-sans) !important;
+		font-size: 0.78rem !important;
+	}
+
+	.proj-langs span {
+		padding: 0.12rem 0.5rem;
+		border: 1px solid rgb(var(--n-4));
+		border-radius: 999px;
+		color: rgb(var(--n-8));
+	}
+
+	.proj-source {
+		font-family: var(--font-mono) !important;
+		font-size: 0.74rem !important;
+	}
+
+	.proj-source a {
+		color: rgb(var(--n-8));
+		transition: color 150ms var(--ease);
+	}
+
+	.proj-source a:hover {
+		color: rgb(var(--accent));
+	}
+
+	@media (max-width: 768px) {
+		.proj-overview {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+			align-items: start;
+		}
+	}
+</style>

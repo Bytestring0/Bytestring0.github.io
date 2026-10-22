@@ -41,7 +41,7 @@
 	</div>
 {:else}
 	<div class="flex-1 min-w-0">
-		<div class="song-title text-lg font-bold text-90 truncate mb-1">
+		<div class="song-title text-lg font-medium text-90 truncate mb-1">
 			{song.title}
 		</div>
 		<div class="song-artist text-sm text-50 truncate">{song.artist}</div>

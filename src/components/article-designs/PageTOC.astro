@@ -8,7 +8,7 @@ const { class: className, label = "目录" } = Astro.props;
 
 <article-page-toc
 	data-blog-toc
-	class:list={["text-black/75 dark:text-white/75", className]}
+	class:list={["text-n-9", className]}
 >
 	<details open>
 		<summary><slot>{label}</slot></summary><ol aria-label={label}></ol>

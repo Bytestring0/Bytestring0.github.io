@@ -3,7 +3,6 @@ import Icon from "@iconify/svelte";
 import { onMount } from "svelte";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
-import { navigateToPage } from "../utils/navigation-utils";
 import { panelManager } from "../utils/panel-manager.js";
 
 let tocItems: Array<{
@@ -12,16 +11,9 @@ let tocItems: Array<{
 	level: number;
 	badge?: string;
 }> = [];
-let postItems: Array<{
-	title: string;
-	url: string;
-	category?: string;
-	pinned?: boolean;
-}> = [];
 let activeId = "";
 let observer: IntersectionObserver;
-let isHomePage = false;
-let swupReady = false;
+let isHomePage = true;
 let useJapaneseBadge = false;
 let tocDepth = 3;
 
@@ -38,7 +30,7 @@ const generateTOC = () => {
 	useJapaneseBadge = (window as any).siteConfig?.toc?.useJapaneseBadge || false;
 	tocDepth = (window as any).siteConfig?.toc?.depth || 3;
 
-	const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+	const headings = document.querySelectorAll("#post-container h1[id], #post-container h2[id], #post-container h3[id], #post-container h4[id], #post-container h5[id], #post-container h6[id]");
 	const items: Array<{
 		id: string;
 		text: string;
@@ -98,39 +90,6 @@ const generateTOC = () => {
 	tocItems = items;
 };
 
-const generatePostList = () => {
-	// 查找所有文章卡片
-	const postCards = document.querySelectorAll(".card-base");
-	const items: Array<{
-		title: string;
-		url: string;
-		category?: string;
-		pinned?: boolean;
-	}> = [];
-
-	postCards.forEach((card) => {
-		// 查找标题链接
-		const titleLink = card.querySelector('a[href*="/posts/"].transition.group');
-		// 查找分类链接
-		const categoryLink = card.querySelector('a[href*="/categories/"].link-lg');
-		// 查找置顶图标
-		const pinnedIcon = titleLink?.querySelector('svg[data-icon="mdi:pin"]');
-
-		if (titleLink) {
-			const href = titleLink.getAttribute("href");
-			const title = titleLink.textContent?.replace(/\s+/g, " ").trim() || "";
-			const category = categoryLink?.textContent?.trim() || "";
-			const pinned = !!pinnedIcon;
-
-			if (href && title) {
-				items.push({ title, url: href, category, pinned });
-			}
-		}
-	});
-
-	postItems = items;
-};
-
 const checkIsHomePage = () => {
 	const pathname = window.location.pathname;
 	// 检查是否为首页或首页的分页页面
@@ -147,32 +106,25 @@ const scrollToHeading = (id: string) => {
 
 		// 滚动到目标位置，考虑导航栏高度
 		const offset = 80;
-		const elementPosition = element.offsetTop - offset;
+		const elementPosition = element.getBoundingClientRect().top + window.scrollY - offset;
 
 		window.scrollTo({
 			top: elementPosition,
-			behavior: "smooth",
+			behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
 		});
 	}
 };
 
-const navigateToPost = (url: string) => {
-	// 关闭面板
-	setPanelVisibility(false);
-
-	// 使用统一的导航工具函数，实现无刷新跳转
-	navigateToPage(url);
-};
-
 const updateActiveHeading = () => {
-	const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+	if (isHomePage) return;
+	const headings = document.querySelectorAll("#post-container h1[id], #post-container h2[id], #post-container h3[id], #post-container h4[id], #post-container h5[id], #post-container h6[id]");
 	const scrollTop = window.scrollY;
 	const offset = 100;
 
 	let currentActiveId = "";
 	headings.forEach((heading) => {
 		if (heading.id) {
-			const elementTop = (heading as HTMLElement).offsetTop - offset;
+			const elementTop = heading.getBoundingClientRect().top + scrollTop - offset;
 			if (scrollTop >= elementTop) {
 				currentActiveId = heading.id;
 			}
@@ -183,7 +135,7 @@ const updateActiveHeading = () => {
 };
 
 const setupIntersectionObserver = () => {
-	const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+	const headings = document.querySelectorAll("#post-container h1[id], #post-container h2[id], #post-container h3[id], #post-container h4[id], #post-container h5[id], #post-container h6[id]");
 
 	if (observer) {
 		observer.disconnect();
@@ -210,120 +162,63 @@ const setupIntersectionObserver = () => {
 	});
 };
 
-let swupListenersRegistered = false;
-
-const setupSwupListeners = () => {
-	if (
-		typeof window !== "undefined" &&
-		(window as any).swup &&
-		!swupListenersRegistered
-	) {
-		const swup = (window as any).swup;
-
-		// 只监听页面视图事件，避免重复触发
-		swup.hooks.on("page:view", () => {
-			// 延迟执行，确保页面已完全加载
-			setTimeout(() => {
-				init();
-			}, 200);
-		});
-
-		swupListenersRegistered = true;
-		console.log("MobileTOC Swup listener registered");
-	} else if (!swupListenersRegistered) {
-		// 降级处理：监听普通页面切换事件
-		window.addEventListener("popstate", () => {
-			setTimeout(init, 200);
-		});
-		swupListenersRegistered = true;
-		console.log("MobileTOC fallback listener registered");
-	}
-};
-
-const checkSwupAvailability = () => {
-	if (typeof window !== "undefined") {
-		// 检查Swup是否已加载
-		swupReady = !!(window as any).swup;
-
-		// 如果Swup还未加载，监听其加载事件
-		if (!swupReady) {
-			const checkSwup = () => {
-				if ((window as any).swup) {
-					swupReady = true;
-					document.removeEventListener("swup:enable", checkSwup);
-					// Swup加载完成后设置监听器
-					setupSwupListeners();
-				}
-			};
-
-			// 监听Swup启用事件
-			document.addEventListener("swup:enable", checkSwup);
-
-			// 设置超时检查
-			setTimeout(() => {
-				if ((window as any).swup) {
-					swupReady = true;
-					document.removeEventListener("swup:enable", checkSwup);
-					// Swup加载完成后设置监听器
-					setupSwupListeners();
-				}
-			}, 1000);
-		} else {
-			// Swup已经加载，直接设置监听器
-			setupSwupListeners();
-		}
-	}
-};
-
 const init = () => {
 	checkIsHomePage();
-	checkSwupAvailability();
-	if (isHomePage) {
-		generatePostList();
-	} else {
-		generateTOC();
-		setupIntersectionObserver();
-		updateActiveHeading();
+	observer?.disconnect();
+	if (isHomePage || !document.querySelector("#post-container")) {
+		tocItems = [];
+		activeId = "";
+		setPanelVisibility(false);
+		return;
 	}
+	generateTOC();
+	setupIntersectionObserver();
+	updateActiveHeading();
 };
 
 onMount(() => {
-	// 延迟初始化，确保页面内容已加载
-	setTimeout(init, 100);
-
-	// 监听滚动事件作为备用
-	window.addEventListener("scroll", updateActiveHeading);
-
+	let timer: ReturnType<typeof setTimeout>;
+	const refresh = () => {
+		clearTimeout(timer);
+		timer = setTimeout(init, 100);
+	};
+	let registeredSwup: any;
+	const attachSwup = () => {
+		const swup = (window as any).swup;
+		if (!swup || registeredSwup === swup) return;
+		registeredSwup?.hooks.off("page:view", refresh);
+		registeredSwup = swup;
+		swup.hooks.on("page:view", refresh);
+	};
+	attachSwup();
+	document.addEventListener("swup:enable", attachSwup);
+	document.addEventListener("astro:page-load", refresh);
+	document.addEventListener("article:content-ready", refresh);
+	window.addEventListener("popstate", refresh);
+	window.addEventListener("scroll", updateActiveHeading, { passive: true });
+	(window as any).mobileTOCInit = init;
+	init();
 	return () => {
-		if (observer) {
-			observer.disconnect();
-		}
+		clearTimeout(timer);
+		observer?.disconnect();
+		registeredSwup?.hooks.off("page:view", refresh);
+		document.removeEventListener("swup:enable", attachSwup);
+		document.removeEventListener("astro:page-load", refresh);
+		document.removeEventListener("article:content-ready", refresh);
+		window.removeEventListener("popstate", refresh);
 		window.removeEventListener("scroll", updateActiveHeading);
-
-		// 清理Swup事件监听器
-		if (typeof window !== "undefined" && (window as any).swup) {
-			const swup = (window as any).swup;
-			swup.hooks.off("page:view");
-		}
-
-		// 清理popstate事件监听器
-		window.removeEventListener("popstate", init);
-		swupListenersRegistered = false;
+		if ((window as any).mobileTOCInit === init) delete (window as any).mobileTOCInit;
 	};
 });
-
-// 导出初始化函数供外部调用
-if (typeof window !== "undefined") {
-	(window as any).mobileTOCInit = init;
-}
 </script>
 
+{#if !isHomePage && tocItems.length > 0}
 <!-- TOC toggle button for mobile -->
 <button
 	on:click={togglePanel}
 	aria-label="Table of Contents"
 	id="mobile-toc-switch"
-	class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 lg:!hidden theme-switch-btn"
+	class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 mobile-toc-toggle theme-switch-btn"
 >
 	<Icon icon="material-symbols:format-list-bulleted" class="text-[1.25rem]" />
 </button>
@@ -332,10 +227,10 @@ if (typeof window !== "undefined") {
 <div 
 	id="mobile-toc-panel" 
 	class="float-panel float-panel-closed mobile-toc-panel absolute md:w-[20rem] w-[calc(100vw-2rem)]
-		top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-4"
+		top-20 left-4 md:left-[unset] right-4 shadow-md rounded-2xl p-4"
 >
 	<div class="flex items-center justify-between mb-4">
-		<h3 class="text-lg font-bold text-[var(--primary)]">{isHomePage ? i18n(I18nKey.postList) : i18n(I18nKey.tableOfContents)}</h3>
+		<h3 class="text-lg font-medium text-[var(--primary)]">{i18n(I18nKey.tableOfContents)}</h3>
 		<button 
 			on:click={togglePanel}
 			aria-label="Close TOC"
@@ -345,35 +240,8 @@ if (typeof window !== "undefined") {
 		</button>
 	</div>
 
-	{#if isHomePage}
-		{#if postItems.length === 0}
-			<div class="text-center py-8 text-black/50 dark:text-white/50">
-				<Icon icon="material-symbols:article-outline" class="text-2xl mb-2" />
-				<p>暂无文章</p>
-			</div>
-		{:else}
-			<div class="post-content">
-				{#each postItems as post}
-					<button
-						on:click={() => navigateToPost(post.url)}
-						class="post-item"
-					>
-						<div class="post-title">
-							{#if post.pinned}
-								<Icon icon="mdi:pin" class="pinned-icon" />
-							{/if}
-							{post.title}
-						</div>
-						{#if post.category}
-							<div class="post-category">{post.category}</div>
-						{/if}
-					</button>
-				{/each}
-			</div>
-		{/if}
-	{:else}
 		{#if tocItems.length === 0}
-			<div class="text-center py-8 text-black/50 dark:text-white/50">
+			<div class="text-center py-8 text-n-8">
 				<p>{i18n(I18nKey.tocEmpty)}</p>
 			</div>
 		{:else}
@@ -396,10 +264,13 @@ if (typeof window !== "undefined") {
 				{/each}
 			</div>
 		{/if}
-	{/if}
 </div>
+{/if}
 
 <style>
+	@media (min-width: 1181px) {
+		.mobile-toc-toggle { display: none !important; }
+	}
 	.mobile-toc-panel {
 		max-height: calc(100vh - 120px);
 		overflow-y: auto;
@@ -417,12 +288,6 @@ if (typeof window !== "undefined") {
 		display: flex;
 		flex-direction: column;
 		gap: 2px;
-	}
-
-	.post-content {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
 	}
 
 	.toc-item {
@@ -563,75 +428,6 @@ if (typeof window !== "undefined") {
 		flex: 1;
 	}
 
-	.post-item {
-		display: block;
-		width: 100%;
-		text-align: left;
-		padding: 12px;
-		border-radius: 8px;
-		transition: all 0.2s ease;
-		border: none;
-		background: transparent;
-		cursor: pointer;
-		border: 1px solid var(--line-color);
-	}
-
-	.post-item:hover {
-		background: var(--btn-plain-bg-hover);
-		border-color: var(--primary);
-		transform: translateY(-1px);
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-	}
-
-	.post-title {
-		font-size: 0.9rem;
-		font-weight: 600;
-		color: rgba(0, 0, 0, 0.75);
-		margin-bottom: 4px;
-		line-height: 1.4;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	:global(.dark) .post-title {
-		color: rgba(255, 255, 255, 0.75);
-	}
-
-	.post-category {
-		font-size: 0.75rem;
-		color: rgba(0, 0, 0, 0.5);
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	:global(.dark) .post-category {
-		color: rgba(255, 255, 255, 0.5);
-	}
-
-	:global(.pinned-icon) {
-		display: inline;
-		color: var(--primary);
-		font-size: 1.25rem;
-		margin-right: 0.5rem;
-		transform: translateY(-0.125rem);
-		vertical-align: middle;
-	}
-
-	.post-item:hover .post-title {
-		color: var(--primary);
-	}
-
-	.post-item:hover .post-category {
-		color: rgba(0, 0, 0, 0.75);
-	}
-
-	:global(.dark) .post-item:hover .post-category {
-		color: rgba(255, 255, 255, 0.75);
-	}
-
-	/* 滚动条样式 */
 	.mobile-toc-panel::-webkit-scrollbar {
 		width: 4px;
 	}

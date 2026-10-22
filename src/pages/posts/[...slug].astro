@@ -3,7 +3,6 @@ import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import path from "node:path";
 import publishedImages from "virtual:mizuki-published-images";
-import Comment from "@components/comment/index.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import SharePoster from "@components/misc/SharePoster.svelte";
@@ -201,97 +200,50 @@ const jsonLd = {
   <script>
     import('../../scripts/right-sidebar-layout.js');
   </script>
-    <div
-        class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4"
-    >
-        <div
-            id="post-container"
-            class:list={[
-                "card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
-                {},
-            ]}
-        >
-            <!-- word count and reading time -->
-            <div
-                class="flex flex-row text-black/30 dark:text-white/30 gap-5 mb-3 transition onload-animation"
+    <article id="post-container" class="article-shell">
+        <header class="article-head onload-animation">
+            <div class="article-kicker">
+                <span class="eyebrow">{entry.data.category || "Notes"}</span>
+                <span class="article-kicker-meta">
+                    <span>{remarkPluginFrontmatter.words} {i18n(I18nKey.wordsCount)}</span>
+                    <span class="article-dot">·</span>
+                    <span>{remarkPluginFrontmatter.minutes} {i18n(I18nKey.minutesCount)}</span>
+                </span>
+            </div>
+
+            <h1
+                data-pagefind-body
+                data-pagefind-weight="10"
+                data-pagefind-meta="title"
+                class="article-title"
             >
-                <div class="flex flex-row items-center">
-                    <div
-                        class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2"
-                    >
-                        <Icon name="material-symbols:notes-rounded" />
-                    </div>
-                    <div class="text-sm">
-                        {remarkPluginFrontmatter.words}
-                        {" " + i18n(I18nKey.wordsCount)}
-                    </div>
-                </div>
-                <div class="flex flex-row items-center">
-                    <div
-                        class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2"
-                    >
-                        <Icon
-                            name="material-symbols:schedule-outline-rounded"
-                        />
-                    </div>
-                    <div class="text-sm">
-                        {remarkPluginFrontmatter.minutes}
-                        {
-                            " " +
-                                i18n(
-                                    remarkPluginFrontmatter.minutes === 1
-                                        ? I18nKey.minuteCount
-                                        : I18nKey.minutesCount,
-                                )
-                        }
-                    </div>
-                </div>
-            </div>
+                {entry.data.title}
+            </h1>
 
-            <!-- title -->
-            <div class="relative onload-animation">
-                <div
-                    data-pagefind-body
-                    data-pagefind-weight="10"
-                    data-pagefind-meta="title"
-                    class="transition w-full block font-bold mb-3
-                    text-3xl md:text-[2.25rem]/[2.75rem]
-                    text-black/90 dark:text-white/90
-                    md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
-                    before:absolute before:top-[0.75rem] before:left-[-1.125rem]"
-                >
-                    {entry.data.title}
-                </div>
-            </div>
-
-            <!-- metadata -->
-            <div class="onload-animation">
+            <div class="article-meta onload-animation">
                 <PostMetadata
-                    className="mb-5"
+                    className="mb-0"
                     published={entry.data.published}
                     updated={entry.data.updated}
                     tags={entry.data.tags}
                     category={entry.data.category || undefined}
                     id={entry.id}
                 />
-                {
-                    (!entry.data.image|| (entry.data.image && !siteConfig.showCoverInContent)) && (
-                        <div class="mt-4 border-[var(--line-divider)] border-dashed border-b-[1px] mb-5" />
-                    )
-                }
             </div>
+        </header>
+
+        <div class="article-body">
 
             <!-- always show cover as long as it has one -->
 
             {
                 entry.data.image && siteConfig.showCoverInContent && (
                     <>
-                        <div class="mt-4" />
                         <ImageWrapper
                             id="post-cover"
                             src={entry.data.image}
                             basePath={getFileDirFromPath(entry.filePath || '')}
-                            class="mb-8 rounded-xl banner-container onload-animation"
+                            class="mb-8 rounded-[var(--r-lg)] banner-container onload-animation"
                         />
                     </>
                 )
@@ -300,12 +252,12 @@ const jsonLd = {
             {
                 isEncrypted ? (
                     <Encryptor password={entry.data.password}>
-                         <Markdown class="mb-6 markdown-content onload-animation">
+                         <Markdown class="markdown-content onload-animation">
                             <Content />
                         </Markdown>
                     </Encryptor>
                 ) : (
-                    <Markdown class="mb-6 markdown-content onload-animation">
+                    <Markdown class="markdown-content onload-animation">
                         <Content />
                     </Markdown>
                 )
@@ -322,10 +274,10 @@ const jsonLd = {
                                 />
                             </div>
                             <div class="flex flex-col gap-1">
-                                <div class="text-[1.0rem] leading-tight text-black/75 dark:text-white/75">
+                                <div class="text-[1.0rem] leading-tight text-n-9">
                                     {i18n(I18nKey.shareOnSocial)}
                                 </div>
-                                <p class="text-[0.8rem] leading-tight text-black/75 dark:text-white/75">
+                                <p class="text-[0.8rem] leading-tight text-n-9">
                                     {i18n(I18nKey.shareOnSocialDescription)}
                                 </p>
                             </div>
@@ -362,10 +314,8 @@ const jsonLd = {
                 </div>
             )}
         </div>
-    </div>
+    </article>
 
-    <!-- 评论 -->
-    <Comment post={entry} />
 
     {siteConfig.showLastModified && (
         <>
@@ -386,7 +336,7 @@ const jsonLd = {
                 <script is:inline>
                     function runtime() {
                         const lastModifiedElement = document.getElementById('last-modified');
-                        if (!lastModifiedElement) return;  // 如果元素不存在，直接返回
+                        if (!lastModifiedElement) return; // 如果元素不存在，直接返回
                         
                         const startDate = new Date(lastModifiedElement.dataset.lastModified);
                         const currentDate = new Date();
@@ -443,8 +393,8 @@ const jsonLd = {
                         />
                     </div>
                     <div class="flex flex-col gap-1">
-                        <div id="modifiedtime" class="text-[1.0rem] leading-tight text-black/75 dark:text-white/75"></div>
-                        <p class="text-[0.8rem] leading-tight text-black/75 dark:text-white/75">
+                        <div id="modifiedtime" class="text-[1.0rem] leading-tight text-n-9"></div>
+                        <p class="text-[0.8rem] leading-tight text-n-9">
                             {i18n(I18nKey.lastModifiedOutdated)}
                         </p>
                     </div>
@@ -461,7 +411,7 @@ const jsonLd = {
                 ? getPostUrlBySlug(entry.data.nextSlug)
                 : "#"}
             class:list={[
-                "w-full font-bold overflow-hidden active:scale-95",
+                "w-full font-medium overflow-hidden active:scale-95",
                 { "pointer-events-none": !entry.data.nextSlug },
             ]}
         >
@@ -472,7 +422,7 @@ const jsonLd = {
                             name="material-symbols:chevron-left-rounded"
                             class="text-[2rem] text-[var(--primary)]"
                         />
-                        <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+                        <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-n-9">
                             {entry.data.nextTitle}
                         </div>
                     </div>
@@ -485,14 +435,14 @@ const jsonLd = {
                 ? getPostUrlBySlug(entry.data.prevSlug)
                 : "#"}
             class:list={[
-                "w-full font-bold overflow-hidden active:scale-95",
+                "w-full font-medium overflow-hidden active:scale-95",
                 { "pointer-events-none": !entry.data.prevSlug },
             ]}
         >
             {
                 entry.data.prevSlug && (
                     <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4">
-                        <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+                        <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-n-9">
                             {entry.data.prevTitle}
                         </div>
                         <Icon
@@ -506,3 +456,75 @@ const jsonLd = {
     </div>
 </MainGridLayout>
 )}
+
+<style>
+    .article-shell {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0.5rem 0 0;
+    }
+
+    .article-head {
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgb(var(--n-4));
+        margin-bottom: 2rem;
+    }
+
+    .article-kicker {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .article-kicker-meta {
+        display: flex;
+        align-items: baseline;
+        gap: 0.4rem;
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: rgb(var(--n-7));
+        font-variant-numeric: tabular-nums;
+    }
+
+    .article-dot {
+        color: rgb(var(--n-5));
+    }
+
+    .article-title {
+        margin: 0;
+        max-width: 34ch;
+        font-family: var(--font-serif);
+        font-size: clamp(1.75rem, 3vw, 2.5rem);
+        font-weight: 500;
+        line-height: 1.28;
+        letter-spacing: -0.02em;
+        color: rgb(var(--n-10));
+    }
+
+    .article-meta {
+        margin-top: 1.35rem;
+    }
+
+    .article-body {
+        width: 100%;
+    }
+
+    .article-body :global(.custom-md) {
+        width: 100%;
+        max-width: none;
+    }
+
+    @media (max-width: 768px) {
+        .article-title {
+            font-size: 1.65rem;
+        }
+
+        .article-kicker {
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+    }
+</style>

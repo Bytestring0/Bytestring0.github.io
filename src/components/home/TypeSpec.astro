@@ -1,0 +1,153 @@
+---
+interface Props {
+	class?: string;
+}
+const className = Astro.props.class;
+const families = [
+	{
+		id: "01",
+		specimen: "Aa",
+		name: "Sans",
+		usage: "界面 / 正文",
+		stack: "Inter → PingFang SC → Microsoft YaHei → Noto Sans SC",
+		note: "按钮、列表、表单与正文。正文默认 n-9，中文不用合成粗体。",
+		style: "font-family: var(--font-sans);",
+	},
+	{
+		id: "02",
+		specimen: "宋",
+		name: "Serif",
+		usage: "标题 / 长文",
+		stack: "Noto Serif CJK SC → Source Han Serif → Songti SC → Georgia",
+		note: "Hero 标题与大段引文。中文优先 Noto Serif CJK，数字用旧式对齐。",
+		style: "font-family: var(--font-serif);",
+	},
+	{
+		id: "03",
+		specimen: "</>",
+		name: "Mono",
+		usage: "代码 / 元数据",
+		stack: "JetBrains Mono → Maple Mono → Fira Code → Consolas",
+		note: "代码块、版本号、hex 值与需要等宽对齐的数字。",
+		style: "font-family: var(--font-mono);",
+	},
+];
+---
+
+<section class:list={["type-spec", className]} aria-labelledby="type-spec-title">
+	<header class="spec-head">
+		<p class="eyebrow">Typography</p>
+		<h2 id="type-spec-title">字体只留三族</h2>
+		<p class="spec-lede">每一族都必须带 CJK 回退链，字号与字重不随页面随意漂移。</p>
+	</header>
+
+	<div class="spec-grid">
+		{
+			families.map((family) => (
+				<article class="spec-card">
+					<p class="spec-index eyebrow-index">{family.id}</p>
+					<p class="specimen" style={family.style}>
+						{family.specimen}
+					</p>
+					<p class="spec-name">
+						<span>{family.name}</span>
+						<span class="spec-usage">{family.usage}</span>
+					</p>
+					<p class="spec-stack">{family.stack}</p>
+					<p class="spec-note">{family.note}</p>
+				</article>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.type-spec {
+		margin: 2.75rem 0 0;
+	}
+
+	.spec-head {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-bottom: 1.1rem;
+	}
+
+	.spec-head h2 {
+		margin: 0;
+		font-size: 1.15rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: rgb(var(--n-10));
+	}
+
+	.spec-lede {
+		margin: 0;
+		font-size: 0.85rem;
+		color: rgb(var(--n-8));
+	}
+
+	.spec-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.9rem;
+	}
+
+	.spec-card {
+		padding: 1.25rem 1.3rem 1.35rem;
+		border: 1px solid rgb(var(--n-4));
+		border-radius: var(--r-lg);
+		background: rgb(var(--n-1));
+	}
+
+	.spec-index {
+		margin: 0 0 0.9rem;
+	}
+
+	.specimen {
+		margin: 0;
+		font-size: 3rem;
+		line-height: 1;
+		letter-spacing: -0.02em;
+		color: rgb(var(--n-10));
+	}
+
+	.spec-name {
+		display: flex;
+		align-items: baseline;
+		gap: 0.55rem;
+		margin: 1.1rem 0 0;
+		font-size: 0.9rem;
+		font-weight: 500;
+		color: rgb(var(--n-10));
+	}
+
+	.spec-usage {
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		font-weight: 400;
+		letter-spacing: 0.06em;
+		color: rgb(var(--n-7));
+	}
+
+	.spec-stack {
+		margin: 0.55rem 0 0;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		line-height: 1.7;
+		color: rgb(var(--n-8));
+	}
+
+	.spec-note {
+		margin: 0.7rem 0 0;
+		font-size: 0.8rem;
+		line-height: 1.75;
+		color: rgb(var(--n-7));
+	}
+
+	@media (max-width: 1024px) {
+		.spec-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

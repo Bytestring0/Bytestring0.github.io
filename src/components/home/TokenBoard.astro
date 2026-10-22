@@ -1,0 +1,280 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const neutrals = [
+	{ group: "表面", steps: ["n-1", "n-2", "n-3", "n-4"], hint: "背景、卡片、按钮底色、悬停" },
+	{ group: "边框 / 图标", steps: ["n-5", "n-6", "n-7"], hint: "分隔线、描边、图标；n-5 不做文本" },
+	{ group: "正文 / 标题", steps: ["n-8", "n-9", "n-10"], hint: "次要文本、正文、标题" },
+];
+
+const semantics = [
+	{ name: "success", swatch: "--success", soft: "--success-soft", usage: "通过 / 完成" },
+	{ name: "warning", swatch: "--warning", soft: "--warning-soft", usage: "注意 / 待办" },
+	{ name: "danger", swatch: "--danger", soft: "--danger-soft", usage: "错误 / 破坏性" },
+	{ name: "info", swatch: "--info", soft: "--info-soft", usage: "提示 / 引用" },
+];
+---
+
+<section class:list={["token-board", className]} aria-labelledby="token-board-title">
+	<header class="board-head">
+		<p class="eyebrow">Color System</p>
+		<h2 id="token-board-title">一套中性色，一点主色</h2>
+		<p class="board-lede">
+			中性灰分三档；主色只留给 CTA、focus 与品牌标识，界面上不超过 5%。
+		</p>
+	</header>
+
+	<div class="board-grid">
+		<div class="neutral-block">
+			{
+				neutrals.map((row) => (
+					<div class="neutral-row">
+						<div class="neutral-meta">
+							<p class="neutral-group">{row.group}</p>
+							<p class="neutral-hint">{row.hint}</p>
+						</div>
+						<div class="swatches">
+							{row.steps.map((step) => (
+								<div class="swatch">
+									<span class={`swatch-chip swatch-${step.replace("-", "")}`} />
+									<span class="swatch-label">{step.replace("n-", "n")}</span>
+								</div>
+							))}
+						</div>
+					</div>
+				))
+			}
+		</div>
+
+		<div class="side-block">
+			<div class="accent-card">
+				<p class="eyebrow-index">accent</p>
+				<p class="accent-sample">Aa</p>
+				<p class="accent-note">主色 · 深绿 · 仅在关键动作出现</p>
+				<div class="accent-actions">
+					<span class="btn-solid">主要动作</span>
+					<span class="btn-outline">次要动作</span>
+				</div>
+			</div>
+
+			<ul class="semantic-list">
+				{
+					semantics.map((item) => (
+						<li>
+							<span
+								class="semantic-dot"
+								style={`background: rgb(var(${item.swatch}));`}
+							/>
+							<span class="semantic-name">{item.name}</span>
+							<span class="semantic-usage">{item.usage}</span>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
+</section>
+
+<style>
+	.token-board {
+		margin-top: 2.75rem;
+	}
+
+	.board-head {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-bottom: 1.1rem;
+	}
+
+	.board-head h2 {
+		margin: 0;
+		font-size: 1.15rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: rgb(var(--n-10));
+	}
+
+	.board-lede {
+		margin: 0;
+		max-width: 40rem;
+		font-size: 0.85rem;
+		line-height: 1.8;
+		color: rgb(var(--n-8));
+	}
+
+	.board-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+		gap: 0.9rem;
+	}
+
+	.neutral-block,
+	.accent-card,
+	.semantic-list {
+		border: 1px solid rgb(var(--n-4));
+		border-radius: var(--r-lg);
+		background: rgb(var(--n-1));
+	}
+
+	.neutral-block {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.neutral-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.25rem;
+		padding: 1.05rem 1.25rem;
+	}
+
+	.neutral-row + .neutral-row {
+		border-top: 1px solid rgb(var(--n-4));
+	}
+
+	.neutral-meta {
+		min-width: 8.5rem;
+	}
+
+	.neutral-group {
+		margin: 0;
+		font-size: 0.85rem;
+		font-weight: 500;
+		color: rgb(var(--n-10));
+	}
+
+	.neutral-hint {
+		margin: 0.2rem 0 0;
+		font-size: 0.72rem;
+		line-height: 1.6;
+		color: rgb(var(--n-7));
+	}
+
+	.swatches {
+		display: flex;
+		gap: 0.45rem;
+	}
+
+	.swatch {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	.swatch-chip {
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: var(--r-md);
+		border: 1px solid rgb(var(--n-4));
+	}
+
+	.swatch-n1 { background: rgb(var(--n-1)); }
+	.swatch-n2 { background: rgb(var(--n-2)); }
+	.swatch-n3 { background: rgb(var(--n-3)); }
+	.swatch-n4 { background: rgb(var(--n-4)); }
+	.swatch-n5 { background: rgb(var(--n-5)); }
+	.swatch-n6 { background: rgb(var(--n-6)); }
+	.swatch-n7 { background: rgb(var(--n-7)); }
+	.swatch-n8 { background: rgb(var(--n-8)); }
+	.swatch-n9 { background: rgb(var(--n-9)); }
+	.swatch-n10 { background: rgb(var(--n-10)); }
+
+
+
+	.swatch-label {
+		font-family: var(--font-mono);
+		font-size: 0.64rem;
+		color: rgb(var(--n-7));
+	}
+
+	.side-block {
+		display: flex;
+		flex-direction: column;
+		gap: 0.9rem;
+	}
+
+	.accent-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		padding: 1.25rem;
+	}
+
+	.accent-sample {
+		margin: 0;
+		font-family: var(--font-serif);
+		font-size: 2.6rem;
+		line-height: 1;
+		color: rgb(var(--accent));
+	}
+
+	.accent-note {
+		margin: 0;
+		font-size: 0.78rem;
+		color: rgb(var(--n-8));
+	}
+
+	.accent-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 0.75rem;
+	}
+
+	.semantic-list {
+		display: flex;
+		flex-direction: column;
+		padding: 0.35rem 1.25rem;
+		list-style: none;
+		margin: 0;
+	}
+
+	.semantic-list li {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.6rem 0;
+	}
+
+	.semantic-list li + li {
+		border-top: 1px solid rgb(var(--n-4));
+	}
+
+	.semantic-dot {
+		width: 0.6rem;
+		height: 0.6rem;
+		border-radius: 3px;
+		flex: none;
+	}
+
+	.semantic-name {
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		color: rgb(var(--n-9));
+	}
+
+	.semantic-usage {
+		margin-left: auto;
+		font-size: 0.72rem;
+		color: rgb(var(--n-7));
+	}
+
+	@media (max-width: 1024px) {
+		.board-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.neutral-row {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.75rem;
+		}
+	}
+</style>

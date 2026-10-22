@@ -38,6 +38,16 @@ const children =
 	) ?? [];
 
 const hasChildren = children.length > 0;
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (target: string) => {
+	if (!target) return false;
+	const normalized = target.replace(/\/$/, "") || "/";
+	if (normalized === "/") return currentPath === "/";
+	return currentPath === normalized || currentPath.startsWith(normalized + "/");
+};
+
+const selfActive = isActive(link.external ? "" : url(link.url));
 ---
 
 <div class:list={["dropdown-container group", className]} data-dropdown>
@@ -45,18 +55,16 @@ const hasChildren = children.length > 0;
 		hasChildren ? (
 			<>
 				<button
-					class="btn-plain scale-animation rounded-lg h-11 font-bold w-11 lg:w-auto lg:px-5 active:scale-95 dropdown-trigger flex items-center justify-center lg:justify-start whitespace-nowrap"
+					class="nav-link dropdown-trigger"
 					aria-expanded="false"
 					aria-haspopup="true"
 					data-dropdown-trigger
+					data-active={children.some((c) => !c.external && isActive(url(c.url))) ? "true" : undefined}
 				>
-					{link.icon && (
-						<Icon name={link.icon} class="text-[1.1rem] lg:mr-2 flex-shrink-0" />
-					)}
-					<span class="truncate hidden lg:inline">{getLocalizedName(link.name)}</span>
+					<span class="truncate">{getLocalizedName(link.name)}</span>
 					<Icon
 						name="material-symbols:keyboard-arrow-down-rounded"
-						class="text-[1.25rem] transition-transform duration-200 dropdown-arrow ml-1 flex-shrink-0 hidden lg:inline"
+						class="nav-arrow dropdown-arrow"
 					/>
 				</button>
 
@@ -76,19 +84,11 @@ const hasChildren = children.length > 0;
 								class="dropdown-item"
 								aria-label={child.name}
 							>
-								<div class="flex items-center">
-									{child.icon && (
-										<Icon
-											name={child.icon}
-											class="text-[1rem] mr-2"
-										/>
-									)}
-									<span>{getLocalizedName(child.name)}</span>
-								</div>
+								<span>{getLocalizedName(child.name)}</span>
 								{child.external && (
 									<Icon
 										name="fa7-solid:arrow-up-right-from-square"
-										class="text-[0.75rem] text-black/25 dark:text-white/25 ml-2"
+										class="text-[0.7rem] text-n-6 ml-2"
 									/>
 								)}
 							</a>
@@ -102,16 +102,14 @@ const hasChildren = children.length > 0;
 				href={link.external ? link.url : url(link.url)}
 				target={link.external ? "_blank" : null}
 				rel={link.external ? "noopener noreferrer" : null}
-				class="btn-plain scale-animation rounded-lg h-11 font-bold w-11 lg:w-auto lg:px-5 active:scale-95 flex items-center justify-center lg:justify-start whitespace-nowrap"
+				class="nav-link"
+				data-active={selfActive ? "true" : undefined}
 			>
-				{link.icon && (
-					<Icon name={link.icon} class="text-[1.1rem] lg:mr-2 flex-shrink-0" />
-				)}
-				<span class="truncate hidden lg:inline">{getLocalizedName(link.name)}</span>
+				<span class="truncate">{getLocalizedName(link.name)}</span>
 				{link.external && (
 					<Icon
 						name="fa7-solid:arrow-up-right-from-square"
-						class="text-[0.875rem] transition -translate-y-[1px] ml-1 text-black/[0.2] dark:text-white/[0.2] flex-shrink-0 hidden lg:inline"
+						class="text-[0.68rem] text-n-6"
 					/>
 				)}
 			</a>
@@ -122,6 +120,33 @@ const hasChildren = children.length > 0;
 <style>
 	.dropdown-container {
 		@apply relative;
+	}
+
+	.nav-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		height: 2.1rem;
+		padding: 0 0.72rem;
+		border-radius: 999px;
+		font-size: 0.84rem;
+		font-weight: 400;
+		color: rgb(var(--n-9));
+		white-space: nowrap;
+		transition:
+			color 150ms var(--ease),
+			background-color 150ms var(--ease);
+	}
+
+	.nav-link:hover {
+		color: rgb(var(--n-10));
+		background: rgb(var(--n-3));
+	}
+
+	.nav-arrow {
+		font-size: 1rem;
+		color: rgb(var(--n-6));
+		transition: transform 200ms var(--ease);
 	}
 
 	.dropdown-menu {
@@ -141,11 +166,29 @@ const hasChildren = children.length > 0;
 	}
 
 	.dropdown-content {
-		@apply bg-[var(--float-panel-bg)] rounded-[var(--radius-large)] shadow-xl dark:shadow-none border border-black/5 dark:border-white/10 p-2 min-w-[12rem] max-h-[70vh] overflow-y-auto;
+		@apply bg-[var(--float-panel-bg)] p-1.5 min-w-[10.5rem] max-h-[70vh] overflow-y-auto;
+		border: 1px solid rgb(var(--n-4));
+		border-radius: var(--r-md);
+		box-shadow: var(--shadow-soft-lg);
 	}
 
 	.dropdown-item {
-		@apply flex items-center justify-between px-4 py-2.5 text-black/75 dark:text-white/75 hover:text-[var(--primary)] hover:bg-[var(--btn-plain-bg-hover)] transition-colors duration-150 font-medium rounded-lg;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.5rem 0.7rem;
+		border-radius: var(--r-sm);
+		font-size: 0.84rem;
+		font-weight: 400;
+		color: rgb(var(--n-8));
+		transition:
+			color 150ms var(--ease),
+			background-color 150ms var(--ease);
+	}
+
+	.dropdown-item:hover {
+		color: rgb(var(--n-10));
+		background: rgb(var(--n-3));
 	}
 
 	@media (max-width: 767px) {

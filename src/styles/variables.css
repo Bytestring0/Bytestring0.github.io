@@ -1,0 +1,100 @@
+/* 主题变量：全部由 tokens.css 的中性色 / 主色 / 语义色派生。
+ * 旧变量名保留，供既有组件继续使用，但取值已切换到新的设计系统。
+ * 这里刻意使用普通 CSS 写法，避免缩进敏感的 stylus 语法。
+ */
+
+:root {
+  --radius-large: 12px;
+  --content-delay: 150ms;
+
+  --color-selection-bar: linear-gradient(to right, rgb(var(--n-5)), rgb(var(--n-7)), rgb(var(--n-5)));
+
+  --display-light-icon: 1;
+  --display-dark-icon: 0;
+}
+
+:root,
+:root.dark {
+  --primary: rgb(var(--accent));
+  --title-active: rgb(var(--accent-hover));
+
+  --page-bg: rgb(var(--n-2));
+  --card-bg: rgb(var(--n-1));
+  --card-bg-transparent: rgb(var(--n-1) / 0.86);
+
+  --deep-text: rgb(var(--n-10));
+  --btn-content: rgb(var(--n-9));
+  --content-meta: rgb(var(--n-8));
+
+  --btn-regular-bg: rgb(var(--n-3));
+  --btn-regular-bg-hover: rgb(var(--n-4));
+  --btn-regular-bg-active: rgb(var(--n-4));
+  --btn-plain-bg-hover: rgb(var(--n-3));
+  --btn-plain-bg-active: rgb(var(--n-4));
+  --btn-card-bg-hover: rgb(var(--n-2));
+  --btn-card-bg-active: rgb(var(--n-3));
+
+  --enter-btn-bg: var(--btn-regular-bg);
+  --enter-btn-bg-hover: var(--btn-regular-bg-hover);
+  --enter-btn-bg-active: var(--btn-regular-bg-active);
+
+  --line-divider: rgb(var(--n-4));
+  --line-color: rgb(var(--n-4));
+  --meta-divider: rgb(var(--n-5));
+
+  --inline-code-bg: rgb(var(--n-3));
+  --inline-code-color: rgb(var(--n-9));
+  --selection-bg: rgb(var(--accent-soft-strong));
+  --codeblock-selection: var(--selection-bg);
+  --codeblock-bg: rgb(var(--n-2));
+  --codeblock-topbar-bg: rgb(var(--n-3));
+  --license-block-bg: rgb(var(--n-2));
+
+  --link-underline: rgb(var(--n-5));
+  --link-hover: rgb(var(--accent));
+  --link-active: rgb(var(--accent-hover));
+
+  --float-panel-bg: rgb(var(--n-1));
+
+  --scrollbar-bg: rgb(var(--n-5));
+  --scrollbar-bg-hover: rgb(var(--n-6));
+  --scrollbar-bg-active: rgb(var(--n-7));
+  --scrollbar-bg-light: rgb(var(--n-5));
+  --scrollbar-bg-hover-light: rgb(var(--n-6));
+  --scrollbar-bg-active-light: rgb(var(--n-7));
+  --scrollbar-bg-dark: rgb(var(--n-5));
+  --scrollbar-bg-hover-dark: rgb(var(--n-6));
+  --scrollbar-bg-active-dark: rgb(var(--n-7));
+
+  --admonitions-color-tip: rgb(var(--success));
+  --admonitions-color-note: rgb(var(--info));
+  --admonitions-color-important: rgb(var(--info));
+  --admonitions-color-warning: rgb(var(--warning));
+  --admonitions-color-caution: rgb(var(--danger));
+
+  --toc-badge-bg: rgb(var(--n-3));
+  --toc-btn-hover: rgb(var(--n-3));
+  --toc-btn-active: rgb(var(--n-4));
+  --toc-item-active: rgb(var(--accent));
+  --toc-width: calc((100vw - var(--page-width)) / 2 - 1rem);
+}
+
+:root.dark {
+  --page-bg: rgb(var(--n-1));
+  --card-bg: rgb(var(--n-2));
+  --card-bg-transparent: rgb(var(--n-2) / 0.88);
+  --float-panel-bg: rgb(var(--n-2));
+  --btn-card-bg-hover: rgb(var(--n-3));
+  --codeblock-bg: rgb(var(--n-2));
+  --license-block-bg: rgb(var(--n-2));
+  --display-light-icon: 0;
+  --display-dark-icon: 1;
+}
+
+body.wallpaper-transparent {
+  --card-bg-transparent: rgb(var(--n-1) / 0.86);
+}
+
+:root.dark body.wallpaper-transparent {
+  --card-bg-transparent: rgb(var(--n-2) / 0.88);
+}

@@ -62,8 +62,8 @@ export const siteConfig: SiteConfig = {
 
 	// 页面自动缩放配置
 	pageScaling: {
-		enable: true, // 是否开启自动缩放
-		targetWidth: 2000, // 目标宽度，低于此宽度时开始缩放
+		enable: false, // 简约排版下不再缩放页面
+		targetWidth: 2000,
 	},
 
 	bangumi: {
@@ -171,7 +171,7 @@ export const siteConfig: SiteConfig = {
 	},
 	toc: {
 		enable: true, // 启用目录功能
-		mode: "sidebar", // 目录显示模式："float" 悬浮按钮模式，"sidebar" 侧边栏模式
+		mode: "wave", // "wave" 滚动波浪目录，"float" 悬浮按钮，"sidebar" 侧边栏
 		depth: 3, // 目录深度，1-6，1 表示只显示 h1 标题，2 表示显示 h1 和 h2 标题，依此类推
 		useJapaneseBadge: false, // 使用日语假名标记（あいうえお...）代替数字，开启后会将 1、2、3... 改为 あ、い、う...
 	},
@@ -180,30 +180,29 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		// 留空以使用默认 favicon
 		// {
-		//   src: '/favicon/icon.png',    // 图标文件路径
-		//   theme: 'light',              // 可选，指定主题 'light' | 'dark'
-		//   sizes: '32x32',              // 可选，图标大小
+		// src: '/favicon/icon.png', // 图标文件路径
+		// theme: 'light', // 可选，指定主题 'light' | 'dark'
+		// sizes: '32x32', // 可选，图标大小
 		// }
 	],
 
 	// 字体配置
+	// 只有三族：sans（界面与正文）/ serif（引文与数字）/ mono（代码与标签）。
+	// 每一族都带 CJK 回退链，见 src/styles/tokens.css。
 	font: {
-		// 注意：自定义字体需要在 src/styles/main.css 中引入字体文件
-		// 注意：字体子集优化功能目前仅支持 TTF 格式字体,开启后需要在生产环境才能看到效果,在Dev环境下显示的是浏览器默认字体!
 		asciiFont: {
-			// 英文字体 - 优先级最高
-			// 指定为英文字体则无论字体包含多大范围，都只会保留 ASCII 字符子集
-			fontFamily: "MapleMonoNormal-NF-CN-Regular",
+			// 英文字体 - 优先级最高；使用系统字体栈，不再加载 20MB 的等宽中文字体
+			fontFamily: "Inter",
 			fontWeight: "400",
-			localFonts: ["MapleMonoNormal-NF-CN-Regular.ttf"],
-			enableCompress: true, // 启用字体子集优化，减少字体文件大小
+			localFonts: [],
+			enableCompress: false,
 		},
 		cjkFont: {
-			// 全站中日韩字符也统一使用 Maple Mono
-			fontFamily: "MapleMonoNormal-NF-CN-Regular",
+			// 中文回退：苹方 / 微软雅黑 / 思源黑体
+			fontFamily: "PingFang SC",
 			fontWeight: "400",
-			localFonts: ["MapleMonoNormal-NF-CN-Regular.ttf"],
-			enableCompress: true, // 启用字体子集优化，减少字体文件大小
+			localFonts: [],
+			enableCompress: false,
 		},
 	},
 	showLastModified: true, // 控制“上次编辑”卡片显示的开关
@@ -269,6 +268,11 @@ export const navBarConfig: NavBarConfig = {
 					url: "/friends/",
 					icon: "material-symbols:group",
 				},
+				{
+					name: "Projects",
+					url: "/projects/",
+					icon: "material-symbols:floor",
+				}
 			],
 		},
 		// {
@@ -359,7 +363,7 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 };
 
 export const commentConfig: CommentConfig = {
-	enable: true, // 启用评论功能。当设置为 false 时，评论组件将不会显示在文章区域。
+	enable: false, // 评论已关闭：文章底部不再显示评论区
 	twikoo: {
 		envId: "https://twikoo.bytestring.top",
 		lang: SITE_LANG,

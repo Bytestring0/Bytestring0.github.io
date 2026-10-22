@@ -19,39 +19,191 @@ const title = i18n(I18nKey.about);
 ---
 
 <MainGridLayout title={title}>
-	<section class="minimal-page-shell about-page">
-		<div class="minimal-glass-panel about-hero">
-			<div class="about-avatar">
-				<ImageWrapper
-					src={profileConfig.avatar || ""}
-					alt="Profile Image of the Author"
-					class="w-full h-full"
-				/>
-			</div>
-			<div class="about-intro">
-				<p class="taxonomy-eyebrow">About</p>
-				<h1>{profileConfig.name}</h1>
-				{profileConfig.bio && <p>{profileConfig.bio}</p>}
-				<div class="about-links">
-					{profileConfig.links.map((item) => (
-						<a
-							href={item.url}
-							target="_blank"
-							rel="me noopener noreferrer"
-							aria-label={item.name}
-						>
-							<Icon name={item.icon} class="text-[1.2rem]" />
-							<span>{item.name}</span>
-						</a>
-					))}
+	<header class="page-head">
+		<h1>{profileConfig.name}</h1>
+	</header>
+
+	<div class="about-body">
+		<div class="about-card">
+			{profileConfig.avatar && (
+				<div class="about-avatar">
+					<ImageWrapper
+						src={profileConfig.avatar}
+						alt={`${profileConfig.name} 的头像`}
+						class="w-full h-full"
+						loading="eager"
+					/>
 				</div>
+			)}
+			<div class="about-links">
+				{profileConfig.links.map((item) => (
+					<a
+						href={item.url}
+						target="_blank"
+						rel="me noopener noreferrer"
+						aria-label={item.name}
+					>
+						<Icon name={item.icon} class="about-link-icon" aria-hidden="true" />
+						<span>{item.name}</span>
+					</a>
+				))}
 			</div>
 		</div>
 
-		<div class="minimal-glass-panel about-content">
+		<div class="about-content">
 			<Markdown class="mt-0">
 				<Content />
 			</Markdown>
 		</div>
-	</section>
+	</div>
 </MainGridLayout>
+
+<style>
+	.page-head {
+		padding: 2.5rem 0 1.35rem;
+		border-bottom: 1px solid rgb(var(--n-4));
+	}
+
+	.page-head h1 {
+		margin: 0;
+		font-family: var(--font-serif);
+		font-size: 2.25rem;
+		font-weight: 500;
+		line-height: 1.25;
+		letter-spacing: 0;
+		color: rgb(var(--n-10));
+		overflow-wrap: anywhere;
+	}
+
+	.about-body {
+		display: grid;
+		grid-template-columns: 10rem minmax(0, 1fr);
+		align-items: start;
+		gap: 3rem;
+		padding: 2rem 0 3rem;
+	}
+
+	.about-card {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		min-width: 0;
+		gap: 0.85rem;
+	}
+
+	.about-avatar {
+		width: 8.5rem;
+		max-width: 100%;
+		aspect-ratio: 1;
+		border-radius: var(--r-lg);
+		overflow: hidden;
+		border: 1px solid rgb(var(--n-4));
+		background: rgb(var(--n-2));
+	}
+
+	.about-links {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.15rem;
+		max-width: 100%;
+		margin: 0;
+	}
+
+	.about-links a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-height: 2.25rem;
+		max-width: 100%;
+		padding: 0.35rem 0.55rem;
+		border: 1px solid transparent;
+		border-radius: var(--r-sm);
+		background: transparent;
+		font-size: 0.8rem;
+		line-height: 1.4;
+		color: rgb(var(--n-8));
+		text-decoration: none;
+		transition: background-color 150ms var(--ease), color 150ms var(--ease);
+	}
+
+	.about-links a span {
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+
+	.about-links :global(.about-link-icon) {
+		flex: none;
+		font-size: 1rem;
+	}
+
+	.about-links a:hover {
+		border-color: transparent;
+		background: rgb(var(--n-3));
+		color: rgb(var(--n-10));
+	}
+
+	.about-links a:focus-visible {
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: 3px;
+	}
+
+	.about-content {
+		min-width: 0;
+		max-width: 40rem;
+		padding: 0;
+	}
+
+	.about-content :global(.custom-md) {
+		margin-top: 0;
+		font-size: 0.95rem;
+		line-height: 1.9;
+	}
+
+	.about-content :global(.custom-md h2) {
+		font-size: 1.15rem;
+		line-height: 1.5;
+	}
+
+	.about-content :global(.custom-md > :first-child),
+	.about-content :global(.custom-md > section:first-child > :first-child) {
+		margin-top: 0;
+		padding-top: 0;
+		border-top: 0;
+	}
+
+	.about-content :global(.custom-md > :last-child) {
+		margin-bottom: 0;
+	}
+
+	@media (max-width: 768px) {
+		.page-head { padding-top: 1.75rem; }
+		.page-head h1 { font-size: 1.85rem; }
+		.about-body {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 1.75rem;
+			padding: 1.5rem 0 2.5rem;
+		}
+
+		.about-card {
+			display: grid;
+			grid-template-columns: auto minmax(0, 1fr);
+			align-items: center;
+			gap: 1.15rem;
+		}
+
+		.about-avatar {
+			width: 5.5rem;
+		}
+
+		.about-links a {
+			min-height: 2.75rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.about-links a {
+			transition: none;
+		}
+	}
+</style>

@@ -29,12 +29,12 @@ const timeZone = siteConfig.timeZone ?? 8;
 				<div class="text-[var(--primary)] text-xl shrink-0">
 					<Icon name="material-symbols:schedule" />
 				</div>
-				<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+				<span class="text-n-9 dark:text-n-8 font-medium text-sm break-words leading-tight">
 					{i18n(I18nKey.progressTrackerCurrentTime)}
 				</span>
 			</div>
 			<div class="flex items-center ml-3 shrink-0">
-				<span id="progress-current-time" class="text-base font-bold text-neutral-900 dark:text-neutral-100">
+				<span id="progress-current-time" class="text-base font-medium text-n-10">
 					--:--:--
 				</span>
 			</div>
@@ -47,13 +47,13 @@ const timeZone = siteConfig.timeZone ?? 8;
 					<div class="text-[var(--primary)] text-xl shrink-0">
 						<Icon name="material-symbols:today" />
 					</div>
-					<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+					<span class="text-n-9 dark:text-n-8 font-medium text-sm break-words leading-tight">
 						{i18n(I18nKey.progressTrackerToday)}
 					</span>
 				</div>
-				<span id="progress-today-value" class="text-base font-bold text-neutral-900 dark:text-neutral-100">0%</span>
+				<span id="progress-today-value" class="text-base font-medium text-n-10">0%</span>
 			</div>
-			<div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+			<div class="w-full bg-n-4 dark:bg-n-9 rounded-full h-2 overflow-hidden">
 				<div id="progress-today-bar" class="bg-[var(--primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
 			</div>
 		</div>
@@ -65,13 +65,13 @@ const timeZone = siteConfig.timeZone ?? 8;
 					<div class="text-[var(--primary)] text-xl shrink-0">
 						<Icon name="material-symbols:date-range" />
 					</div>
-					<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+					<span class="text-n-9 dark:text-n-8 font-medium text-sm break-words leading-tight">
 						{i18n(I18nKey.progressTrackerWeek)}
 					</span>
 				</div>
-				<span id="progress-week-value" class="text-base font-bold text-neutral-900 dark:text-neutral-100">0%</span>
+				<span id="progress-week-value" class="text-base font-medium text-n-10">0%</span>
 			</div>
-			<div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+			<div class="w-full bg-n-4 dark:bg-n-9 rounded-full h-2 overflow-hidden">
 				<div id="progress-week-bar" class="bg-[var(--primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
 			</div>
 		</div>
@@ -83,13 +83,13 @@ const timeZone = siteConfig.timeZone ?? 8;
 					<div class="text-[var(--primary)] text-xl shrink-0">
 						<Icon name="material-symbols:calendar-month" />
 					</div>
-					<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+					<span class="text-n-9 dark:text-n-8 font-medium text-sm break-words leading-tight">
 						{i18n(I18nKey.progressTrackerMonth)}
 					</span>
 				</div>
-				<span id="progress-month-value" class="text-base font-bold text-neutral-900 dark:text-neutral-100">0%</span>
+				<span id="progress-month-value" class="text-base font-medium text-n-10">0%</span>
 			</div>
-			<div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+			<div class="w-full bg-n-4 dark:bg-n-9 rounded-full h-2 overflow-hidden">
 				<div id="progress-month-bar" class="bg-[var(--primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
 			</div>
 		</div>
@@ -101,28 +101,28 @@ const timeZone = siteConfig.timeZone ?? 8;
 					<div class="text-[var(--primary)] text-xl shrink-0">
 						<Icon name="material-symbols:calendar-clock" />
 					</div>
-					<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+					<span class="text-n-9 dark:text-n-8 font-medium text-sm break-words leading-tight">
 						{i18n(I18nKey.progressTrackerYear)}
 					</span>
 				</div>
-				<span id="progress-year-value" class="text-base font-bold text-neutral-900 dark:text-neutral-100">0%</span>
+				<span id="progress-year-value" class="text-base font-medium text-n-10">0%</span>
 			</div>
-			<div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+			<div class="w-full bg-n-4 dark:bg-n-9 rounded-full h-2 overflow-hidden">
 				<div id="progress-year-bar" class="bg-[var(--primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
 			</div>
 		</div>
 
 		<!-- 节假日信息 -->
-		<div class="mt-1 pt-2 border-t border-neutral-200 dark:border-neutral-700">
+		<div class="mt-1 pt-2 border-t border-n-4 dark:border-n-9">
 			<div class="flex items-center gap-2.5 px-2 mb-2">
 				<div class="text-[var(--primary)] text-xl shrink-0">
 					<Icon name="material-symbols:celebration" />
 				</div>
-				<span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
+				<span class="text-n-9 dark:text-n-8 font-medium text-sm break-words leading-tight">
 					{i18n(I18nKey.progressTrackerHolidays)}
 				</span>
 			</div>
-			<div id="progress-holidays" class="flex flex-col gap-1.5 px-2 text-sm text-neutral-600 dark:text-neutral-400">
+			<div id="progress-holidays" class="flex flex-col gap-1.5 px-2 text-sm text-n-8">
 				<span class="loading-hint">{i18n(I18nKey.progressTrackerLoading)}</span>
 			</div>
 		</div>
@@ -303,7 +303,7 @@ const timeZone = siteConfig.timeZone ?? 8;
 			.slice(0, 3);
 
 		if (upcomingHolidays.length === 0) {
-			holidaysEl.innerHTML = '<span class="text-neutral-500 dark:text-neutral-500">' +
+			holidaysEl.innerHTML = '<span class="text-n-8">' +
 				(document.documentElement.lang?.startsWith('zh') ? '暂无即将到来的节假日' : 'No upcoming holidays') + '</span>';
 			return;
 		}
@@ -324,7 +324,7 @@ const timeZone = siteConfig.timeZone ?? 8;
 			}
 
 			return `<div class="flex items-center justify-between py-1">
-				<span class="font-medium text-neutral-700 dark:text-neutral-300">${holiday.name}</span>
+				<span class="font-medium text-n-9 dark:text-n-8">${holiday.name}</span>
 				<span class="text-[var(--primary)] text-xs font-medium">${countdownText}</span>
 			</div>`;
 		}).join('');

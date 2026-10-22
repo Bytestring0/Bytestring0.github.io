@@ -22,32 +22,130 @@ const sortedCategories = [...categories.entries()].sort((a, b) =>
 ---
 
 <MainGridLayout title="分类">
-	<section class="minimal-page-shell">
-		<div class="minimal-glass-panel taxonomy-hero">
-			<p class="taxonomy-eyebrow">Categories</p>
-			<h1>分类</h1>
-		</div>
+	<header class="page-head">
+		<h1>分类</h1>
+	</header>
 
-		<div class="taxonomy-grid">
-			{sortedCategories.map(([category, categoryPosts]) => (
-				<article class="taxonomy-card minimal-glass-panel">
-					<div class="taxonomy-card-head">
-						<div>
-							<h2>{category}</h2>
-						</div>
-						<a href={getCategoryUrl(category)}>{categoryPosts.length} 篇</a>
-					</div>
-					<ul>
-						{categoryPosts.slice(0, 3).map((post) => (
-							<li>
-								<a class="taxonomy-post-link" href={getPostUrl(post)}>
-									{post.data.title}
-								</a>
-							</li>
-						))}
-					</ul>
-				</article>
-			))}
-		</div>
-	</section>
+	<div class="category-list">
+		{sortedCategories.map(([category, categoryPosts], index) => (
+			<section class="category-item" style={`--i: ${index}`}>
+				<header>
+					<span class="category-index">{String(index + 1).padStart(2, "0")}</span>
+					<h2><a href={getCategoryUrl(category)}>{category}</a></h2>
+					<span class="category-count">{String(categoryPosts.length).padStart(2, "0")}</span>
+				</header>
+				<ul>
+					{categoryPosts.slice(0, 4).map((post) => (
+						<li>
+							<a href={getPostUrl(post)}>{post.data.title}</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		))}
+	</div>
 </MainGridLayout>
+
+<style>
+	.page-head {
+		padding: 2.5rem 0 1.5rem;
+		border-bottom: 1px solid rgb(var(--n-4));
+	}
+
+	.eyebrow {
+		margin: 0 0 0.6rem;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: rgb(var(--n-7));
+	}
+
+	.page-head h1 {
+		margin: 0;
+		font-family: var(--font-serif);
+		font-size: clamp(1.9rem, 3.2vw, 2.5rem);
+		font-weight: 500;
+		letter-spacing: -0.025em;
+		color: rgb(var(--n-10));
+	}
+
+	.page-lede {
+		margin: 0.6rem 0 0;
+		font-size: 0.88rem;
+		color: rgb(var(--n-8));
+	}
+
+	.category-list {
+		margin-top: 0.5rem;
+	}
+
+	.category-item {
+		padding: 1.15rem 0.4rem;
+		border-bottom: 1px solid rgb(var(--n-4));
+		transition:
+			background-color 180ms var(--ease),
+			padding-left 200ms var(--ease);
+	}
+
+	.category-item:hover {
+		background: rgb(var(--n-1) / 0.75);
+		padding-left: 0.7rem;
+	}
+
+	.category-item header {
+		display: flex;
+		align-items: baseline;
+		gap: 0.9rem;
+	}
+
+	.category-index {
+		font-family: var(--font-mono);
+		font-size: 0.66rem;
+		color: rgb(var(--n-6));
+		font-variant-numeric: tabular-nums;
+	}
+
+	.category-item h2 {
+		margin: 0;
+		font-size: 1.02rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+	}
+
+	.category-item h2 a {
+		color: rgb(var(--n-10));
+		transition: color 150ms var(--ease);
+	}
+
+	.category-item h2 a:hover {
+		color: rgb(var(--accent));
+	}
+
+	.category-count {
+		margin-left: auto;
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		color: rgb(var(--n-6));
+		font-variant-numeric: tabular-nums;
+	}
+
+	.category-item ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem 1.1rem;
+		margin: 0.55rem 0 0 2.9rem;
+		padding: 0;
+		list-style: none;
+	}
+
+	.category-item li a {
+		font-size: 0.82rem;
+		color: rgb(var(--n-8));
+		transition: color 150ms var(--ease);
+	}
+
+	.category-item li a:hover {
+		color: rgb(var(--n-10));
+	}
+</style>

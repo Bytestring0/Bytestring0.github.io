@@ -361,7 +361,7 @@
 	{#if showError}
 		<div class="fixed bottom-20 right-4 z-[60] max-w-sm">
 			<div
-				class="bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-slide-up"
+				class="bg-danger text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-slide-up"
 			>
 				<Icon
 					icon="material-symbols:error"

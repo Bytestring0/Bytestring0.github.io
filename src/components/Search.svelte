@@ -89,6 +89,7 @@ const closeSearchPanel = (): void => {
 	keywordDesktop = "";
 	keywordMobile = "";
 	result = [];
+	isDesktopSearchExpanded = false;
 };
 
 const handleResultClick = (event: Event, url: string): void => {
@@ -213,27 +214,39 @@ onDestroy(() => {
 	}
 	clearTimeout(debounceTimer);
 	clearTimeout(focusTimer);
+	clearTimeout(blurTimer);
 });
 </script>
 
 <!-- search bar for desktop view (collapsed by default) -->
-<div class="hidden lg:block relative w-11 h-11 shrink-0">
+<div class="desktop-search hidden lg:block relative h-11 shrink-0" class:expanded={isDesktopSearchExpanded}>
     <div
         id="search-bar"
-        class="flex transition-all items-center h-11 rounded-lg absolute right-0 top-0 shrink-0
+        class="flex transition-all items-center h-11 rounded-lg relative shrink-0
             {isDesktopSearchExpanded ? 'bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06] dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10' : 'btn-plain active:scale-90'}
-            {isDesktopSearchExpanded ? 'w-48' : 'w-11'}"
+            w-full"
         role="button"
         tabindex="0"
         aria-label="Search"
+        aria-expanded={isDesktopSearchExpanded}
+        onkeydown={(event) => {
+            if (event.key === "Escape") {
+                isDesktopSearchExpanded = false;
+                setPanelVisibility(false, true);
+                (event.currentTarget as HTMLElement).focus();
+            } else if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
+                event.preventDefault();
+                toggleDesktopSearch();
+            }
+        }}
         onmouseenter={() => {if (!isDesktopSearchExpanded) toggleDesktopSearch()}}
-        onmouseleave={collapseDesktopSearch}
+        onmouseleave={() => { if (!document.getElementById("search-input-desktop")?.matches(":focus")) collapseDesktopSearch(); }}
         onclick={() => {
             const input = document.getElementById("search-input-desktop") as HTMLInputElement;
             input?.focus();
         }}
     >
-        <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none {isDesktopSearchExpanded ? 'left-3' : 'left-1/2 -translate-x-1/2'} transition top-1/2 -translate-y-1/2 {isDesktopSearchExpanded ? 'text-black/30 dark:text-white/30' : ''}"></Icon>
+        <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none {isDesktopSearchExpanded ? 'left-3' : 'left-1/2 -translate-x-1/2'} transition top-1/2 -translate-y-1/2 {isDesktopSearchExpanded ? 'text-n-7' : ''}"></Icon>
         <input id="search-input-desktop" placeholder={i18n(I18nKey.search)} bind:value={keywordDesktop}
             onfocus={() => {
                 clearTimeout(blurTimer);
@@ -242,7 +255,7 @@ onDestroy(() => {
             }}
             onblur={handleBlur}
             class="transition-all pl-10 text-sm bg-transparent outline-0
-                h-full {isDesktopSearchExpanded ? 'w-36' : 'w-0'} text-black/50 dark:text-white/50"
+                h-full {isDesktopSearchExpanded ? 'w-36' : 'w-0'} text-n-8"
         >
     </div>
 </div>
@@ -254,16 +267,16 @@ onDestroy(() => {
 </button>
 
 <!-- search panel -->
-<div id="search-panel" class="float-panel float-panel-closed absolute md:w-[30rem] top-20 left-4 md:left-[unset] right-4 z-50 search-panel shadow-2xl rounded-2xl p-2">
+<div id="search-panel" class="float-panel float-panel-closed absolute md:w-[30rem] top-20 left-4 md:left-[unset] right-4 z-50 search-panel shadow-md rounded-2xl p-2">
     <!-- search bar inside panel for phone/tablet -->
     <div id="search-bar-inside" class="flex relative lg:hidden transition-all items-center h-11 rounded-xl
       bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
   ">
-        <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
+        <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-n-7"></Icon>
         <input placeholder={i18n(I18nKey.search)} bind:value={keywordMobile}
                class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
-               focus:w-60 text-black/50 dark:text-white/50"
+               focus:w-60 text-n-8"
         >
     </div>
     <!-- search results -->
@@ -272,7 +285,7 @@ onDestroy(() => {
            onclick={(e) => handleResultClick(e, item.url)}
            class="transition first-of-type:mt-2 lg:first-of-type:mt-0 group block
        rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]">
-            <div class="transition text-90 inline-flex font-bold group-hover:text-[var(--primary)]">
+            <div class="transition text-90 inline-flex font-medium group-hover:text-[var(--primary)]">
                 {item.meta.title}<Icon icon="fa7-solid:chevron-right" class="transition text-[0.75rem] translate-x-1 my-auto text-[var(--primary)]"></Icon>
             </div>
             <div class="transition text-sm text-50">
@@ -283,6 +296,9 @@ onDestroy(() => {
 </div>
 
 <style>
+    .desktop-search { width: 2.75rem; transition: width 420ms var(--ease); }
+    .desktop-search.expanded { width: 12rem; }
+    @media (prefers-reduced-motion: reduce) { .desktop-search { transition: none; } }
     input:focus {
         outline: 0;
     }

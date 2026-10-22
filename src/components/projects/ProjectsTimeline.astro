@@ -1,0 +1,408 @@
+---
+import { Icon } from "astro-icon/components";
+import github from "../../data/github-repos.json";
+
+interface Repo {
+	name: string;
+	description: string;
+	url: string;
+	homepage: string;
+	language: string;
+	topics: string[];
+	stars: number;
+	forks: number;
+	fork: boolean;
+	createdAt: string;
+	pushedAt: string;
+}
+
+const repos = (github.repos as Repo[]).filter((repo) => !repo.fork);
+
+function relativeTime(iso: string) {
+	const then = new Date(iso).getTime();
+	const diff = Date.now() - then;
+	const minutes = Math.floor(diff / 60_000);
+	if (minutes < 60) return minutes <= 1 ? "刚刚更新" : `${minutes} 分钟前更新`;
+	const hours = Math.floor(minutes / 60);
+	if (hours < 24) return `${hours} 小时前更新`;
+	const days = Math.floor(hours / 24);
+	if (days < 30) return `${days} 天前更新`;
+	const months = Math.floor(days / 30);
+	if (months < 12) return `${months} 个月前更新`;
+	return `${Math.floor(months / 12)} 年前更新`;
+}
+
+function formatDate(iso: string) {
+	const d = new Date(iso);
+	return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+}
+
+const latest = repos[0]?.pushedAt;
+---
+
+<section class="timeline" aria-label="GitHub 项目时间线">
+	<div class="timeline-rail" aria-hidden="true">
+		<span class="timeline-rail-progress"></span>
+	</div>
+
+	<ol class="timeline-list">
+		{
+			repos.map((repo, index) => (
+				<li class="timeline-item" style={`--i: ${index}`}>
+					<span class="timeline-node" aria-hidden="true" />
+
+					<div class="timeline-bubble" data-bubble>
+						<Icon name="material-symbols:history-rounded" class="text-[0.75rem]" />
+						{relativeTime(repo.pushedAt)}
+					</div>
+
+					<article class="timeline-card">
+						<header class="timeline-head">
+							<a href={repo.url} target="_blank" rel="noopener noreferrer" class="timeline-name">
+								{repo.name}
+							</a>
+							{repo.homepage && (
+								<a
+									href={repo.homepage}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="timeline-live"
+									aria-label={`打开 ${repo.name} 站点`}
+								>
+									<Icon name="material-symbols:open-in-new-rounded" class="text-[0.85rem]" />
+								</a>
+							)}
+						</header>
+
+						{repo.description && <p class="timeline-desc">{repo.description}</p>}
+
+						<footer class="timeline-meta">
+							{repo.language && (
+								<span class="timeline-lang">
+									<span class="lang-dot" />
+									{repo.language}
+								</span>
+							)}
+							<span class="timeline-stat">
+								<Icon name="material-symbols:star-outline-rounded" class="text-[0.75rem]" />
+								{repo.stars}
+							</span>
+							<span class="timeline-stat">
+								<Icon name="material-symbols:fork-right-rounded" class="text-[0.75rem]" />
+								{repo.forks}
+							</span>
+							<span class="timeline-date">创建于 {formatDate(repo.createdAt)}</span>
+						</footer>
+					</article>
+				</li>
+			))
+		}
+	</ol>
+
+	{
+		latest && (
+			<p class="timeline-foot">
+				数据来自 GitHub · 最近同步 {formatDate(latest)}
+			</p>
+		)
+	}
+</section>
+
+<script>
+	function setupTimeline() {
+		const items = document.querySelectorAll<HTMLElement>(".timeline-item");
+		const progress = document.querySelector<HTMLElement>(".timeline-rail-progress");
+		if (!items.length) return;
+
+		// 进入视口时逐个浮现
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						entry.target.classList.add("is-visible");
+						observer.unobserve(entry.target);
+					}
+				}
+			},
+			{ rootMargin: "-8% 0px -12% 0px", threshold: 0.05 },
+		);
+		items.forEach((item) => observer.observe(item));
+
+		// 竖向进度线跟随滚动
+		function updateProgress() {
+			const list = document.querySelector<HTMLElement>(".timeline-list");
+			if (!list || !progress) return;
+			const rect = list.getBoundingClientRect();
+			const viewport = window.innerHeight;
+			const total = rect.height;
+			const passed = Math.min(Math.max(viewport * 0.55 - rect.top, 0), total);
+			progress.style.height = `${passed}px`;
+		}
+
+		let ticking = false;
+		window.addEventListener(
+			"scroll",
+			() => {
+				if (ticking) return;
+				ticking = true;
+				requestAnimationFrame(() => {
+					updateProgress();
+					ticking = false;
+				});
+			},
+			{ passive: true },
+		);
+
+		updateProgress();
+		if ((window as any).swup) {
+			(window as any).swup.hooks.on("content:replace", () => {
+				document
+					.querySelectorAll<HTMLElement>(".timeline-item")
+					.forEach((item) => item.classList.remove("is-visible"));
+				setupTimeline();
+			});
+		}
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", setupTimeline);
+	} else {
+		setupTimeline();
+	}
+</script>
+
+<style>
+	.timeline {
+		position: relative;
+		padding: 1rem 0 0.5rem 2.6rem;
+	}
+
+	.timeline-rail {
+		position: absolute;
+		top: 1.4rem;
+		bottom: 3rem;
+		left: 0.72rem;
+		width: 1px;
+		background: rgb(var(--n-4));
+		overflow: hidden;
+	}
+
+	.timeline-rail-progress {
+		display: block;
+		width: 100%;
+		height: 0;
+		background: linear-gradient(
+			180deg,
+			rgb(var(--accent) / 0.55),
+			rgb(var(--accent) / 0.15)
+		);
+		transition: height 120ms linear;
+	}
+
+	.timeline-list {
+		display: flex;
+		flex-direction: column;
+		gap: 2.1rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.timeline-item {
+		position: relative;
+		opacity: 0;
+		transform: translateY(14px);
+		transition:
+			opacity 520ms var(--ease),
+			transform 520ms var(--ease);
+		transition-delay: calc(var(--i) * 60ms);
+	}
+
+	.timeline-item.is-visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.timeline-node {
+		position: absolute;
+		top: 2.35rem;
+		left: -2.6rem;
+		width: 0.5rem;
+		height: 0.5rem;
+		margin-left: 0.5rem;
+		border-radius: 999px;
+		background: rgb(var(--n-1));
+		border: 1.5px solid rgb(var(--n-5));
+		transition:
+			border-color 260ms var(--ease),
+			transform 260ms var(--ease),
+			background-color 260ms var(--ease);
+	}
+
+	.timeline-item.is-visible .timeline-node {
+		border-color: rgb(var(--accent) / 0.65);
+	}
+
+	.timeline-item:hover .timeline-node {
+		background: rgb(var(--accent));
+		border-color: rgb(var(--accent));
+		transform: scale(1.35);
+	}
+
+	/* 气泡：显示最近修改时间 */
+	.timeline-bubble {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.28rem;
+		height: 1.5rem;
+		padding: 0 0.55rem;
+		margin-bottom: 0.5rem;
+		border: 1px solid rgb(var(--n-4));
+		border-radius: 999px;
+		background: rgb(var(--n-1));
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		color: rgb(var(--n-7));
+		white-space: nowrap;
+		opacity: 0;
+		transform: translateY(6px) scale(0.94);
+		transform-origin: left bottom;
+		transition:
+			opacity 420ms var(--ease),
+			transform 420ms var(--ease),
+			border-color 200ms var(--ease),
+			color 200ms var(--ease);
+		transition-delay: calc(var(--i) * 60ms + 180ms);
+	}
+
+	.timeline-item.is-visible .timeline-bubble {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+
+	.timeline-item:hover .timeline-bubble {
+		border-color: rgb(var(--accent) / 0.4);
+		color: rgb(var(--accent));
+	}
+
+	.timeline-card {
+		position: relative;
+		padding: 0.15rem 0.5rem 0.15rem 0;
+		transition: transform 260ms var(--ease);
+	}
+
+	.timeline-item:hover .timeline-card {
+		transform: translateX(3px);
+	}
+
+	.timeline-head {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.timeline-name {
+		font-family: var(--font-mono);
+		font-size: 1.02rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: rgb(var(--n-10));
+		transition: color 200ms var(--ease);
+	}
+
+	.timeline-name::after {
+		content: "";
+		display: block;
+		height: 1px;
+		width: 0;
+		background: rgb(var(--accent));
+		transition: width 320ms var(--ease);
+	}
+
+	.timeline-item:hover .timeline-name::after {
+		width: 100%;
+	}
+
+	.timeline-live {
+		display: inline-flex;
+		color: rgb(var(--n-6));
+		transition: color 200ms var(--ease);
+	}
+
+	.timeline-live:hover {
+		color: rgb(var(--accent));
+	}
+
+	.timeline-desc {
+		margin: 0.35rem 0 0;
+		font-size: 0.86rem;
+		line-height: 1.75;
+		color: rgb(var(--n-8));
+	}
+
+	.timeline-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.85rem;
+		margin-top: 0.6rem;
+		font-size: 0.7rem;
+		color: rgb(var(--n-7));
+	}
+
+	.timeline-lang,
+	.timeline-stat {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.28rem;
+	}
+
+	.lang-dot {
+		width: 0.42rem;
+		height: 0.42rem;
+		border-radius: 999px;
+		background: rgb(var(--accent) / 0.6);
+	}
+
+	.timeline-date {
+		margin-left: auto;
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.timeline-foot {
+		margin: 2.5rem 0 0;
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		color: rgb(var(--n-6));
+	}
+
+	@media (max-width: 768px) {
+		.timeline {
+			padding-left: 1.85rem;
+		}
+
+		.timeline-rail {
+			left: 0.3rem;
+		}
+
+		.timeline-node {
+			left: -1.85rem;
+			margin-left: 0.1rem;
+		}
+
+		.timeline-date {
+			margin-left: 0;
+			width: 100%;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.timeline-item,
+		.timeline-bubble {
+			opacity: 1 !important;
+			transform: none !important;
+			transition: none !important;
+		}
+	}
+</style>

@@ -21,10 +21,10 @@ import { i18n } from "../../i18n/translation";
         <ImageWrapper src={profileConfig.avatar || ""} alt="Profile Image of the Author" class="mx-auto lg:w-full h-full lg:mt-0 "></ImageWrapper>
     </a>
     <div class="px-2">
-        <div class="font-bold text-xl text-center mb-1 dark:text-neutral-50 transition">{profileConfig.name}</div>
+        <div class="font-medium text-xl text-center mb-1 dark:text-n-10 transition">{profileConfig.name}</div>
         <div class="h-1 w-5 bg-[var(--primary)] mx-auto rounded-full mb-2 transition"></div>
         
-        <div class="text-center text-neutral-400 mb-2.5 transition">
+        <div class="text-center text-n-8 mb-2.5 transition">
             {profileConfig.typewriter?.enable ? (
                 <TypewriterText 
                     text={profileConfig.bio || ""}
@@ -45,7 +45,7 @@ import { i18n } from "../../i18n/translation";
             )}
             {profileConfig.links.length == 1 && 
                 <a rel="me" aria-label={profileConfig.links[0].name} href={profileConfig.links[0].url} target="_blank"
-                   class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
+                   class="btn-regular rounded-lg h-10 gap-2 px-3 font-medium active:scale-95">
                     <Icon name={profileConfig.links[0].icon} class="text-[1.5rem]"></Icon>
                     {profileConfig.links[0].name}
                 </a>
@@ -53,7 +53,7 @@ import { i18n } from "../../i18n/translation";
         </div>
         
         <div class="umami-stats-container hidden">
-            <hr class="my-2 border-t border-dashed border-black/10 dark:border-white/10 transition-colors duration-150" />
+            <hr class="my-2 border-t border-dashed border-n-4 transition-colors duration-150" />
             <div class="text-sm text-50 mt-2 text-center transition-colors duration-150">
                 <Icon name="fa7-solid:eye" class="inline-block mr-1 text-50 text-sm align-middle" />
                 <span class="site-stats-display">{i18n(I18nKey.profileStatsLoading)}</span>

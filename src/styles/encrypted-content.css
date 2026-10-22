@@ -281,7 +281,7 @@
 
 /* 亮色主题下的行号颜色 */
 :root:not(.dark) #decrypted-content .astro-code code span.line:before {
-  @apply text-black/25;
+  @apply text-n-7;
 }
 
 /* 隐藏最后的空行 */

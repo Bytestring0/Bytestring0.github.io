@@ -1,0 +1,121 @@
+/*
+ * Design tokens — Bytestring Blog
+ *
+ * 01 中性灰分三档：n-1…4 表面 / n-5…7 边框与图标 / n-8…10 正文与标题
+ * 02 n-5 不能作为文本色；n-6 只用于很小的标签；n-7 起才适合做次要文本
+ * 03 不使用 Tailwind 默认调色板（neutral-50…950 等），由 verify:design 拦截
+ * 04 主色在界面上不超过 5%，只留给 CTA、focus 状态与品牌标识
+ * 05 正文默认 n-9，深色模式由 token 自动反转
+ * 06 字体只有三族：sans / serif / mono，每一族都带 CJK 回退链
+ * 07 不使用硬阴影，深度由描边与极淡的阴影表达
+ * 08 圆角最大 16px（rounded-2xl）
+ * 09 中文不使用合成 bold，字重上限为 font-medium（500）
+ *
+ * 颜色 token 使用 “R G B” 通道，方便 Tailwind 的 <alpha-value> 与 color-mix。
+ */
+
+:root {
+ color-scheme: light;
+
+ /* ---- 中性色：表面 ---- */
+ --n-1: 254 254 253;
+ --n-2: 251 252 250;
+ --n-3: 246 248 245;
+ --n-4: 231 234 229;
+
+ /* ---- 中性色：边框与图标 ---- */
+ --n-5: 213 217 211;
+ --n-6: 182 187 180;
+ --n-7: 138 144 138;
+
+ /* ---- 中性色：正文与标题 ---- */
+ --n-8: 91 97 92;
+ --n-9: 51 56 52;
+ --n-10: 22 26 23;
+
+ /* ---- 主色：清透薄荷绿（界面占比 < 5%） ---- */
+ --accent: 49 130 107;
+ --accent-hover: 36 111 92;
+ --accent-soft: 232 248 240;
+ --accent-soft-strong: 210 240 225;
+ --accent-line: 91 184 153;
+ --blue: 76 163 182;
+ --blue-soft: 234 246 250;
+ --accent-contrast: 255 255 255;
+
+ /* ---- 语义色 ---- */
+ --success: 46 125 84;
+ --success-soft: 233 244 238;
+ --warning: 160 106 18;
+ --warning-soft: 248 240 221;
+ --danger: 162 59 52;
+ --danger-soft: 249 234 232;
+ --info: 51 96 143;
+ --info-soft: 234 240 247;
+
+ /* ---- 字体 ---- */
+ --font-sans:
+ "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+ "Source Han Sans SC", "Noto Sans SC", "WenQuanYi Micro Hei", system-ui,
+ -apple-system, "Segoe UI", Roboto, sans-serif;
+ --font-serif:
+ "Source Serif 4", "Songti SC", "Noto Serif SC", "Source Han Serif SC",
+ "SimSun", Georgia, "Times New Roman", serif;
+ --font-mono:
+ "JetBrains Mono", "MapleMonoNormal-NF-CN-Regular", ui-monospace,
+ "SFMono-Regular", "Cascadia Code", "Sarasa Mono SC", "Noto Sans Mono CJK SC",
+ Menlo, Consolas, monospace;
+
+ /* ---- 圆角：上限 16px ---- */
+ --r-sm: 6px;
+ --r-md: 10px;
+ --r-lg: 14px;
+ --r-xl: 16px;
+
+ /* ---- 极淡阴影：只做贴地感，不做浮起 ---- */
+ --shadow-soft: 0 1px 2px rgb(22 26 23 / 0.04);
+ --shadow-soft-lg: 0 2px 8px rgb(22 26 23 / 0.05);
+
+ /* ---- 版面 ---- */
+ --rule: 1px solid rgb(var(--n-4));
+ --rule-strong: 1px solid rgb(var(--n-5));
+ --ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root.dark {
+ color-scheme: dark;
+
+ --n-1: 18 20 19;
+ --n-2: 23 26 24;
+ --n-3: 28 32 29;
+ --n-4: 35 40 36;
+
+ --n-5: 46 52 48;
+ --n-6: 69 76 71;
+ --n-7: 125 133 128;
+
+ --n-8: 168 176 170;
+ --n-9: 217 222 217;
+ --n-10: 242 244 242;
+
+ --accent: 127 185 154;
+ --accent-hover: 148 199 172;
+ --accent-soft: 23 37 29;
+ --accent-soft-strong: 29 49 38;
+ --accent-contrast: 12 18 14;
+ --accent-line: 128 207 178;
+ --blue: 120 191 209;
+ --blue-soft: 22 33 38;
+
+ --success: 127 197 158;
+ --success-soft: 22 36 28;
+ --warning: 224 176 98;
+ --warning-soft: 42 33 19;
+ --danger: 229 148 141;
+ --danger-soft: 43 26 25;
+ --info: 146 183 224;
+ --info-soft: 23 32 43;
+
+ --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.24);
+ --shadow-soft-lg: 0 2px 10px rgb(0 0 0 / 0.3);
+}

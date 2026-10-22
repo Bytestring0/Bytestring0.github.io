@@ -32,15 +32,15 @@ const {
 const getLevelColor = (level: string) => {
 	switch (level) {
 		case "expert":
-			return "bg-red-600/20 text-red-700 dark:bg-red-900/30 dark:text-red-400";
+			return "bg-danger/20 text-danger dark:bg-danger/30 dark:text-danger";
 		case "advanced":
-			return "bg-orange-600/20 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
+			return "bg-warning/20 text-warning dark:bg-warning/30 dark:text-warning";
 		case "intermediate":
-			return "bg-yellow-600/20 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
+			return "bg-warning/20 text-warning dark:bg-warning/30 dark:text-warning";
 		case "beginner":
-			return "bg-green-600/20 text-green-700 dark:bg-green-900/30 dark:text-green-400";
+			return "bg-success/20 text-success dark:bg-success/30 dark:text-success";
 		default:
-			return "bg-gray-600/20 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
+			return "bg-n-8/20 text-n-9 dark:bg-n-10/30 dark:text-n-8";
 	}
 };
 
@@ -116,7 +116,7 @@ const sizeClasses = getSizeClasses(size);
 const skillColor = skill.color || "#3B82F6";
 ---
 
-<div class="bg-transparent rounded-lg border border-black/10 dark:border-white/10 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+<div class="bg-transparent rounded-lg border border-n-4 overflow-hidden hover:shadow-lg transition-all duration-300 group">
   <div class={sizeClasses.container}>
     <div class="flex items-start gap-4">
       <!-- 技能图标 -->
@@ -135,7 +135,7 @@ const skillColor = skill.color || "#3B82F6";
       <div class="flex-1 min-w-0">
         <!-- 技能名称和等级 -->
         <div class="flex items-center justify-between mb-2">
-          <h3 class={`font-semibold text-black/90 dark:text-white/90 ${sizeClasses.title} ${size === 'small' ? 'truncate' : ''}`}>
+          <h3 class={`font-medium text-n-10 ${sizeClasses.title} ${size === 'small' ? 'truncate' : ''}`}>
             {skill.name}
           </h3>
           <span class={`px-2 py-1 rounded-full shrink-0 ml-2 ${sizeClasses.badge} ${getLevelColor(skill.level)}`}>
@@ -146,14 +146,14 @@ const skillColor = skill.color || "#3B82F6";
         <!-- 分类标签 -->
         {skill.category && (
           <div class="mb-2">
-            <span class={`px-2 py-1 bg-blue-600/20 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 rounded ${sizeClasses.badge}`}>
+            <span class={`px-2 py-1 bg-info/20 text-info dark:bg-info/20 dark:text-info rounded ${sizeClasses.badge}`}>
               {skill.category}
             </span>
           </div>
         )}
         
         <!-- 技能描述 -->
-        <p class={`text-black/60 dark:text-white/60 mb-3 ${sizeClasses.description}`}>
+        <p class={`text-n-8 mb-3 ${sizeClasses.description}`}>
           {skill.description}
         </p>
         
@@ -161,10 +161,10 @@ const skillColor = skill.color || "#3B82F6";
         {showProgress && (
           <div class="mb-3">
             <div class="flex justify-between text-sm mb-1">
-              <span class="text-black/60 dark:text-white/60">{i18n(I18nKey.skillExperience)}</span>
-              <span class="text-black/80 dark:text-white/80">{skill.experience}</span>
+              <span class="text-n-8">{i18n(I18nKey.skillExperience)}</span>
+              <span class="text-n-9 ">{skill.experience}</span>
             </div>
-            <div class={`w-full bg-gray-200 dark:bg-gray-700 rounded-full ${sizeClasses.progress}`}>
+            <div class={`w-full bg-n-4 dark:bg-n-9 rounded-full ${sizeClasses.progress}`}>
               <div 
                 class={`rounded-full transition-all duration-500 ${sizeClasses.progress}`}
                 style={`width: ${getLevelWidth(skill.level)}; background-color: ${skillColor}`}
@@ -178,7 +178,7 @@ const skillColor = skill.color || "#3B82F6";
           <div class="mb-3">
             <div class="flex flex-wrap gap-1">
               {skill.certifications.map((cert) => (
-                <span class={`px-2 py-1 bg-green-600/20 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded ${sizeClasses.badge}`}>
+                <span class={`px-2 py-1 bg-success/20 text-success dark:bg-success/30 dark:text-success rounded ${sizeClasses.badge}`}>
                   🏆 {cert}
                 </span>
               ))}
@@ -188,7 +188,7 @@ const skillColor = skill.color || "#3B82F6";
         
         <!-- 相关项目 -->
         {skill.relatedProjects && skill.relatedProjects.length > 0 && (
-          <div class="text-sm text-black/60 dark:text-white/60">
+          <div class="text-sm text-n-8">
             {i18n(I18nKey.skillsProjects)}: {skill.relatedProjects.length}
           </div>
         )}

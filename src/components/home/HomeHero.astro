@@ -1,0 +1,253 @@
+---
+import { Icon } from "astro-icon/components";
+import { profileConfig } from "../../config";
+import { url } from "../../utils/url-utils";
+import ImageWrapper from "../misc/ImageWrapper.astro";
+
+const socials = [
+	...profileConfig.links.map((link) => ({ ...link, external: true })),
+	{ name: "RSS", icon: "material-symbols:rss-feed-rounded", url: url("/rss/"), external: false },
+	{ name: "记录", icon: "material-symbols:book-2-outline-rounded", url: url("/records/"), external: false },
+];
+---
+
+<home-introduction class="home-hero" aria-label="站点介绍">
+	<div class="hero-inner">
+		<div class="hero-bubble">
+			<h1>Hi, I'm Bytestring 👋</h1>
+			<p>Loving fun, interesting, and cute things!</p>
+			<code>&lt;|close|&gt;response&lt;|sep|&gt;</code>
+		</div>
+		<a href={url("/about/")} class="hero-avatar-link" aria-label="关于我">
+			<span class="hero-avatar">
+				<ImageWrapper src={profileConfig.avatar || ""} alt={profileConfig.name} class="w-full h-full" loading="eager" />
+			</span>
+		</a>
+		<div class="hero-socials">
+			{socials.map((item) => (
+				<a href={item.url} aria-label={item.name} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener noreferrer" : undefined}>
+					<Icon name={item.icon} class="hero-social-icon" />
+				</a>
+			))}
+		</div>
+		<p class="hero-thanks">thanks for all AI and her Harness</p>
+	</div>
+</home-introduction>
+
+<script>
+	class HomeIntroduction extends HTMLElement {
+		private controller?: AbortController;
+
+		connectedCallback() {
+			this.controller?.abort();
+			const controller = new AbortController();
+			this.controller = controller;
+			const lines = Array.from(this.querySelectorAll<HTMLElement>(".hero-bubble h1, .hero-bubble p, .hero-bubble code"));
+			const texts = lines.map((line) => {
+				const text = line.dataset.introduction || line.textContent || "";
+				line.dataset.introduction = text;
+				return text;
+			});
+			if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+				lines.forEach((line, index) => { line.textContent = texts[index]; });
+				return;
+			}
+			const pause = (delay: number) => new Promise<void>((resolve) => {
+				const finish = () => { clearTimeout(timer); controller.signal.removeEventListener("abort", finish); resolve(); };
+				const timer = setTimeout(finish, delay);
+				controller.signal.addEventListener("abort", finish, { once: true });
+			});
+			const type = async () => {
+				lines.forEach((line) => {
+					line.style.minHeight = line.getBoundingClientRect().height + "px";
+					line.classList.remove("is-typing");
+					line.textContent = "";
+				});
+				for (const [index, line] of lines.entries()) {
+					line.classList.add("is-typing");
+					for (const character of Array.from(texts[index])) {
+						if (controller.signal.aborted) return;
+						line.textContent += character;
+						await pause(46);
+					}
+					line.classList.remove("is-typing");
+					await pause(160);
+				}
+			};
+			type();
+		}
+
+		disconnectedCallback() { this.controller?.abort(); }
+	}
+
+	if (!customElements.get("home-introduction")) customElements.define("home-introduction", HomeIntroduction);
+</script>
+
+<style>
+	.home-hero {
+		display: flex;
+		align-items: center;
+		min-height: min(44rem, calc(100svh - 14rem));
+		padding: 3.5rem 0 2rem;
+	}
+
+	.hero-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 13rem;
+		align-items: center;
+		column-gap: 2.5rem;
+		row-gap: 0.75rem;
+		width: min(100%, 61rem);
+		margin-left: auto;
+	}
+
+	.hero-bubble {
+		position: relative;
+		grid-column: 1;
+		grid-row: 1;
+		align-self: start;
+		min-width: 0;
+		margin-top: -1.5rem;
+		padding: 1.5rem 0.25rem;
+		border: 1px solid transparent;
+		border-radius: var(--r-lg);
+		background: transparent;
+		box-shadow: none;
+		transform-origin: right bottom;
+		animation: bubble-in 620ms var(--ease) both;
+	}
+
+	.hero-bubble::after {
+		content: none;
+		position: absolute;
+		right: -6px;
+		bottom: 1.6rem;
+		width: 11px;
+		height: 11px;
+		border-top: 1px solid rgb(var(--accent-line) / 0.3);
+		border-right: 1px solid rgb(var(--accent-line) / 0.3);
+		background: rgb(var(--n-1));
+		transform: rotate(45deg);
+		border-radius: 2px;
+	}
+
+	.hero-bubble h1 {
+		margin: 0;
+		font-size: 2.8rem;
+		font-weight: 500;
+		line-height: 1.3;
+		min-height: 1.3em;
+		color: rgb(var(--n-10));
+		overflow-wrap: anywhere;
+	}
+
+	.hero-bubble p {
+		margin: 0.65rem 0 0;
+		font-size: 1.2rem;
+		line-height: 1.6;
+		min-height: 1.6em;
+		color: rgb(var(--n-8));
+	}
+
+	.hero-bubble code {
+		display: block;
+		margin-top: 0.8rem;
+		font-family: var(--font-mono);
+		font-size: 0.9rem;
+		font-variant-ligatures: none;
+		font-feature-settings: "liga" 0, "calt" 0;
+		line-height: 1.6;
+		min-height: 1.6em;
+		color: rgb(var(--accent));
+		overflow-wrap: anywhere;
+	}
+
+	.hero-avatar-link {
+		grid-column: 2;
+		grid-row: 1;
+		justify-self: center;
+		display: block;
+		transition: transform 320ms var(--ease);
+	}
+	.hero-avatar-link:hover { transform: scale(1.03); }
+	.hero-avatar {
+		display: block;
+		width: 13rem;
+		height: 13rem;
+		border-radius: 50%;
+		overflow: hidden;
+		border: 1px solid rgb(var(--n-4));
+		box-shadow: 0 0 0 8px rgb(var(--accent-soft) / 0.65);
+	}
+	.hero-avatar :global(img) { width: 100%; height: 100%; object-fit: cover; }
+
+	.hero-socials {
+		grid-column: 2;
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.hero-socials > a {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border: 1px solid rgb(var(--n-4));
+		border-radius: 50%;
+		color: rgb(var(--n-8));
+		background: rgb(var(--n-1) / 0.55);
+		transition: border-color 180ms var(--ease), color 180ms var(--ease), background-color 180ms var(--ease);
+	}
+	.hero-socials > a:hover {
+		border-color: rgb(var(--accent-line) / 0.55);
+		color: rgb(var(--accent));
+		background: rgb(var(--accent-soft));
+	}
+	.hero-social-icon { font-size: 0.95rem; }
+	.hero-thanks {
+		grid-column: 2;
+		margin: 0.35rem 0 0;
+		text-align: center;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		line-height: 1.7;
+		color: rgb(var(--n-7));
+	}
+
+	.hero-bubble :global(.is-typing)::after {
+		content: "";
+		display: inline-block;
+		width: 1px;
+		height: 0.9em;
+		margin-left: 0.12em;
+		background: currentColor;
+		vertical-align: -0.1em;
+		animation: caret 900ms steps(1) infinite;
+	}
+	@keyframes caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+	@keyframes bubble-in {
+		from { opacity: 0; transform: translateY(8px) scale(0.98); }
+		to { opacity: 1; transform: translateY(0) scale(1); }
+	}
+
+	@media (max-width: 768px) {
+		.home-hero { min-height: 0; padding: 2rem 0 1.5rem; }
+		.hero-inner { grid-template-columns: minmax(0, 1fr) 5.5rem; gap: 1rem; }
+		.hero-bubble { grid-column: 1 / -1; margin-top: 0; padding: 1.15rem; }
+		.hero-bubble::after { right: 2.4rem; bottom: -6px; transform: rotate(135deg); }
+		.hero-avatar-link { grid-column: 2; grid-row: 2 / 4; }
+		.hero-avatar { width: 4.5rem; height: 4.5rem; box-shadow: 0 0 0 5px rgb(var(--accent-soft)); }
+		.hero-socials { grid-column: 1; grid-row: 2; justify-content: flex-end; }
+		.hero-thanks { grid-column: 1; grid-row: 3; text-align: right; margin: 0; }
+		.hero-bubble h1 { font-size: 1.85rem; }
+		.hero-bubble p { font-size: 1.05rem; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-bubble { animation: none; }
+		.hero-avatar-link { transition: none; }
+	}
+</style>

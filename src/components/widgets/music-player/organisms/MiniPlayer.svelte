@@ -30,7 +30,7 @@
 </script>
 
 <div
-	class="mini-player card-base bg-[var(--float-panel-bg)] shadow-xl rounded-2xl p-3 absolute bottom-0 right-0 w-[17.5rem]"
+	class="mini-player card-base bg-[var(--float-panel-bg)] shadow-md rounded-2xl p-3 absolute bottom-0 right-0 w-[17.5rem]"
 	class:mini-enter={!isHidden}
 	class:mini-leave={isHidden}
 	class:pointer-events-none={isHidden}

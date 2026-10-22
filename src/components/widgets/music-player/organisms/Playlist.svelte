@@ -33,7 +33,7 @@
 		<div
 			class="playlist-header flex items-center justify-between p-4 border-b border-[var(--line-divider)]"
 		>
-			<h3 class="text-lg font-semibold text-90">
+			<h3 class="text-lg font-medium text-90">
 				{i18n(Key.musicPlayerPlaylist)}
 			</h3>
 			<button class="btn-plain w-8 h-8 rounded-lg" onclick={onClose}>

@@ -410,22 +410,22 @@ function portal(node: HTMLElement) {
 
 {#if showModal}
   <div use:portal class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-opacity" on:click={closeModal}>
-    <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl transform transition-all" on:click|stopPropagation>
+    <div class="bg-white dark:bg-n-10 rounded-2xl max-w-sm w-full max-h-[90vh] overflow-y-auto flex flex-col shadow-md transform transition-all" on:click|stopPropagation>
       
-      <div class="p-6 flex justify-center bg-gray-50 dark:bg-gray-900 min-h-[200px] items-center">
+      <div class="p-6 flex justify-center bg-n-10 min-h-[200px] items-center">
         {#if posterImage}
           <img src={posterImage} alt="Poster" class="max-w-full h-auto shadow-lg rounded-lg" />
         {:else}
            <div class="flex flex-col items-center gap-3">
-             <div class="w-8 h-8 border-2 border-gray-200 rounded-full animate-spin" style="border-top-color: {themeColor}"></div>
-             <span class="text-sm text-gray-500">{i18n(I18nKey.generatingPoster)}</span>
+             <div class="w-8 h-8 border-2 border-n-4 rounded-full animate-spin" style="border-top-color: {themeColor}"></div>
+             <span class="text-sm text-n-8">{i18n(I18nKey.generatingPoster)}</span>
            </div>
         {/if}
       </div>
       
-      <div class="p-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-2 gap-3">
+      <div class="p-4 border-t border-n-10 dark:border-n-9 grid grid-cols-2 gap-3">
         <button 
-          class="py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          class="py-3 bg-n-10 dark:bg-n-9 text-n-9 dark:text-n-4 rounded-xl font-medium hover:bg-n-4 dark:hover:bg-n-8 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           on:click={copyLink}
         >
           {#if copied}

@@ -7,7 +7,37 @@ interface Props {
 }
 const { dot, href, label }: Props = Astro.props;
 ---
-<a href={href} aria-label={label} class="btn-regular h-8 text-sm px-3 rounded-lg">
-    {dot && <div class="h-1 w-1 bg-[var(--btn-content)] dark:bg-[var(--card-bg)] transition rounded-md mr-2"></div>}
+<a href={href} aria-label={label} class="tag-link">
+    {dot && <span class="tag-dot"></span>}
     <slot></slot>
 </a>
+
+<style>
+    .tag-link {
+        display: inline-flex;
+        align-items: center;
+        height: 1.55rem;
+        padding: 0 0.55rem;
+        border: 1px solid rgb(var(--n-4));
+        border-radius: 999px;
+        font-size: 0.72rem;
+        color: rgb(var(--n-8));
+        white-space: nowrap;
+        transition:
+            border-color 150ms var(--ease),
+            color 150ms var(--ease);
+    }
+
+    .tag-link:hover {
+        border-color: rgb(var(--n-5));
+        color: rgb(var(--n-10));
+    }
+
+    .tag-dot {
+        width: 0.25rem;
+        height: 0.25rem;
+        margin-right: 0.35rem;
+        border-radius: 999px;
+        background: rgb(var(--n-6));
+    }
+</style>

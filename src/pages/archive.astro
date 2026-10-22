@@ -7,7 +7,6 @@ import { getSortedPostsList } from "@utils/content-utils";
 
 const sortedPostsList = await getSortedPostsList();
 
-// 1. 修复类型兼容性：将 category 的 null 转换为 undefined
 const posts = sortedPostsList.map((post) => ({
     ...post,
     data: {
@@ -16,20 +15,19 @@ const posts = sortedPostsList.map((post) => ({
     },
 }));
 
-// 2. 提取所有标签 (去重)
 const tags = [...new Set(posts.flatMap(post => post.data.tags))];
-
-// 3. 提取所有分类 (去重且过滤掉 undefined)
 const categories = [...new Set(posts.map(post => post.data.category).filter((c): c is string => typeof c === "string"))];
 ---
 
 <MainGridLayout title={i18n(I18nKey.archive)}>
-    <!-- 引入右侧边栏布局管理器 -->
     <script>
         import('../scripts/right-sidebar-layout.js');
     </script>
 
-    <!-- 修复：补全缺失的 tags 和 categories 属性 -->
+    <header class="page-head">
+        <h1>{i18n(I18nKey.archive)}</h1>
+    </header>
+
     <ArchivePanel
             sortedPosts={posts}
             tags={tags}
@@ -37,3 +35,33 @@ const categories = [...new Set(posts.map(post => post.data.category).filter((c):
             client:only="svelte"
     ></ArchivePanel>
 </MainGridLayout>
+
+<style>
+    .page-head {
+        padding: 2.5rem 0 1.5rem;
+    }
+
+    .eyebrow {
+        margin: 0 0 0.6rem;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgb(var(--n-7));
+    }
+
+    .page-head h1 {
+        margin: 0;
+        font-family: var(--font-serif);
+        font-size: clamp(1.9rem, 3.2vw, 2.5rem);
+        font-weight: 500;
+        letter-spacing: -0.025em;
+        color: rgb(var(--n-10));
+    }
+
+    .page-lede {
+        margin: 0.6rem 0 0;
+        font-size: 0.88rem;
+        color: rgb(var(--n-8));
+    }
+</style>

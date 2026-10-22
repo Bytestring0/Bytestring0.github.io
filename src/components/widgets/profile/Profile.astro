@@ -8,25 +8,17 @@ import I18nKey from "../../../i18n/i18nKey";
 import { i18n } from "../../../i18n/translation";
 ---
 
-<div class="card-base p-3">
-    <a aria-label="Go to About Page" href={url('/about/')}
-       class="group block relative mx-auto mt-1 lg:mx-0 lg:mt-0 mb-3
-       max-w-[12rem] lg:max-w-none overflow-hidden rounded-xl active:scale-95">
-        <div class="absolute transition pointer-events-none group-hover:bg-black/30 group-active:bg-black/50
-        w-full h-full z-50 flex items-center justify-center">
-            <Icon name="fa7-regular:address-card"
-                  class="transition opacity-0 scale-90 group-hover:scale-100 group-hover:opacity-100 text-white text-5xl">
-            </Icon>
-        </div>
-        <ImageWrapper src={profileConfig.avatar || ""} alt="Profile Image of the Author" class="mx-auto lg:w-full h-full lg:mt-0 "></ImageWrapper>
+<div class="profile-card card-base">
+    <a aria-label="Go to About Page" href={url('/about/')} class="profile-avatar-link">
+        <ImageWrapper src={profileConfig.avatar || ""} alt="Profile Image of the Author" class="profile-avatar"></ImageWrapper>
     </a>
-    <div class="px-2">
-        <div class="font-bold text-xl text-center mb-1 dark:text-neutral-50 transition">{profileConfig.name}</div>
-        <div class="h-1 w-5 bg-[var(--primary)] mx-auto rounded-full mb-2 transition"></div>
-        
-        <div class="text-center text-neutral-400 mb-2.5 transition">
+
+    <div class="profile-body">
+        <p class="profile-name">{profileConfig.name}</p>
+
+        <p class="profile-bio">
             {profileConfig.typewriter?.enable ? (
-                <TypewriterText 
+                <TypewriterText
                     text={profileConfig.bio || ""}
                     speed={profileConfig.typewriter.speed}
                     class="inline-block"
@@ -34,33 +26,103 @@ import { i18n } from "../../../i18n/translation";
             ) : (
                 profileConfig.bio
             )}
-        </div>
-        
-        <div class="flex flex-wrap gap-2 justify-center mb-1">
-            {profileConfig.links.length > 1 && profileConfig.links.map(item =>
-                <a rel="me" aria-label={item.name} href={item.url} target="_blank" 
-                   class="btn-regular rounded-lg h-10 w-10 active:scale-90">
-                    <Icon name={item.icon} class="text-[1.5rem]"></Icon>
+        </p>
+
+        <div class="profile-links">
+            {profileConfig.links.map(item =>
+                <a rel="me" aria-label={item.name} href={item.url} target="_blank" class="profile-link">
+                    <Icon name={item.icon} class="text-[0.95rem]"></Icon>
+                    <span>{item.name}</span>
                 </a>
             )}
-            {profileConfig.links.length == 1 && 
-                <a rel="me" aria-label={profileConfig.links[0].name} href={profileConfig.links[0].url} target="_blank"
-                   class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
-                    <Icon name={profileConfig.links[0].icon} class="text-[1.5rem]"></Icon>
-                    {profileConfig.links[0].name}
-                </a>
-            }
         </div>
-        
+
         <div class="umami-stats-container hidden">
-            <hr class="my-2 border-t border-dashed border-black/10 dark:border-white/10 transition-colors duration-150" />
-            <div class="text-sm text-50 mt-2 text-center transition-colors duration-150">
-                <Icon name="fa7-solid:eye" class="inline-block mr-1 text-50 text-sm align-middle" />
+            <div class="profile-stats">
+                <Icon name="fa7-solid:eye" class="text-[0.7rem]" />
                 <span class="site-stats-display">{i18n(I18nKey.profileStatsLoading)}</span>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .profile-card {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 1.15rem 1rem;
+    }
+
+    .profile-avatar-link {
+        flex: none;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid rgb(var(--n-4));
+        transition: border-color 150ms var(--ease);
+    }
+
+    .profile-avatar-link:hover {
+        border-color: rgb(var(--n-5));
+    }
+
+    .profile-body {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .profile-name {
+        margin: 0;
+        font-size: 0.92rem;
+        font-weight: 500;
+        color: rgb(var(--n-10));
+    }
+
+    .profile-bio {
+        margin: 0.2rem 0 0;
+        font-size: 0.76rem;
+        line-height: 1.65;
+        color: rgb(var(--n-8));
+    }
+
+    .profile-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        margin-top: 0.55rem;
+    }
+
+    .profile-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        height: 1.55rem;
+        padding: 0 0.5rem;
+        border: 1px solid rgb(var(--n-4));
+        border-radius: 999px;
+        font-size: 0.68rem;
+        color: rgb(var(--n-8));
+        transition:
+            border-color 150ms var(--ease),
+            color 150ms var(--ease);
+    }
+
+    .profile-link:hover {
+        border-color: rgb(var(--n-5));
+        color: rgb(var(--n-10));
+    }
+
+    .profile-stats {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        margin-top: 0.55rem;
+        font-size: 0.68rem;
+        color: rgb(var(--n-7));
+    }
+</style>
 
 <script is:inline define:vars={{
     profileStatsPageViews: i18n(I18nKey.profileStatsPageViews),
@@ -73,8 +135,7 @@ import { i18n } from "../../../i18n/translation";
 
     async function fetchSiteStats(isRetry = false) {
         const container = document.querySelector('.umami-stats-container');
-        
-        // oddmisc 未加载则等待重试
+
         if (!window.oddmisc) {
             if (!isRetry) {
                 setTimeout(() => fetchSiteStats(true), 500);
@@ -89,7 +150,6 @@ import { i18n } from "../../../i18n/translation";
             const pageViews = stats.pageviews || 0;
             const visits = stats.visits || 0;
 
-            // 数据为 0 时隐藏
             if (pageViews === 0 && visits === 0) {
                 container?.classList.add('hidden');
                 return;

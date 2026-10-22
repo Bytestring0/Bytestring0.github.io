@@ -18,7 +18,7 @@ const recentPosts = posts.slice(0, 6);
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-[var(--primary)] rounded-2xl mb-4">
                     <Icon name="material-symbols:rss-feed" class="text-white text-3xl" />
                 </div>
-                <h1 class="text-3xl font-bold text-[var(--primary)] mb-3">{i18n(I18nKey.atom)}</h1>
+                <h1 class="text-3xl font-medium text-[var(--primary)] mb-3">{i18n(I18nKey.atom)}</h1>
                 <p class="text-75 max-w-2xl mx-auto">
                     {i18n(I18nKey.atomSubtitle)}
                 </p>
@@ -33,7 +33,7 @@ const recentPosts = posts.slice(0, 6);
                         <Icon name="material-symbols:link" class="text-white text-xl" />
                     </div>
                     <div>
-                        <h3 class="font-semibold text-90 mb-1">{i18n(I18nKey.atomLink)}</h3>
+                        <h3 class="font-medium text-90 mb-1">{i18n(I18nKey.atomLink)}</h3>
                         <p class="text-sm text-75">{i18n(I18nKey.atomCopyToReader)}</p>
                     </div>
                 </div>
@@ -54,14 +54,14 @@ const recentPosts = posts.slice(0, 6);
 
         <!-- 最新文章预览 -->
         <div class="card-base rounded-[var(--radius-large)] p-6 mb-6">
-            <h2 class="text-xl font-bold text-90 mb-4 flex items-center">
+            <h2 class="text-xl font-medium text-90 mb-4 flex items-center">
                 <Icon name="material-symbols:article" class="mr-2 text-[var(--primary)]" />
                 {i18n(I18nKey.atomLatestPosts)}
             </h2>
             <div class="space-y-4">
                 {recentPosts.map((post) => (
                     <article class="bg-[var(--card-bg)] rounded-xl p-4 border border-[var(--line-divider)] hover:border-[var(--primary)] transition-all duration-300">
-                        <h3 class="text-lg font-semibold text-90 mb-2 hover:text-[var(--primary)] transition-colors">
+                        <h3 class="text-lg font-medium text-90 mb-2 hover:text-[var(--primary)] transition-colors">
                             <a href={`/posts/${post.id}/`} class="hover:underline">
                                 {post.data.title}
                             </a>
@@ -83,7 +83,7 @@ const recentPosts = posts.slice(0, 6);
 
         <!-- Atom 说明 -->
         <div class="card-base rounded-[var(--radius-large)] p-6">
-            <h2 class="text-xl font-bold text-90 mb-4 flex items-center">
+            <h2 class="text-xl font-medium text-90 mb-4 flex items-center">
                 <Icon name="material-symbols:help-outline" class="mr-2 text-[var(--primary)]" />
                 {i18n(I18nKey.atomWhatIsAtom)}
             </h2>

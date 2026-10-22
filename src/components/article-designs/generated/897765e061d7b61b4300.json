@@ -1,8 +1,0 @@
-{
-  "version": 1,
-  "source": "EDA/STA时序模型.md",
-  "sourceHash": "ca8b92674c8f58b139ad720e30b66e2c45996c56a5fd6180d0c3015a2ac43fe3",
-  "template": "lab",
-  "scope": "page",
-  "plan": "方向：时序波形工作台（用户已确认）。\n\n视觉：继承 --primary / --card-bg / --line-divider，仪器面板语汇。顶部 hero 左侧为 kicker（LED 呼吸点）+ 标题 + 元信息，右侧为装饰性示波器面板（网格 + 波形描边动画 + t50% 读数）；下方为标注“AI 导读”的虚线框说明，视觉弱于正文。\n\n阅读顺序（实际 DOM 顺序）：导航 → hero → AI 导读 → [章节轨道 | 正文 | 侧栏] → 评论 → 相邻文章 → 页脚。正文按原文 h2 分成 6 章，每章有 01–06 编号头（编号与标签为展示性文字，不复制原文）。左侧 section rail 竖排 01–06，滚动时高亮当前章并有进度填充；右侧 sticky 侧栏放章节目录 + 读图约定图例。\n\n原文处理：所有 article.blocks 各出现一次（SourceBlock prose=false，自行排版）。未改动任何原文句子或结构；未手抄正文。h2/h3/表格/公式/列表均为原块。\n\n动效（适度，用户确认）：章节滚动揭示（IntersectionObserver，rootMargin 底部 -12%）；hero 波形描边一次性绘制；rail 进度填充。prefers-reduced-motion 下全部降级为静态（波形直接显示、章节直接可见、滚动用 auto）。无滚动劫持。\n\n交互（用户确认的选型矩阵）：从“怎么选模型？”原文表格现场生成按钮组（场景 + 推荐模型文本直接取自表格单元格），点选高亮对应原文 <tr>（class is-picked），必要时滚动至该行居中。不复制文本、不新增另一份表格；原文表格始终完整可见。\n\n响应式：1180px 以下侧栏移到正文上方横排；900px 以下隐藏 section rail、单列；640px 以下表格字号收紧、表头与首列允许换行。\n\n待办：运行 article-design:check --route /posts/EDA/STA时序模型/ --full-page，人工查看明暗与手机截图，手动验证目录跳转、选型矩阵点击、评论与导航菜单。"
-}

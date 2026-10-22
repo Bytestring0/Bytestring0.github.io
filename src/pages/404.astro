@@ -6,72 +6,56 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
 ---
 
 <MainGridLayout title={i18n(I18nKey.notFound)} description={i18n(I18nKey.notFoundDescription)}>
-    <!-- 引入右侧边栏布局管理器 -->
   <script>
     import('../scripts/right-sidebar-layout.js');
   </script>
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-96">
-        <div class="card-base z-10 px-9 py-12 relative w-full flex flex-col items-center justify-center text-center">
-            <!-- 404 大号数字 -->
-            <div class="text-8xl md:text-9xl font-bold text-[var(--primary)] opacity-20 mb-4">
-                {i18n(I18nKey.notFound)}
-            </div>
-            
-            <!-- 404 图标 -->
-            <div class="mb-6">
-                <Icon name="material-symbols:error-outline" class="text-6xl text-[var(--primary)]" />
-            </div>
-            
-            <!-- 标题 -->
-            <h1 class="text-3xl md:text-4xl font-bold mb-4 text-90">
-                {i18n(I18nKey.notFoundTitle)}
-            </h1>
-            
-            <!-- 描述 -->
-            <p class="text-lg text-75 mb-8 max-w-md">
-                {i18n(I18nKey.notFoundDescription)}
-            </p>
-            
-            <!-- 返回首页按钮 -->
-            <a 
-                href="/" 
-                class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-white rounded-[var(--radius-large)] hover:opacity-95 transition-colors transition-transform duration-200 font-medium"
-            >
-                <Icon name="material-symbols:home" class="text-xl" />
-                {i18n(I18nKey.backToHome)}
-            </a>
-            
-            <!-- 装饰性元素 -->
-            <div class="absolute top-4 left-4 opacity-10">
-                <Icon name="material-symbols:sentiment-sad" class="text-4xl text-[var(--primary)]" />
-            </div>
-            <div class="absolute bottom-4 right-4 opacity-10">
-                <Icon name="material-symbols:search-off" class="text-4xl text-[var(--primary)]" />
-            </div>
-        </div>
+
+    <div class="notfound">
+        <p class="notfound-code">404</p>
+        <h1>{i18n(I18nKey.notFoundTitle)}</h1>
+        <p class="notfound-desc">{i18n(I18nKey.notFoundDescription)}</p>
+        <a href="/" class="btn-solid">
+            <Icon name="material-symbols:arrow-back-rounded" class="text-[0.95rem]" />
+            {i18n(I18nKey.backToHome)}
+        </a>
     </div>
 </MainGridLayout>
 
 <style>
-    /* 添加一些动画效果 */
-    .card-base {
-        animation: fadeInUp 0.6s ease-out;
+    .notfound {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        min-height: 60vh;
+        padding: 4rem 1rem;
+        text-align: center;
     }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+
+    .notfound-code {
+        margin: 0;
+        font-family: var(--font-serif);
+        font-size: clamp(4.5rem, 12vw, 7rem);
+        line-height: 0.9;
+        color: rgb(var(--n-4));
+        letter-spacing: -0.04em;
     }
-    
-    /* 按钮悬停效果 */
-    a:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+
+    .notfound h1 {
+        margin: 0.5rem 0 0;
+        font-size: 1.35rem;
+        font-weight: 500;
+        color: rgb(var(--n-10));
+    }
+
+    .notfound-desc {
+        margin: 0;
+        font-size: 0.88rem;
+        color: rgb(var(--n-8));
+    }
+
+    .notfound .btn-solid {
+        margin-top: 1.1rem;
     }
 </style>

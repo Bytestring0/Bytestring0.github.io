@@ -57,7 +57,7 @@ export default defineConfig({
 			cache: process.env.NODE_ENV === "production",
 			preload: true, // swup 默认鼠标悬停预加载
 			accessibility: true,
-			updateHead: process.env.NODE_ENV === "production",
+			updateHead: true, // 切换页面时同步 head 里的样式，避免 CSS 丢失
 			updateBodyClass: false,
 			globalInstance: true,
 			// 滚动相关配置优化

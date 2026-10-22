@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import Pagination from "../components/control/Pagination.astro";
 import PostPage from "../components/PostPage.astro";
+import HomeHero from "../components/home/HomeHero.astro";
 import { PAGE_SIZE } from "../constants/constants";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 import { getSortedPosts } from "../utils/content-utils";
@@ -18,9 +19,71 @@ export const getStaticPaths = (async ({ paginate }) => {
 const { page } = Astro.props;
 
 const len = page.data.length;
+const isFirstPage = page.currentPage === 1;
 ---
 
 <MainGridLayout>
-    <PostPage page={page}></PostPage>
-    <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`}></Pagination>
+    {isFirstPage && <HomeHero />}
+
+    <section class="recent-section" aria-labelledby="recent-title">
+        <header class="recent-head">
+            <h2 id="recent-title">{isFirstPage ? "近期文稿" : `往期文稿 · 第 ${page.currentPage} 页`}</h2>
+            <span class="recent-count">{String(len).padStart(2, "0")}</span>
+            <a class="recent-archive" href="/archive/">全部归档 →</a>
+        </header>
+        <PostPage page={page}></PostPage>
+        <Pagination class="mx-auto" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*40}ms)`}></Pagination>
+    </section>
 </MainGridLayout>
+
+<style>
+    .recent-section {
+        margin-top: 3rem;
+        padding-bottom: 1rem;
+    }
+
+    .recent-head {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        margin-bottom: 0.35rem;
+        padding-bottom: 0.7rem;
+        border-bottom: 1px solid rgb(var(--n-4));
+    }
+
+    .recent-count {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        color: rgb(var(--n-7));
+        font-variant-numeric: tabular-nums;
+    }
+
+    .recent-head h2 {
+        margin: 0;
+        font-size: 0.82rem;
+        font-weight: 500;
+        letter-spacing: 0;
+        text-transform: uppercase;
+        font-family: var(--font-mono);
+        color: rgb(var(--n-7));
+    }
+
+    .recent-archive {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
+        margin-left: auto;
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: rgb(var(--n-7));
+        transition: color 150ms var(--ease);
+    }
+
+    .recent-archive:hover { color: rgb(var(--accent)); }
+
+    .recent-archive:focus-visible {
+        outline: 2px solid rgb(var(--accent-line));
+        outline-offset: 4px;
+        border-radius: 4px;
+    }
+</style>

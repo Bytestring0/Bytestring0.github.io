@@ -1,0 +1,431 @@
+---
+import { siteConfig } from "../../config";
+---
+
+<wave-toc class="wave-toc" data-depth={siteConfig.toc.depth} hidden>
+	<button class="wave-trigger" type="button" aria-label="展开文章目录" aria-expanded="false" aria-controls="wave-toc-list">
+		<svg class="wave-svg" preserveAspectRatio="none" viewBox="0 0 48 400" aria-hidden="true">
+			<defs>
+				<linearGradient id="wave-toc-gradient" x1="0" y1="0" x2="1" y2="1">
+					<stop offset="0%" stop-color="rgb(var(--accent-line))" />
+					<stop offset="100%" stop-color="rgb(var(--accent))" />
+				</linearGradient>
+			</defs>
+			<path class="rail-glow" d="M17 2 L17 398" fill="none" stroke="url(#wave-toc-gradient)" />
+			<path class="rail-line" d="M17 2 L17 398" fill="none" stroke="url(#wave-toc-gradient)" />
+		</svg>
+		<span class="wave-dots" aria-hidden="true"></span>
+		<span class="wave-marker" aria-hidden="true"></span>
+		<span class="wave-aura" aria-hidden="true"></span>
+	</button>
+	<div class="wave-active" aria-hidden="true">
+		<span class="wave-active-title"></span>
+		<span class="wave-active-percent"></span>
+	</div>
+	<nav class="wave-list" id="wave-toc-list" aria-label="文章目录" inert>
+		<div class="wave-list-inner"></div>
+	</nav>
+</wave-toc>
+
+<style>
+	.wave-toc {
+		display: block;
+		position: fixed;
+		right: max(1rem, calc((100vw - var(--page-width)) / 4 - 0.5rem));
+		top: 50%;
+		z-index: 45;
+		width: 48px;
+		height: min(72vh, 42rem);
+		transform: translateY(-50%);
+		--wave-y: 7%;
+	}
+	.wave-toc[hidden] { display: none; }
+	.wave-trigger {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		border: 0;
+		border-radius: 6px;
+		background: transparent;
+		cursor: pointer;
+		touch-action: manipulation;
+	}
+	.wave-trigger:focus-visible { outline: 2px solid rgb(var(--accent-line)); outline-offset: 4px; }
+	.wave-svg { width: 100%; height: 100%; overflow: visible; }
+	.rail-glow { stroke-width: 4; stroke-linecap: round; opacity: 0.035; }
+	.rail-line { stroke-width: 1.2; stroke-linecap: round; opacity: 0.38; }
+	.wave-dots { position: absolute; inset: 0; pointer-events: none; }
+	.wave-dots :global(span) {
+		position: absolute;
+		left: 17px;
+		width: 3px;
+		height: 3px;
+		border-radius: 50%;
+		transform: translate(-50%, -50%);
+		background: rgb(var(--accent-line) / 0.42);
+	}
+	.wave-marker {
+		position: absolute;
+		left: var(--wave-x, 26px);
+		top: var(--wave-y);
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: rgb(var(--accent) / 0.72);
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+	}
+	.wave-aura {
+		position: absolute;
+		left: var(--wave-x, 26px);
+		top: var(--wave-y);
+		width: 13px;
+		height: 13px;
+		border: 1px solid rgb(var(--accent-line) / 0.2);
+		border-radius: 50%;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+		animation: wave-breathe 2400ms ease-in-out infinite;
+	}
+	@keyframes wave-breathe {
+		0%, 100% { opacity: 0.22; scale: 0.9; }
+		50% { opacity: 0.48; scale: 1.1; }
+	}
+	.wave-active {
+		position: absolute;
+		right: calc(100% + 0.6rem);
+		top: var(--wave-y);
+		width: 12rem;
+		padding: 0.25rem 0.45rem;
+		border-radius: 6px;
+		background: rgb(var(--n-2) / 0.96);
+		text-align: right;
+		pointer-events: none;
+		opacity: 0;
+		transform: translateY(-50%) translateX(4px);
+		transition: opacity 240ms var(--ease), transform 240ms var(--ease);
+	}
+	.wave-toc[data-mode="scrolling"] .wave-active { opacity: 1; transform: translateY(-50%); }
+	.wave-active-title {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		font-size: 0.76rem;
+		line-height: 1.6;
+		color: rgb(var(--n-8));
+	}
+	.wave-active-percent { display: block; font-family: var(--font-mono); font-size: 0.7rem; color: rgb(var(--accent)); }
+	.wave-list {
+		position: absolute;
+		right: 100%;
+		top: 50%;
+		width: 16rem;
+		max-height: 100%;
+		padding: 0.65rem;
+		border: 0;
+		border-radius: 6px;
+		background: rgb(var(--n-1) / 0.78);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		box-shadow: 0 2px 14px rgb(var(--n-10) / 0.035);
+		visibility: hidden;
+		opacity: 0;
+		pointer-events: none;
+		transform: translateY(-50%) translateX(6px);
+		transition: opacity 240ms var(--ease), transform 240ms var(--ease), visibility 240ms;
+	}
+	.wave-toc[data-mode="hover"] .wave-list {
+		visibility: visible;
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateY(-50%);
+	}
+	.wave-list-inner { display: flex; flex-direction: column; max-height: calc(min(72vh, 42rem) - 1.3rem); overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+	.wave-list-inner::-webkit-scrollbar { display: none; width: 0; height: 0; }
+	.wave-list-inner :global(a) {
+		display: block;
+		padding: 0.4rem 0.6rem;
+		border-left: 0;
+		font-size: 0.8rem;
+		line-height: 1.55;
+		color: rgb(var(--n-8));
+		overflow-wrap: anywhere;
+		transition: color 180ms var(--ease), background-color 180ms var(--ease);
+	}
+	.wave-list-inner :global(a[data-level="2"]) { padding-left: 1rem; }
+	.wave-list-inner :global(a[data-level="3"]) { padding-left: 1.6rem; }
+	.wave-list-inner :global(a[data-level="4"]),
+	.wave-list-inner :global(a[data-level="5"]),
+	.wave-list-inner :global(a[data-level="6"]) { padding-left: 2rem; }
+	.wave-list-inner :global(a:hover), .wave-list-inner :global(a:focus-visible) { color: rgb(var(--accent)); background: transparent; }
+	.wave-list-inner :global(a[aria-current="location"]) { color: rgb(var(--accent)); font-weight: 600; background: transparent; }
+	@media (max-width: 1180px) { .wave-toc { display: none; } }
+	@media (prefers-reduced-motion: reduce) {
+		.wave-active, .wave-list { transition: none; }
+		.wave-aura { animation: none; }
+	}
+</style>
+
+<script>
+	class WaveTOCElement extends HTMLElement {
+		private dispose?: () => void;
+
+		connectedCallback() {
+			this.dispose?.();
+			const controller = new AbortController();
+			const { signal } = controller;
+			const trigger = this.querySelector<HTMLButtonElement>(".wave-trigger")!;
+			const rail = this.querySelector<SVGPathElement>(".rail-line")!;
+			const glow = this.querySelector<SVGPathElement>(".rail-glow")!;
+			const dots = this.querySelector<HTMLElement>(".wave-dots")!;
+			const panel = this.querySelector<HTMLElement>(".wave-list")!;
+			const list = this.querySelector<HTMLElement>(".wave-list-inner")!;
+			const title = this.querySelector<HTMLElement>(".wave-active-title")!;
+			const percent = this.querySelector<HTMLElement>(".wave-active-percent")!;
+			let article: HTMLElement | null = null;
+			let headings: HTMLElement[] = [];
+			let links: HTMLAnchorElement[] = [];
+			let offsets: number[] = [];
+			let start = 0;
+			let end = 1;
+			let frame = 0;
+			let idle: number | undefined;
+			let closeTimer: number | undefined;
+			let currentY = 28;
+			let targetY = 28;
+			let previousTime = 0;
+			let readingY = 34;
+			let springVelocity = 0;
+			let energy = 0;
+			let amplitude = 0;
+			let phase = 0;
+			let pointerInside = false;
+			let pointerY = 34;
+			let hoverIndex = -1;
+			let activeIndex = -1;
+			let lastPointerY = 0;
+			let lastPointerTime = 0;
+			let lastScrollY = window.scrollY;
+			let lastScrollTime = performance.now();
+			const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+			const setMode = (mode: "idle" | "scrolling" | "hover") => {
+				this.dataset.mode = mode;
+				const open = mode === "hover";
+				trigger.setAttribute("aria-expanded", String(open));
+				panel.inert = !open;
+			};
+			const isInteracting = () => this.matches(":hover, :focus-within");
+			const pathAt = (ratio: number) => {
+				const y = 2 + ratio * 396;
+				const distance = Math.abs(y - currentY);
+					const influence = Math.max(0, 1 - distance / 118);
+				const envelope = influence * influence * (3 - 2 * influence);
+				return 17 + Math.sin((y - currentY) / 24 - phase) * amplitude * envelope;
+			};
+			const draw = () => {
+				const segments = 48;
+				const points = Array.from({ length: segments + 1 }, (_, index) => {
+					const ratio = index / segments;
+					return { x: pathAt(ratio), y: 2 + ratio * 396 };
+				});
+				let path = "M" + points[0].x + " " + points[0].y;
+				for (let index = 0; index < segments; index++) {
+					const previous = points[Math.max(0, index - 1)];
+					const from = points[index];
+					const to = points[index + 1];
+					const next = points[Math.min(segments, index + 2)];
+					const span = (to.y - from.y) / 6;
+					path += " C" + (from.x + (to.x - previous.x) / 6) + " " + (from.y + span) +
+						"," + (to.x - (next.x - from.x) / 6) + " " + (to.y - span) + " " + to.x + " " + to.y;
+				}
+				rail.setAttribute("d", path);
+				glow.setAttribute("d", path);
+				dots.querySelectorAll<HTMLElement>("span").forEach((dot) => {
+					dot.style.left = pathAt(Number(dot.dataset.progress || 0)) + "px";
+				});
+				const markerX = pathAt((currentY - 2) / 396);
+				this.style.setProperty("--wave-y", (currentY / 4) + "%");
+				this.style.setProperty("--wave-x", markerX + "px");
+			};
+			const animate = (time: number) => {
+				frame = 0;
+				const dt = Math.min((time - (previousTime || time - 16)) / 1000, 0.032);
+				previousTime = time;
+				if (reduced.matches) {
+					currentY = targetY;
+					springVelocity = 0;
+					energy = 0;
+					amplitude = 0;
+				} else {
+					// Input velocity stretches the crest; a damped spring lets it settle.
+					springVelocity += ((targetY - currentY) * 165 - springVelocity * 22) * dt;
+					currentY = Math.min(366, Math.max(34, currentY + springVelocity * dt));
+					energy *= Math.exp(-dt * 1.7);
+					amplitude += (energy * 7 - amplitude) * (1 - Math.exp(-dt * 6));
+					if (energy > 0.005) phase += dt * (3 + energy * 4);
+				}
+				draw();
+				if (Math.abs(targetY - currentY) > 0.04 || Math.abs(springVelocity) > 0.05 || energy > 0.005 || amplitude > 0.02) {
+					frame = requestAnimationFrame(animate);
+				} else previousTime = 0;
+			};
+			const wake = () => { if (!frame) frame = requestAnimationFrame(animate); };
+			const update = () => {
+				if (!article || !headings.length) return;
+				const y = window.scrollY;
+				const progress = Math.min(1, Math.max(0, (y - start) / Math.max(1, end - start)));
+				readingY = 34 + progress * 332;
+				targetY = pointerInside ? pointerY : readingY;
+				let active = 0;
+				offsets.forEach((offset, index) => { if (offset <= y + 140) active = index; });
+				if (pointerInside && hoverIndex >= 0) active = hoverIndex;
+				if (active !== activeIndex && pointerInside) {
+					const activeLink = links[active];
+					if (activeLink) list.scrollTo({ top: Math.max(0, activeLink.offsetTop - list.clientHeight / 2 + activeLink.offsetHeight / 2), behavior: reduced.matches ? "auto" : "smooth" });
+				}
+				activeIndex = active;
+				links.forEach((link, index) => {
+					if (index === active) link.setAttribute("aria-current", "location");
+					else link.removeAttribute("aria-current");
+				});
+				title.textContent = links[active]?.textContent || "";
+				percent.textContent = Math.round(progress * 100) + "%";
+				wake();
+			};
+			const measure = () => {
+				if (!article || !headings.length) return;
+				const y = window.scrollY;
+				const rect = article.getBoundingClientRect();
+				start = rect.top + y - 100;
+				end = Math.max(start + 1, rect.bottom + y - window.innerHeight);
+				offsets = headings.map((heading) => heading.getBoundingClientRect().top + y);
+				Array.from(dots.children).forEach((dot, index) => {
+					const ratio = Math.min(1, Math.max(0, (offsets[index] - 140 - start) / (end - start)));
+					(dot as HTMLElement).dataset.progress = String(ratio);
+					(dot as HTMLElement).style.top = (ratio * 100) + "%";
+				});
+				update();
+			};
+			const resize = new ResizeObserver(measure);
+			const build = () => {
+				resize.disconnect();
+				article = document.querySelector<HTMLElement>("#post-container");
+				headings = article ? Array.from(article.querySelectorAll<HTMLElement>("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]"))
+					.filter((heading) => Number(heading.tagName[1]) <= Number(this.dataset.depth || 3)) : [];
+				list.replaceChildren();
+				dots.replaceChildren();
+				links = [];
+				pointerInside = false;
+				hoverIndex = -1;
+				activeIndex = -1;
+				springVelocity = 0;
+				energy = 0;
+				lastScrollY = window.scrollY;
+				lastScrollTime = performance.now();
+				this.hidden = !headings.length;
+				setMode("idle");
+				if (this.hidden || !article) return;
+				for (const heading of headings) {
+					const link = document.createElement("a");
+					link.href = "#" + encodeURIComponent(heading.id);
+					link.dataset.level = heading.tagName[1];
+					link.textContent = (heading.textContent || "").replace(/#+\s*$/, "").trim();
+					list.append(link);
+					links.push(link);
+					dots.append(document.createElement("span"));
+				}
+				measure();
+				currentY = targetY;
+				draw();
+				resize.observe(article);
+			};
+			const open = () => { window.clearTimeout(closeTimer); window.clearTimeout(idle); setMode("hover"); };
+			const close = () => {
+				window.clearTimeout(closeTimer);
+				closeTimer = window.setTimeout(() => { if (!isInteracting()) setMode("idle"); }, 160);
+			};
+			this.addEventListener("pointerenter", open, { signal });
+			this.addEventListener("pointerleave", () => { pointerInside = false; hoverIndex = -1; targetY = readingY; update(); wake(); close(); }, { signal });
+			trigger.addEventListener("pointermove", (event) => {
+				const rect = trigger.getBoundingClientRect();
+				const time = performance.now();
+				pointerY = Math.max(34, Math.min(366, (event.clientY - rect.top) / rect.height * 400));
+				if (lastPointerTime) energy = Math.min(1.8, energy + Math.abs(event.clientY - lastPointerY) / Math.max(8, time - lastPointerTime) * 0.28);
+				lastPointerY = event.clientY;
+				lastPointerTime = time;
+				pointerInside = true;
+				targetY = pointerY;
+				const pointerRatio = Math.min(1, Math.max(0, (pointerY - 2) / 396));
+				hoverIndex = Array.from(dots.children).reduce((nearest, dot, index) => {
+					const distance = Math.abs(Number((dot as HTMLElement).dataset.progress || 0) - pointerRatio);
+					const nearestDistance = Math.abs(Number((dots.children[nearest] as HTMLElement)?.dataset.progress || 0) - pointerRatio);
+					return distance < nearestDistance ? index : nearest;
+				}, 0);
+				update();
+				wake();
+			}, { passive: true, signal });
+			this.addEventListener("focusin", open, { signal });
+			this.addEventListener("focusout", close, { signal });
+			trigger.addEventListener("click", open, { signal });
+			document.addEventListener("pointerdown", (event) => {
+				if (!this.contains(event.target as Node)) setMode("idle");
+			}, { signal });
+			document.addEventListener("keydown", (event) => {
+				if (event.key !== "Escape" || this.dataset.mode !== "hover") return;
+				if (this.contains(document.activeElement)) trigger.focus({ preventScroll: true });
+				pointerInside = false;
+				hoverIndex = -1;
+				targetY = readingY;
+				update();
+				setMode("idle");
+				wake();
+			}, { signal });
+			list.addEventListener("click", (event) => {
+				const link = (event.target as Element).closest<HTMLAnchorElement>("a");
+				if (!link) return;
+				const index = links.indexOf(link);
+				if (index < 0) return;
+				event.preventDefault();
+				window.scrollTo({
+					top: headings[index].getBoundingClientRect().top + window.scrollY - 96,
+					behavior: reduced.matches ? "instant" : "smooth",
+				});
+				history.replaceState(history.state, "", link.hash);
+			}, { signal });
+			window.addEventListener("scroll", () => {
+				if (this.hidden) return;
+				const time = performance.now();
+				const speed = Math.abs(window.scrollY - lastScrollY) / Math.max(8, time - lastScrollTime);
+				energy = Math.min(1.8, energy + speed * 0.16);
+				lastScrollY = window.scrollY;
+				lastScrollTime = time;
+				update();
+				if (!isInteracting()) setMode("scrolling");
+				window.clearTimeout(idle);
+				idle = window.setTimeout(() => { if (!isInteracting()) setMode("idle"); }, 1100);
+			}, { passive: true, signal });
+			window.addEventListener("resize", measure, { passive: true, signal });
+			for (const event of ["astro:page-load", "swup:page:view", "article:content-ready"]) document.addEventListener(event, build, { signal });
+			const attachSwup = () => (window as any).swup?.hooks.on("page:view", build);
+			attachSwup();
+			document.addEventListener("swup:enable", attachSwup, { once: true, signal });
+			this.dispose = () => {
+				controller.abort();
+				resize.disconnect();
+				cancelAnimationFrame(frame);
+				window.clearTimeout(idle);
+				window.clearTimeout(closeTimer);
+				(window as any).swup?.hooks.off("page:view", build);
+			};
+			build();
+		}
+
+		disconnectedCallback() { this.dispose?.(); }
+	}
+
+	if (!customElements.get("wave-toc")) customElements.define("wave-toc", WaveTOCElement);
+</script>
