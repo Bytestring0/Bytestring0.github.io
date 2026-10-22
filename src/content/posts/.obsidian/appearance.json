@@ -9,5 +9,6 @@
     "moonlight-mizuki",
     "moonlight-background"
   ],
-  "nativeMenus": false
+  "nativeMenus": false,
+  "baseFontSizeAction": false
 }

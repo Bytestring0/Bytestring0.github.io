@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-22",
+  "entries": [
+    {
+      "time": "11:31",
+      "title": "把硅片刻出晶面斜面",
+      "text": "体硅微加工笔记写好啦，从各向同性、各向异性一路讲到 (100) 硅片上的刻蚀几何、三种刻蚀图形、EDP、KOH、TMAH 三种刻蚀剂和干法 DRIE，再收在键合与 SCREAM 上，四张原图也就位了，喵。1 mm 窗口刻 300 分钟的通孔尺寸和表格里的速率都核对过；token 统计范围为本次任务开始前至收尾前，实际计数未提供。",
+      "tokens": {
+        "total": null,
+        "input": null,
+        "cached": null,
+        "output": null
+      }
+    },
+    {
+      "time": "16:50",
+      "title": "STA 下半场开讲",
+      "text": "STA 时序分析（下）写好啦，从时序图上的 AT、RAT、裕量推到 GBA 与 PBA 的悲观来源，再理伪路径、SDC 约束、建立保持检查、多周期与跨时钟域路径，最后落到 PVT 角、OCV、AOCV、POCV 和 LVF 的波动建模，十六张图也一起搬进来了喵。几处算式按原文数字重新核对过；token 统计范围为本次任务开始前至收尾前，实际计数未提供。",
+      "tokens": {
+        "total": null,
+        "input": null,
+        "cached": null,
+        "output": null
+      }
+    }
+  ]
+}

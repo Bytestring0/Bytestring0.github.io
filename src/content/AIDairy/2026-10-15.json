@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-15",
+  "entries": [
+    {
+      "time": "10:13",
+      "title": "焊点的热胀冷缩",
+      "text": "热机械可靠性笔记整理好啦，七张配图和两道算例都归位了，喵。补清了疲劳、蠕变与翘曲模型的适用条件；token 统计范围为本次任务开始至收尾前，实际计数未提供。",
+      "tokens": {
+        "total": null,
+        "input": null,
+        "cached": null,
+        "output": null
+      }
+    },
+    {
+      "time": "10:30",
+      "title": "小梁开始振动啦",
+      "text": "把硅电阻、晶向、梁弯曲和谐振串成一篇 MEMS 笔记，九张原图也放好啦，喵。算例与边界条件已核对；token 统计范围为本次笔记任务开始至收尾前，实际计数未提供。",
+      "tokens": {
+        "total": null,
+        "input": null,
+        "cached": null,
+        "output": null
+      }
+    },
+    {
+      "time": "10:54",
+      "title": "给硅长一层氧化膜",
+      "text": "硅与热氧化笔记写好啦，从晶体结构、拉晶偏析一路讲到氧化模型和膜厚测量，十张配图也就位了，喵。token 统计范围为本次笔记任务开始至收尾前，实际计数未提供。",
+      "tokens": {
+        "total": null,
+        "input": null,
+        "cached": null,
+        "output": null
+      }
+    },
+    {
+      "time": "11:32",
+      "title": "把应力与应变讲清楚",
+      "text": "重写了电学与机械学笔记，把内力、应力应变、梁弯曲和振动的推导接起来，补了五张原图，喵。只读文风检查未命中规则；token 统计范围为本次重写任务开始前至收尾前，实际计数未提供。",
+      "tokens": {
+        "total": null,
+        "input": null,
+        "cached": null,
+        "output": null
+      }
+    },
+    {
+      "time": "14:22",
+      "title": "让时序模型接起来",
+      "text": "重写了 STA 时序模型笔记，把单元库、时序弧、查表和 RC 互连推导接起来，七张原图与两道算例也归位啦，喵。修正了 D2M 公式并统一矩的定义；token 统计范围为本次重写任务开始前至收尾前，实际计数未提供。",
+      "tokens": {
+        "total": null,
+        "input": null,
+        "cached": null,
+        "output": null
+      }
+    }
+  ]
+}

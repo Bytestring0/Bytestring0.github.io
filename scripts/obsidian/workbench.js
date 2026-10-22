@@ -5,6 +5,7 @@ import path from 'node:path';
 import { Transformer } from 'markmap-lib';
 import { Markmap } from 'markmap-view';
 import { PiCommandBridge } from './pi-commands.js';
+import { PdfExportControls } from './pdf-export.js';
 const defaults={nodeBinary:'C:\\Program Files\\nodejs\\node.exe',pnpmCli:'C:\\Users\\Au224\\AppData\\Roaming\\npm\\node_modules\\pnpm\\bin\\pnpm.cjs',port:4321};
 class NewPostModal extends Modal {
   constructor(plugin,kind='note'){super(plugin.app);this.plugin=plugin;this.kind=kind;this.name='';this.folder='';}
@@ -31,6 +32,7 @@ export default class MizukiWorkbench extends Plugin {
     this.settings={...defaults,...await this.loadData()};this.repo=path.resolve(this.app.vault.adapter.getBasePath(),'../../..');
     if(!fs.existsSync(path.join(this.repo,'astro.config.mjs')))throw new Error('Mizuki 工作台需要打开博客的 src/content/posts 目录');
     this.applyBackground();
+    this.pdfExport=new PdfExportControls(this);this.pdfExport.install();
     this.logs=[];this.logViews=new Set();this.jobs=new Map();this.previewUrl=`http://127.0.0.1:${this.settings.port}/`;this.status=this.addStatusBarItem();this.updateStatus();this.addRibbonIcon('house','博客工作台',()=>this.home());
     this.addRibbonIcon('file-plus','新建笔记 / 文章',()=>new NewPostModal(this).open());
     this.addRibbonIcon('send','切换当前笔记是否公开',()=>this.togglePublish());

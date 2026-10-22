@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -140 1870 928" width="1870" height="928">
+<defs><marker id="ah" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#495057"/></marker></defs>
+<rect x="10" y="-140" width="1870" height="928" fill="#ffffff"/>
+<text x="40" y="-78" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="34" fill="#1e1e1e" text-anchor="start">静态锁存器：从双稳态到可控写入</text>
+<text x="40" y="-32" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="19" fill="#495057" text-anchor="start">先有双稳态环路　→　再让它能被可控地打破　→　每条写入通路都换来一项额外代价</text>
+<rect x="40" y="150" width="430" height="520" rx="10" fill="#ffffff" stroke="#1971c2" stroke-width="2"/>
+<text x="328" y="185" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="22" fill="#1971c2" text-anchor="middle">① 双稳态环路</text>
+<text x="56" y="223" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="16" fill="#495057" text-anchor="start">双反相器首尾相接，</text>
+<text x="56" y="243" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="16" fill="#495057" text-anchor="start">两个稳定点记忆一个比特</text>
+<line x1="476" y1="410" x2="494" y2="410" stroke="#495057" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="500" y="150" width="430" height="520" rx="10" fill="#ffffff" stroke="#2f9e44" stroke-width="2"/>
+<text x="799" y="185" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="22" fill="#2f9e44" text-anchor="middle">② 切断反馈环路</text>
+<text x="516" y="223" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="16" fill="#495057" text-anchor="start">静态锁存器 =</text>
+<text x="516" y="243" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="16" fill="#495057" text-anchor="start">二选一多路选择器 + 双稳态环路</text>
+<line x1="936" y1="410" x2="954" y2="410" stroke="#495057" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="960" y="150" width="430" height="520" rx="10" fill="#ffffff" stroke="#e8590c" stroke-width="2"/>
+<text x="1280" y="185" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="22" fill="#e8590c" text-anchor="middle">③ 保留环路强制写入</text>
+<text x="976" y="223" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="16" fill="#495057" text-anchor="start">输入把节点推过翻转点，</text>
+<text x="976" y="243" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="16" fill="#495057" text-anchor="start">正反馈完成状态翻转</text>
+<line x1="1396" y1="410" x2="1414" y2="410" stroke="#495057" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="1420" y="150" width="430" height="520" rx="10" fill="#ffffff" stroke="#e03131" stroke-width="2"/>
+<text x="1729" y="185" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="22" fill="#e03131" text-anchor="middle">④ 把反馈弱化到底</text>
+<text x="1436" y="223" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="16" fill="#495057" text-anchor="start">同一环路换一个入口：</text>
+<text x="1436" y="243" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="16" fill="#495057" text-anchor="start">弱化反馈、增加额外控制</text>
+<text x="56" y="304" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">两反相器的 VTC 画在同一坐标系</text>
+<text x="56" y="325" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">交点即环路可能的平衡工作点</text>
+<text x="56" y="374" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#2f9e44" text-anchor="start">A、B：增益 |A1A2| &lt; 1</text>
+<text x="56" y="395" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#2f9e44" text-anchor="start">小扰动绕环一周后变小 → 稳定点</text>
+<text x="56" y="444" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">C：都在翻转区，|A1A2| &gt; 1</text>
+<text x="56" y="465" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">差分扰动被放大 → 亚稳态</text>
+<text x="56" y="514" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">环路持续补偿节点的电荷损失</text>
+<text x="56" y="535" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">保持数据不依赖孤立电容</text>
+<text x="56" y="584" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1971c2" text-anchor="start">四只晶体管能存住了</text>
+<text x="56" y="605" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1971c2" text-anchor="start">但外部数据还没有入口</text>
+<text x="516" y="304" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">把反馈做成时钟控制的开关</text>
+<text x="516" y="325" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">状态既能保存，也能被替换</text>
+<text x="516" y="374" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">Q+ = CLK·D + CLK̄·Q</text>
+<text x="516" y="395" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">透明：输入门通、反馈门断</text>
+<text x="516" y="417" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">保持：输入门断、环路闭环</text>
+<text x="516" y="464" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#2f9e44" text-anchor="start">交换两条通路的成败</text>
+<text x="516" y="485" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#2f9e44" text-anchor="start">无比逻辑，不依赖强弱比</text>
+<text x="516" y="534" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">输入门与反馈门都挂在时钟上</text>
+<text x="516" y="555" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">时钟端的栅电容与功耗增加</text>
+<text x="516" y="604" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1971c2" text-anchor="start">额外代价是时钟负载</text>
+<text x="976" y="304" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">环路始终闭合，写入靠输入</text>
+<text x="976" y="325" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">把节点推过翻转点</text>
+<text x="976" y="374" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#2f9e44" text-anchor="start">省掉反馈通路的时钟开关</text>
+<text x="976" y="395" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#2f9e44" text-anchor="start">时钟端电容小，晶体管少</text>
+<text x="976" y="444" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">有比设计：反馈必须弱于输入</text>
+<text x="976" y="465" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">太强写不进，太弱保不住扰动</text>
+<text x="976" y="514" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">写入期间有竞争电流</text>
+<text x="976" y="535" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">双向导通的传输门可反推主级</text>
+<text x="976" y="584" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e8590c" text-anchor="start">伪静态锁存是这个结构再加一层</text>
+<text x="1436" y="304" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">NMOS 传输管：省 PMOS 与一根时钟线</text>
+<text x="1436" y="325" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">但高电平只到 VDD − VTn</text>
+<text x="1436" y="374" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">后级收不到全摆幅</text>
+<text x="1436" y="395" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">噪声容限降，PMOS 关不断</text>
+<text x="1436" y="444" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">SR 锁存：额外输入压住环路</text>
+<text x="1436" y="465" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">不属于数据通路的采样通路</text>
+<text x="1436" y="514" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">S = R = 1 时两输出都被压成 0</text>
+<text x="1436" y="535" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#e03131" text-anchor="start">同时撤销后结果取决于路径延迟</text>
+<text x="1436" y="584" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="17" fill="#1e1e1e" text-anchor="start">交叉耦合 NAND 把控制改为低有效</text>
+<text x="40" y="728" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="19" fill="#1e1e1e" text-anchor="start">两条分支各自付出一项代价。后面的主从寄存器沿切断反馈这条线继续推进：</text>
+<text x="40" y="752" font-family="Noto Sans CJK SC, Source Han Sans SC, Microsoft YaHei, sans-serif" font-size="19" fill="#1e1e1e" text-anchor="start">让两个相反相位的锁存级交替透明，把何时采样交给时钟边沿。</text>
+</svg>
