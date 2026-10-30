@@ -30,7 +30,6 @@ const socials = [
 				</a>
 			))}
 		</div>
-		<p class="hero-thanks">thanks for all AI and her Harness</p>
 	</div>
 </home-introduction>
 
@@ -87,8 +86,7 @@ const socials = [
 	.home-hero {
 		display: flex;
 		align-items: center;
-		min-height: min(44rem, calc(100svh - 14rem));
-		padding: 3.5rem 0 2rem;
+		padding: 2.25rem 0 0.5rem;
 	}
 
 	.hero-inner {
@@ -206,15 +204,6 @@ const socials = [
 		background: rgb(var(--accent-soft));
 	}
 	.hero-social-icon { font-size: 0.95rem; }
-	.hero-thanks {
-		grid-column: 2;
-		margin: 0.35rem 0 0;
-		text-align: center;
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		line-height: 1.7;
-		color: rgb(var(--n-7));
-	}
 
 	.hero-bubble :global(.is-typing)::after {
 		content: "";
@@ -238,10 +227,9 @@ const socials = [
 		.hero-inner { grid-template-columns: minmax(0, 1fr) 5.5rem; gap: 1rem; }
 		.hero-bubble { grid-column: 1 / -1; margin-top: 0; padding: 1.15rem; }
 		.hero-bubble::after { right: 2.4rem; bottom: -6px; transform: rotate(135deg); }
-		.hero-avatar-link { grid-column: 2; grid-row: 2 / 4; }
+		.hero-avatar-link { grid-column: 2; grid-row: 2 / 3; }
 		.hero-avatar { width: 4.5rem; height: 4.5rem; box-shadow: 0 0 0 5px rgb(var(--accent-soft)); }
 		.hero-socials { grid-column: 1; grid-row: 2; justify-content: flex-end; }
-		.hero-thanks { grid-column: 1; grid-row: 3; text-align: right; margin: 0; }
 		.hero-bubble h1 { font-size: 1.85rem; }
 		.hero-bubble p { font-size: 1.05rem; }
 	}

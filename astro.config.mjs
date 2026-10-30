@@ -4,7 +4,6 @@ import svelte, { vitePreprocess } from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
-import swup from "@swup/astro";
 import { defineConfig } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
@@ -31,7 +30,6 @@ import { remarkContent } from "./src/plugins/remark-content.mjs";
 import { rehypeImageWidth } from "./src/plugins/rehype-image-width.mjs";
 import rehypeExternalLinks from "rehype-external-links";
 import { remarkFixGithubAdmonitions } from "./src/plugins/remark-fix-github-admonitions.js";
-import articleDesignIntegration from "./scripts/article-design-integration.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -40,41 +38,22 @@ export default defineConfig({
 	trailingSlash: "always",
 
 	output: "static",
+	prefetch: { prefetchAll: true, defaultStrategy: "hover" },
 
 	integrations: [
 		obsidianIntegration(),
-		articleDesignIntegration(),
-		umami({
-		}),
+		umami({}),
 		tailwind({
 			nesting: true,
 		}),
-		swup({
-			theme: false,
-			animationClass: "transition-swup-",
-			containers: ["main"],
-			smoothScrolling: false, // 禁用平滑滚动以提升性能，避免与锚点导航冲突
-			cache: process.env.NODE_ENV === "production",
-			preload: true, // swup 默认鼠标悬停预加载
-			accessibility: true,
-			updateHead: true, // 切换页面时同步 head 里的样式，避免 CSS 丢失
-			updateBodyClass: false,
-			globalInstance: true,
-			// 滚动相关配置优化
-			resolveUrl: (url) => url,
-			animateHistoryBrowsing: false,
-			skipPopStateHandling: (event) => {
-				// 跳过锚点链接的处理，让浏览器原生处理
-				return (
-					event.state &&
-					event.state.url &&
-					event.state.url.includes("#")
-				);
-			},
-		}),
+
 		icon(),
 		expressiveCode({
 			themes: ["github-light", "github-dark"],
+			useDarkModeMediaQuery: false,
+			themeCssSelector: (theme) =>
+				`[data-theme="${theme.type === "dark" ? "dark" : "light"}"]`,
+			minSyntaxHighlightingColorContrast: 6,
 			plugins: [
 				pluginCollapsibleSections(),
 				pluginLineNumbers(),
@@ -92,7 +71,8 @@ export default defineConfig({
 				},
 			},
 			styleOverrides: {
-				codeBackground: "var(--codeblock-bg)",
+				codeBackground: ({ theme }) =>
+					theme.type === "dark" ? "#192432" : "#e6eef5",
 				borderRadius: "0.75rem",
 				borderColor: "none",
 				codeFontSize: "0.875rem",
@@ -186,7 +166,14 @@ export default defineConfig({
 	},
 	vite: {
 		optimizeDeps: { include: ["markmap-view"] },
-		server: { watch: { ignored: ["**/src/content/posts/**/.obsidian/**", "**/src/content/posts/**/.trash/**"] } },
+		server: {
+			watch: {
+				ignored: [
+					"**/src/content/posts/**/.obsidian/**",
+					"**/src/content/posts/**/.trash/**",
+				],
+			},
+		},
 		// Verilog source files can live beside posts. Treat them as assets so
 		// broad image/content globs never ask Rollup to parse them as JavaScript.
 		assetsInclude: ["**/*.v"],

@@ -1,0 +1,163 @@
+---
+import { getSortedPostsList } from "../../utils/content-utils";
+import {
+	buildTimeline,
+	CARD_WIDTH,
+	CARD_HEIGHT,
+} from "../../utils/lake-timeline";
+import Icon from "./Icon.astro";
+import FilterMenu from "./FilterMenu.astro";
+interface Props {
+	filters?: boolean;
+}
+const posts = (await getSortedPostsList()).sort(
+	(a, b) => +a.data.published - +b.data.published,
+);
+const model = buildTimeline(
+	posts.map((post) => ({
+		id: post.id,
+		date: post.data.published.toISOString(),
+	})),
+);
+const coordinates = new Map(model.items.map((item) => [item.id, item]));
+const categories = [
+	...new Set(posts.map((post) => post.data.category || "未分类")),
+];
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+---
+
+<section class="timeline-shell" aria-label="文章时间线">
+	<div class="timeline-toolbar" data-no-pan>
+		<FilterMenu
+			kind="month"
+			label="按月份定位"
+			options={model.months.map((month) => ({
+				value: month.key,
+				label: month.key.replace("-", " / "),
+			}))}
+		/>
+		<FilterMenu
+			kind="category"
+			label="所有分类"
+			options={categories.map((category) => ({
+				value: category,
+				label: category,
+			}))}
+		/>
+		<FilterMenu
+			kind="tag"
+			label="所有标签"
+			options={tags.map((tag) => ({ value: tag, label: tag }))}
+		/>
+	</div>
+	<div
+		class="lake-viewport"
+		data-canvas-view
+		tabindex="0"
+		role="region"
+		aria-label="横向文章时间线，拖拽平移，滚轮或双指缩放，缩至最小进入全站总览，方向键浏览"
+	>
+		<div
+			class="lake-world"
+			data-world-width={model.width}
+			data-world-height={model.height}
+		>
+			<div class="timeline-axis" style={`width:${model.width}px`}></div>
+			<div class="timeline-months">
+				{
+					model.months.map((month) => (
+						<div
+							class="month-marker"
+							data-month={month.key}
+							data-year-start={month.yearStart}
+							style={`left:${month.x}px`}
+						>
+							<>
+								<i />
+								<time>
+									<>
+										<span class="month-full">
+											{month.key.replace("-", ".")}
+										</span>
+										<span class="month-year">
+											{month.key.slice(0, 4)}
+										</span>
+									</>
+								</time>
+							</>
+						</div>
+					))
+				}
+			</div>
+			{
+				posts.map((post) => {
+					const point = coordinates.get(post.id)!;
+					return (
+						<div
+							class="timeline-item"
+							data-post-id={post.id}
+							data-date={post.data.published.toISOString()}
+							data-category={post.data.category || "未分类"}
+							data-tags={JSON.stringify(post.data.tags)}
+							style={`--item-x:${point.x}px;--item-y:${point.y}px;--lane:${point.lane};width:${CARD_WIDTH}px;height:${CARD_HEIGHT}px`}
+						>
+							<>
+								<span
+									class="timeline-tether"
+									style={`--tether-height:${Math.abs(point.y + (point.y < 0 ? CARD_HEIGHT : 0))}px;--tether-top:${point.y < 0 ? CARD_HEIGHT : -point.y}px`}
+								/>
+								<a
+									class="timeline-card lake-glass"
+									href={post.url}
+								>
+									<div class="card-meta">
+										<time
+											datetime={post.data.published.toISOString()}
+										>
+											{post.data.published
+												.toISOString()
+												.slice(0, 10)
+												.replaceAll("-", ".")}
+										</time>
+										<span>
+											{post.data.category || "未分类"}
+										</span>
+									</div>
+									<h2>{post.data.title}</h2>
+									{!post.data.encrypted &&
+										post.data.description && (
+											<p>{post.data.description}</p>
+										)}
+									<Icon name="external" size={14} />
+								</a>
+							</>
+						</div>
+					);
+				})
+			}
+		</div>
+	</div>
+	<p class="timeline-empty" hidden role="status">没有符合条件的文章</p>
+	<div class="canvas-controls" data-no-pan>
+		<button type="button" data-canvas-prev aria-label="向左浏览"
+			><Icon name="left" /></button
+		><button type="button" data-canvas-next aria-label="向右浏览"
+			><Icon name="right" /></button
+		><span></span><button type="button" data-zoom-out aria-label="缩小"
+			><Icon name="minus" /></button
+		><button type="button" data-zoom-in aria-label="放大"
+			><Icon name="plus" /></button
+		><button type="button" data-zoom-fit aria-label="显示完整时间线"
+			><Icon name="fit" /></button
+		>
+	</div>
+	<input
+		class="timeline-position"
+		type="range"
+		min="0"
+		max="1000"
+		value="1000"
+		aria-label="时间线浏览位置"
+		data-timeline-position
+	/>
+</section>

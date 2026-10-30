@@ -1,61 +1,9 @@
 ---
-import { Icon } from "astro-icon/components";
-import I18nKey from "../i18n/i18nKey";
-import { i18n } from "../i18n/translation";
-import MainGridLayout from "../layouts/MainGridLayout.astro";
+import LakeLayout from "../layouts/LakeLayout.astro";
 ---
 
-<MainGridLayout title={i18n(I18nKey.notFound)} description={i18n(I18nKey.notFoundDescription)}>
-  <script>
-    import('../scripts/right-sidebar-layout.js');
-  </script>
-
-    <div class="notfound">
-        <p class="notfound-code">404</p>
-        <h1>{i18n(I18nKey.notFoundTitle)}</h1>
-        <p class="notfound-desc">{i18n(I18nKey.notFoundDescription)}</p>
-        <a href="/" class="btn-solid">
-            <Icon name="material-symbols:arrow-back-rounded" class="text-[0.95rem]" />
-            {i18n(I18nKey.backToHome)}
-        </a>
-    </div>
-</MainGridLayout>
-
-<style>
-    .notfound {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
-        min-height: 60vh;
-        padding: 4rem 1rem;
-        text-align: center;
-    }
-
-    .notfound-code {
-        margin: 0;
-        font-family: var(--font-serif);
-        font-size: clamp(4.5rem, 12vw, 7rem);
-        line-height: 0.9;
-        color: rgb(var(--n-4));
-        letter-spacing: -0.04em;
-    }
-
-    .notfound h1 {
-        margin: 0.5rem 0 0;
-        font-size: 1.35rem;
-        font-weight: 500;
-        color: rgb(var(--n-10));
-    }
-
-    .notfound-desc {
-        margin: 0;
-        font-size: 0.88rem;
-        color: rgb(var(--n-8));
-    }
-
-    .notfound .btn-solid {
-        margin-top: 1.1rem;
-    }
-</style>
+<LakeLayout title="页面不存在" view="error"
+	><section class="utility-panel lake-glass">
+		<h1>404</h1><p>页面不存在</p><a href="/">返回首页</a>
+	</section></LakeLayout
+>

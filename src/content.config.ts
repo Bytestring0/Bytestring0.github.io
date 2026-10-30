@@ -12,7 +12,7 @@ const postsCollection = defineCollection({
 		draft: z.boolean().optional().default(false),
 		publish: z.boolean().optional().default(true),
 		aliases: z.union([z.string(), z.array(z.string())]).optional(),
-		// Opt in to a saved, agent-authored article experience. Never generates at runtime.
+		// Legacy frontmatter is accepted; all posts use one reading layout.
 		create: z.boolean().optional().default(false),
 		description: z.string().optional().default(""),
 		image: z.string().optional().default(""),

@@ -1,0 +1,162 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+import LakeLayout from "../../layouts/LakeLayout.astro";
+import Locked from "./Locked.astro";
+import Icon from "./Icon.astro";
+import { getSortedPosts } from "../../utils/content-utils";
+import { getPostUrl } from "../../utils/url-utils";
+import { initPostIdMap } from "../../utils/permalink-utils";
+import { profileConfig, licenseConfig } from "../../config";
+import "katex/dist/katex.min.css";
+interface Props {
+	entry: CollectionEntry<"posts">;
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const locked = Boolean(entry.data.encrypted && entry.data.password);
+const tocHeadings = locked
+	? []
+	: headings.filter((heading) => heading.depth <= 3);
+const posts = (await getSortedPosts()).sort(
+	(a, b) => +a.data.published - +b.data.published,
+);
+initPostIdMap(posts);
+const index = posts.findIndex((post) => post.id === entry.id),
+	previous = posts[index - 1],
+	next = posts[index + 1];
+const date = entry.data.published.toISOString().slice(0, 10);
+---
+
+<LakeLayout
+	title={entry.data.title}
+	description={locked ? "密码保护文章" : entry.data.description}
+	view="reading"
+	lang={entry.data.lang || "zh-CN"}
+>
+	<script
+		is:inline
+		slot="head"
+		type="application/ld+json"
+		set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "BlogPosting",
+			headline: entry.data.title,
+			datePublished: entry.data.published.toISOString(),
+			author: {
+				"@type": "Person",
+				name: entry.data.author || profileConfig.name,
+			},
+		}).replaceAll("<", "\\u003c")}
+	/>
+
+	<div class="reading-layout">
+		<article class="reader-panel">
+			<header class="reader-heading">
+				<a class="reading-back" href="/archive/"
+					><Icon name="left" size={15} /><span>文章</span></a
+				><div class="reader-meta">
+					<a
+						href={`/categories/?category=${encodeURIComponent(entry.data.category || "未分类")}`}
+						>{entry.data.category || "未分类"}</a
+					><time datetime={date}>{date}</time><span
+						>{entry.data.author || profileConfig.name}</span>
+				</div><h1 data-pagefind-meta="title">{entry.data.title}</h1>{
+					!locked && entry.data.description && (
+						<p class="reader-description">
+							{entry.data.description}
+						</p>
+					)
+				}
+			</header>
+			<div class="reader-content">
+				<div
+					class="article-prose custom-md"
+					data-reading-flow
+					data-pagefind-body={!locked || undefined}
+				>
+					{
+						locked ? (
+							<Locked password={String(entry.data.password)}>
+								<Content />
+							</Locked>
+						) : (
+							<Content />
+						)
+					}
+				</div>
+			</div>
+			<footer class="reader-footer">
+				<nav class="reader-adjacent" aria-label="相邻文章">
+					{
+						previous && (
+							<a href={getPostUrl(previous)}>
+								<>
+									<small>上一篇</small>
+									<span>{previous.data.title}</span>
+								</>
+							</a>
+						)
+					}{
+						next && (
+							<a href={getPostUrl(next)}>
+								<>
+									<small>下一篇</small>
+									<span>{next.data.title}</span>
+								</>
+							</a>
+						)
+					}
+				</nav>{
+					licenseConfig.enable && (
+						<a
+							class="article-license"
+							href={entry.data.licenseUrl || licenseConfig.url}
+							target="_blank"
+							rel="license noopener noreferrer"
+						>
+							{entry.data.licenseName || licenseConfig.name}
+						</a>
+					)
+				}
+			</footer>
+		</article>
+		<aside class="reader-outline">
+			<details open data-reader-toc>
+				<summary
+					><span>目录</span><span data-outline-current></span><Icon
+						name="chevron"
+						size={14}
+					/></summary
+				><nav>
+					{
+						tocHeadings.map((h) => (
+							<a
+								href={`#${h.slug}`}
+								data-reading-anchor
+								style={`--depth:${h.depth}`}
+							>
+								{h.text}
+							</a>
+						))
+					}
+				</nav>
+			</details><div class="outline-progress">
+				<div
+					class="reading-progress"
+					role="progressbar"
+					aria-label="阅读进度"
+					aria-valuemin="0"
+					aria-valuemax="100"
+					aria-valuenow="0"
+				>
+					<span></span>
+				</div><output data-reading-percent>0%</output><button
+					type="button"
+					data-reading-top
+					aria-label="回到文章顶部"
+					><Icon name="up" size={15} /></button>
+			</div>
+		</aside>
+	</div>
+</LakeLayout>

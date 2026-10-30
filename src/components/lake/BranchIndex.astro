@@ -1,0 +1,351 @@
+---
+import { getSortedPostsList } from "../../utils/content-utils";
+import Icon from "./Icon.astro";
+import github from "../../data/github-repos.json";
+import { friendsData } from "../../data/friends";
+import { profileConfig, siteConfig } from "../../config";
+interface Props {
+	kind: "category" | "tag" | "project" | "friend";
+}
+interface Leaf {
+	title: string;
+	url?: string;
+	date?: string;
+	meta?: string;
+	description?: string;
+	avatar?: string;
+	links?: { name: string; url: string }[];
+	copy?: string;
+}
+interface Group {
+	name: string;
+	meta?: string;
+	count?: number;
+	leaves: Leaf[];
+}
+const { kind } = Astro.props;
+const taxonomy = kind === "category" || kind === "tag";
+let groups: Group[] = [];
+if (taxonomy) {
+	const posts = (await getSortedPostsList()).sort(
+		(a, b) => +b.data.published - +a.data.published,
+	);
+	const names = [
+		...new Set(
+			posts.flatMap((post) =>
+				kind === "category"
+					? [post.data.category || "未分类"]
+					: post.data.tags,
+			),
+		),
+	];
+	groups = names
+		.map((name) => {
+			const entries = posts.filter((post) =>
+				kind === "category"
+					? (post.data.category || "未分类") === name
+					: post.data.tags.includes(name),
+			);
+			return {
+				name,
+				count: entries.length,
+				leaves: entries.map((post) => ({
+					title: post.data.title,
+					url: post.url,
+					date: post.data.published.toISOString(),
+					meta:
+						kind === "tag"
+							? post.data.category || "未分类"
+							: undefined,
+				})),
+			};
+		})
+		.sort(
+			(a, b) =>
+				(b.count || 0) - (a.count || 0) ||
+				a.name.localeCompare(b.name, "zh-CN"),
+		);
+} else if (kind === "project") {
+	groups = github.repos
+		.filter((repo) => !repo.fork)
+		.sort((a, b) => b.pushedAt.localeCompare(a.pushedAt))
+		.map((repo) => ({
+			name: repo.name,
+			meta: repo.language || undefined,
+			leaves: [
+				{
+					title: repo.name,
+					description: repo.description || undefined,
+					date: repo.pushedAt,
+					meta: repo.language || undefined,
+					links: [
+						...(repo.homepage
+							? [{ name: "访问网站", url: repo.homepage }]
+							: []),
+						{ name: "GitHub", url: repo.url },
+					],
+				},
+			],
+		}));
+} else {
+	groups = friendsData.map((friend) => ({
+		name: friend.title,
+		leaves: [
+			{
+				title: friend.title,
+				description: friend.desc,
+				avatar: friend.imgurl.trim(),
+				meta: friend.tags.join(" / "),
+				links: [
+					{
+						name: new URL(friend.siteurl).hostname,
+						url: friend.siteurl,
+					},
+				],
+			},
+		],
+	}));
+	groups.push({
+		name: "本站信息",
+		leaves: [
+			{
+				title: profileConfig.name,
+				description: profileConfig.bio,
+				links: [
+					{
+						name: new URL(siteConfig.siteURL).hostname,
+						url: siteConfig.siteURL,
+					},
+				],
+				copy: `${profileConfig.name}${String.fromCharCode(10)}${siteConfig.siteURL}`,
+			},
+		],
+	});
+}
+const heading = {
+	category: "分类",
+	tag: "标签",
+	project: "项目",
+	friend: "友链",
+}[kind];
+---
+
+<section
+	class:list={["branch-index", { "branch-static": !taxonomy }]}
+	data-branch-index={taxonomy ? "" : undefined}
+	data-tree-kind={kind}
+>
+	{
+		taxonomy ? (
+			<>
+				<>
+					<h1 class="sr-only">{heading}索引</h1>
+					<nav class="branch-switcher" aria-label="文章索引">
+						<>
+							<a
+								href="/categories/"
+								aria-current={
+									kind === "category" ? "page" : undefined
+								}
+							>
+								分类
+							</a>
+							<a
+								href="/tags/"
+								aria-current={
+									kind === "tag" ? "page" : undefined
+								}
+							>
+								标签
+							</a>
+						</>
+					</nav>
+				</>
+			</>
+		) : (
+			<header class="branch-heading">
+				<>
+					<h1>{heading}</h1>
+					<span>
+						{kind === "friend" ? friendsData.length : groups.length}
+					</span>
+				</>
+			</header>
+		)
+	}
+	<div
+		class="branch-stage"
+		tabindex="-1"
+		role="region"
+		aria-label={`${heading}${taxonomy ? "树状索引" : ""}`}
+	>
+		<div class="branch-rows" data-branch-rows>
+			{
+				groups.map((group, index) => {
+					const id = `branch-${kind}-${index}`;
+					return (
+						<section
+							class="branch-group"
+							data-branch-group
+							data-name={group.name}
+							data-open={taxonomy ? "false" : "true"}
+						>
+							{taxonomy && (
+								<button
+									class="branch-root"
+									type="button"
+									id={`${id}-root`}
+									title={group.name}
+									aria-expanded="false"
+									aria-controls={id}
+								>
+									<span class="branch-name">
+										{group.name}
+									</span>
+									{group.count !== undefined && (
+										<small>
+											{group.count}
+											<span class="sr-only"> 篇文章</span>
+										</small>
+									)}
+									{group.meta && <small>{group.meta}</small>}
+									<span
+										class="branch-junction"
+										aria-hidden="true"
+									/>
+								</button>
+							)}
+							<div
+								class:list={[
+									"branch-canopy",
+									{ "branch-detail": !taxonomy },
+								]}
+								id={id}
+								aria-labelledby={
+									taxonomy ? `${id}-root` : undefined
+								}
+								inert={taxonomy}
+							>
+								{taxonomy && (
+									<svg
+										class="branch-lines"
+										aria-hidden="true"
+										fill="none"
+									/>
+								)}
+								{group.leaves.map((leaf) =>
+									leaf.links ? (
+										<article class="branch-leaf branch-detail-leaf">
+											{leaf.avatar && (
+												<img
+													class="branch-portrait"
+													src={leaf.avatar}
+													width="64"
+													height="64"
+													alt=""
+													loading="lazy"
+													referrerpolicy="no-referrer"
+												/>
+											)}
+											<div class="branch-leaf-body">
+												<div class="branch-leaf-meta">
+													{leaf.meta && (
+														<span>{leaf.meta}</span>
+													)}
+													{leaf.date && (
+														<time
+															datetime={leaf.date}
+														>
+															更新于{" "}
+															{leaf.date
+																.slice(0, 10)
+																.replaceAll(
+																	"-",
+																	".",
+																)}
+														</time>
+													)}
+												</div>
+												<h2>{leaf.title}</h2>
+												{leaf.description && (
+													<p>{leaf.description}</p>
+												)}
+												<div class="branch-leaf-links">
+													{leaf.links.map((link) => (
+														<a
+															href={link.url}
+															target="_blank"
+															rel="noopener noreferrer"
+														>
+															{link.name}
+															<Icon
+																name="external"
+																size={13}
+															/>
+														</a>
+													))}
+													{leaf.copy && (
+														<button
+															type="button"
+															data-copy-site={
+																leaf.copy
+															}
+														>
+															<Icon
+																name="copy"
+																size={13}
+															/>
+															复制本站信息
+														</button>
+													)}
+												</div>
+												{leaf.copy && (
+													<p
+														class="branch-copy-status"
+														role="status"
+														data-site-copy-status
+													/>
+												)}
+											</div>
+										</article>
+									) : (
+										<a
+											class="branch-leaf branch-post"
+											href={leaf.url}
+											title={leaf.title}
+											tabindex="-1"
+										>
+											<div class="branch-leaf-meta">
+												{leaf.date && (
+													<time datetime={leaf.date}>
+														{leaf.date
+															.slice(0, 10)
+															.replaceAll(
+																"-",
+																".",
+															)}
+													</time>
+												)}
+												{leaf.meta && (
+													<span>{leaf.meta}</span>
+												)}
+											</div>
+											<h2>{leaf.title}</h2>
+											<Icon name="right" size={13} />
+										</a>
+									),
+								)}
+							</div>
+						</section>
+					);
+				})
+			}
+		</div>{
+			groups.length === 0 && (
+				<p class="branch-empty" role="status">
+					暂无{heading}
+				</p>
+			)
+		}
+	</div>
+</section>

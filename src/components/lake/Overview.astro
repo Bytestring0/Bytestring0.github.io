@@ -1,0 +1,187 @@
+---
+import { getSortedPostsList } from "../../utils/content-utils";
+import {
+	layoutOverview,
+	OVERVIEW_WIDTH,
+	OVERVIEW_HEIGHT,
+} from "../../utils/lake-overview";
+import { friendsData } from "../../data/friends";
+import github from "../../data/github-repos.json";
+import Icon from "./Icon.astro";
+const posts = await getSortedPostsList();
+const categories = [
+	...new Set(posts.map((post) => post.data.category || "未分类")),
+].sort((a, b) => a.localeCompare(b, "zh-CN"));
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort(
+	(a, b) => a.localeCompare(b, "zh-CN"),
+);
+const groups = layoutOverview([
+	{
+		id: "categories",
+		name: "分类",
+		url: "/categories/",
+		items: categories.map((name) => ({
+			name,
+			url: `/categories/?category=${encodeURIComponent(name)}`,
+		})),
+	},
+	{
+		id: "tags",
+		name: "标签",
+		url: "/tags/",
+		items: tags.map((name) => ({
+			name,
+			url: `/tags/?tag=${encodeURIComponent(name)}`,
+		})),
+	},
+	{
+		id: "friends",
+		name: "友链",
+		url: "/friends/",
+		items: friendsData.map((friend) => ({
+			name: friend.title,
+			url: friend.siteurl,
+			external: true,
+		})),
+	},
+	{
+		id: "projects",
+		name: "项目",
+		url: "/projects/",
+		items: github.repos
+			.filter((repo) => !repo.fork)
+			.map((repo) => ({
+				name: repo.name,
+				url: repo.url,
+				external: true,
+			})),
+	},
+]);
+const mapWidth = Math.max(
+	OVERVIEW_WIDTH,
+	...groups.map((group) => group.x + group.width + 100),
+);
+const mapHeight = Math.max(
+	OVERVIEW_HEIGHT,
+	...groups.map((group) => group.y + group.height + 100),
+);
+---
+
+<section
+	class="scene-overview"
+	id="scene-overview"
+	aria-label="全站总览"
+	tabindex="-1"
+	inert
+	transition:persist="site-overview"
+	transition:animate="none"
+>
+	<div
+		class="overview-viewport"
+		data-overview-viewport
+		tabindex="0"
+		role="region"
+		aria-label="分类、标签、友链与项目总览，可拖拽和缩放"
+	>
+		<div
+			class="overview-world"
+			data-overview-world
+			data-width={mapWidth}
+			data-height={mapHeight}
+			style={`width:${mapWidth}px;height:${mapHeight}px`}
+		>
+			{
+				groups.map((group) => (
+					<section
+						class="overview-cluster"
+						data-overview-cluster={group.id}
+						data-x={group.x}
+						data-y={group.y}
+						data-width={group.width}
+						data-height={group.height}
+						style={`left:${group.x}px;top:${group.y}px;width:${group.width}px;height:${group.height}px`}
+						aria-labelledby={`cluster-${group.id}`}
+					>
+						<div class="overview-waterlines" aria-hidden="true">
+							<>
+								<i />
+								<i />
+								<i />
+							</>
+						</div>
+						<h2 id={`cluster-${group.id}`}>
+							<>
+								<a href={group.url}>{group.name}</a>
+								<small>{group.nodes.length}</small>
+							</>
+						</h2>
+						<svg
+							class="overview-constellation"
+							width={group.width}
+							height={group.height}
+							viewBox={`0 0 ${group.width} ${group.height}`}
+							fill="none"
+							aria-hidden="true"
+						>
+							<path
+								d={group.edges
+									.map(
+										(edge) =>
+											`M ${group.nodes[edge.a].x} ${group.nodes[edge.a].y} L ${group.nodes[edge.b].x} ${group.nodes[edge.b].y}`,
+									)
+									.join(" ")}
+								data-edges={group.edges
+									.map((edge) => `${edge.a}:${edge.b}`)
+									.join(" ")}
+							/>
+						</svg>
+						{group.nodes.map((node) => (
+							<a
+								class="overview-node"
+								href={node.url}
+								title={node.name}
+								target={node.external ? "_blank" : undefined}
+								rel={
+									node.external
+										? "noopener noreferrer"
+										: undefined
+								}
+								data-map-node
+								style={`left:${node.x}px;top:${node.y}px;--node-width:${node.labelWidth}px;--node-phase:${node.phase}s`}
+							>
+								<span
+									class="overview-star"
+									aria-hidden="true"
+								/>
+								<span class="overview-node-label">
+									{node.name}
+								</span>
+							</a>
+						))}
+					</section>
+				))
+			}
+		</div>
+	</div>
+	<button class="overview-return" type="button" data-overview-return
+		><Icon name="left" size={16} /><span>返回</span></button
+	>
+	<nav class="overview-index" aria-label="定位内容簇">
+		{
+			groups.map((group) => (
+				<button type="button" data-overview-focus={group.id}>
+					{group.name}
+				</button>
+			))
+		}
+	</nav>
+	<div class="overview-zoom" role="group" aria-label="总览缩放">
+		<button type="button" data-map-out aria-label="缩小"
+			><Icon name="minus" /></button
+		><button type="button" data-map-in aria-label="放大"
+			><Icon name="plus" /></button
+		><button type="button" data-map-fit aria-label="显示全部内容簇"
+			><Icon name="fit" /></button
+		>
+	</div>
+</section>

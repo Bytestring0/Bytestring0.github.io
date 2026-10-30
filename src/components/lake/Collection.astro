@@ -1,0 +1,136 @@
+---
+import Icon from "./Icon.astro";
+import { buildTimeline } from "../../utils/lake-timeline";
+interface Item {
+	id: string;
+	title: string;
+	description?: string;
+	url: string;
+	date?: string;
+	meta?: string;
+	image?: string;
+}
+interface Props {
+	items: Item[];
+	dated?: boolean;
+}
+const { items, dated = false } = Astro.props;
+const sorted = items
+	.slice()
+	.sort((a, b) => (dated ? (a.date || "").localeCompare(b.date || "") : 0));
+const model = dated
+	? buildTimeline(
+			sorted.map((item) => ({ id: item.id, date: item.date || "" })),
+		)
+	: null;
+const positions = new Map(model?.items.map((item) => [item.id, item]) || []);
+const width = model?.width || Math.max(720, sorted.length * 340 + 240);
+---
+
+<section class="collection-shell" data-dated={dated}>
+	<div
+		class="lake-viewport"
+		data-canvas-view
+		tabindex="0"
+		role="region"
+		aria-label={dated ? "项目时间线，拖拽浏览" : "友链，向左右拖拽浏览"}
+	>
+		<div
+			class="lake-world"
+			data-world-width={width}
+			data-world-height="840"
+		>
+			{
+				model && (
+					<>
+						<>
+							<div
+								class="timeline-axis"
+								style={`width:${width}px`}
+							/>
+							<div class="timeline-months">
+								{model.months.map((month) => (
+									<div
+										class="month-marker"
+										data-month={month.key}
+										data-year-start={month.yearStart}
+										style={`left:${month.x}px`}
+									>
+										<i />
+										<time>
+											<span class="month-full">
+												{month.key.replace("-", ".")}
+											</span>
+											<span class="month-year">
+												{month.key.slice(0, 4)}
+											</span>
+										</time>
+									</div>
+								))}
+							</div>
+						</>
+					</>
+				)
+			}
+			{
+				sorted.map((item, i) => {
+					const point = positions.get(item.id),
+						x = point?.x || 120 + i * 340,
+						y = point?.y ?? (i % 2 === 0 ? -150 : -35);
+					return (
+						<div
+							class="collection-item"
+							data-x={x}
+							style={`--item-x:${x}px;--item-y:${y}px;--i:${i}`}
+						>
+							<a
+								class="collection-card lake-glass"
+								href={item.url}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								{item.image && (
+									<img
+										src={item.image.trim()}
+										alt=""
+										width="44"
+										height="44"
+										loading="lazy"
+										referrerpolicy="no-referrer"
+									/>
+								)}
+								{item.date && (
+									<time>{item.date.slice(0, 10)}</time>
+								)}
+								<h2>{item.title}</h2>
+								{item.description && <p>{item.description}</p>}
+								{item.meta && <small>{item.meta}</small>}
+								<Icon name="external" size={15} />
+							</a>
+						</div>
+					);
+				})
+			}
+		</div>
+	</div><div class="canvas-controls">
+		<button type="button" data-canvas-prev aria-label="向左浏览"
+			><Icon name="left" /></button
+		><button type="button" data-canvas-next aria-label="向右浏览"
+			><Icon name="right" /></button
+		><span></span><button type="button" data-zoom-out aria-label="缩小"
+			><Icon name="minus" /></button
+		><button type="button" data-zoom-in aria-label="放大"
+			><Icon name="plus" /></button
+		><button type="button" data-zoom-fit aria-label="显示全部"
+			><Icon name="fit" /></button
+		>
+	</div><input
+		class="timeline-position"
+		type="range"
+		min="0"
+		max="1000"
+		value="1000"
+		aria-label="浏览位置"
+		data-timeline-position
+	/>
+</section>

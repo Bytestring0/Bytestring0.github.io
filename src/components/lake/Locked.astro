@@ -1,0 +1,26 @@
+---
+import CryptoJS from "crypto-js";
+interface Props {
+	password: string;
+}
+const html = await Astro.slots.render("default");
+const ciphertext = CryptoJS.AES.encrypt(
+	"LAKE:" + html,
+	Astro.props.password,
+).toString();
+---
+
+<div class="locked-article" data-ciphertext={ciphertext}>
+	<form data-unlock-form>
+		<label for="article-password">文章密码</label><input
+			id="article-password"
+			type="password"
+			required
+			autocomplete="current-password"
+		/><button type="submit">解锁</button><p
+			role="status"
+			data-unlock-status
+		>
+		</p>
+	</form>
+</div>

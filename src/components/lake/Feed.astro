@@ -1,0 +1,22 @@
+---
+import LakeLayout from "../../layouts/LakeLayout.astro";
+interface Props {
+	kind: "rss" | "atom";
+}
+const { kind } = Astro.props;
+const link = new URL(`/${kind}.xml`, Astro.site).href;
+---
+
+<LakeLayout title={kind.toUpperCase()} view="feed"
+	><section class="utility-panel lake-glass">
+		<h1>{kind.toUpperCase()}</h1><a
+			class="feed-address"
+			href={link}
+			data-astro-reload>{link}</a
+		><button type="button" data-copy-feed={link}>复制订阅地址</button><p
+			role="status"
+			data-copy-status
+		>
+		</p>
+	</section></LakeLayout
+>

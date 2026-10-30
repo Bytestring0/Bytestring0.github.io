@@ -1,0 +1,51 @@
+---
+import Icon from "./Icon.astro";
+interface Props {
+	kind: string;
+	label: string;
+	options: { value: string; label: string }[];
+}
+const { kind, label, options } = Astro.props;
+const attributes = { [`data-${kind}-select`]: "" };
+---
+
+<details class="filter-menu" data-filter-menu>
+	<summary
+		><span data-filter-label>{label}</span><Icon
+			name="chevron"
+			size={14}
+		/></summary
+	>
+	<div class="filter-popover">
+		<div class="filter-options" role="listbox" aria-label={label}>
+			<button
+				type="button"
+				role="option"
+				aria-selected="true"
+				data-filter-value=""
+				><span>{label}</span><Icon name="check" size={14} /></button
+			>{
+				options.map((option) => (
+					<button
+						type="button"
+						role="option"
+						aria-selected="false"
+						data-filter-value={option.value}
+					>
+						<>
+							<span>{option.label}</span>
+							<Icon name="check" size={14} />
+						</>
+					</button>
+				))
+			}
+		</div>
+	</div>
+	<select {...attributes} aria-label={label} hidden tabindex="-1"
+		><option value="">{label}</option>{
+			options.map((option) => (
+				<option value={option.value}>{option.label}</option>
+			))
+		}</select
+	>
+</details>

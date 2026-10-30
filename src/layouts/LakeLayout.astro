@@ -1,0 +1,180 @@
+---
+import { ClientRouter } from "astro:transitions";
+import { Image } from "astro:assets";
+import avatar from "../assets/images/avatar.png";
+import Icon from "../components/lake/Icon.astro";
+import Overview from "../components/lake/Overview.astro";
+import { profileConfig, siteConfig } from "../config";
+import "../styles/lake.css";
+import "../styles/overview.css";
+interface Props {
+	title?: string;
+	description?: string;
+	view?: string;
+	lang?: string;
+}
+const {
+	title,
+	description = "Bytestring 的文章与项目",
+	view = "home",
+	lang = "zh-CN",
+} = Astro.props;
+const links = [
+	{ href: "/archive/", name: "文章", icon: "posts", x: -198, y: -122 },
+	{ href: "/categories/", name: "分类", icon: "categories", x: 198, y: -122 },
+	{ href: "/projects/", name: "项目", icon: "projects", x: 278, y: 32 },
+	{ href: "/friends/", name: "友链", icon: "friends", x: 174, y: 187 },
+	{ href: "/about/", name: "关于", icon: "about", x: -174, y: 187 },
+	{ href: "/search/", name: "搜索", icon: "search", x: -278, y: 32 },
+];
+---
+
+<!doctype html>
+<html
+	lang={lang.replace("_", "-")}
+	data-theme="dark"
+	class:list={{ dark: true, "is-reading": view === "reading" }}
+>
+	<head>
+		<meta charset="utf-8" /><meta
+			name="viewport"
+			content="width=device-width,initial-scale=1,viewport-fit=cover"
+		/>
+		<title>
+			{title ? `${title} · ${profileConfig.name}` : profileConfig.name}
+		</title>
+		<meta name="description" content={description} /><meta
+			name="theme-color"
+			content="#1c2131"
+		/>
+		<link
+			rel="canonical"
+			href={new URL(Astro.url.pathname, Astro.site || siteConfig.siteURL)}
+		/>
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title={siteConfig.title}
+			href="/rss.xml"
+		/>
+		<script is:inline>
+			(() => {
+				let t = "dark";
+				try {
+					t = localStorage.getItem("lake-theme") || t;
+				} catch {}
+				document.documentElement.dataset.theme = t;
+				document.documentElement.classList.toggle("dark", t === "dark");
+			})();
+		</script>
+		<ClientRouter /><slot name="head" />
+	</head>
+	<body data-view={view}>
+		<a class="skip-link" href="#lake-content">跳到内容</a>
+		<div
+			class="lake-environment"
+			transition:persist="lake-environment"
+			transition:animate="none"
+			aria-hidden="true"
+		>
+			<canvas id="lake-water"></canvas><div class="water-fallback">
+			</div><div class="sky-fallback"></div><div class="reading-wash">
+			</div><div class="water-vignette"></div>
+		</div>
+		<div
+			class="lake-chrome"
+			transition:persist="lake-navigation"
+			transition:animate="none"
+		>
+			<a
+				href="/archive/"
+				class="lake-avatar"
+				aria-label={`${profileConfig.name}，查看文章`}
+				><span class="avatar-halo"></span><span class="avatar-float"
+					><Image
+						src={avatar}
+						width={128}
+						height={128}
+						alt={profileConfig.name}
+						loading="eager"
+					/><span class="avatar-glaze"></span></span
+				><span class="avatar-reflection" aria-hidden="true"
+					><Image
+						src={avatar}
+						width={128}
+						height={128}
+						alt=""
+					/></span
+				></a
+			>
+			<nav class="lake-nav" aria-label="主导航">
+				<div class="nav-dock" aria-hidden="true"></div>{
+					links.map((link, i) => (
+						<a
+							href={link.href}
+							data-nav-view={
+								link.icon === "posts" ? "archive" : link.icon
+							}
+							style={`--orbit-x:${link.x}px;--orbit-y:${link.y}px;--dock-x:${(i - 2.5) * 81}px;--i:${i}`}
+						>
+							<span class="nav-surface">
+								<>
+									<Icon name={link.icon} />
+									<span>{link.name}</span>
+								</>
+							</span>
+						</a>
+					))
+				}
+			</nav>
+			<div class="lake-utilities">
+				<button
+					type="button"
+					data-overview-toggle
+					aria-label="查看全站总览"
+					aria-controls="scene-overview"
+					aria-pressed="false"><Icon name="fit" /></button
+				>
+				<button
+					type="button"
+					data-theme-toggle
+					aria-label="切换亮色与暗色"
+					aria-pressed="false"
+					><span class="theme-sun"><Icon name="sun" /></span><span
+						class="theme-moon"><Icon name="moon" /></span
+					></button
+				>
+			</div>
+		</div>
+		<Overview />
+		<main id="lake-content" tabindex="-1" transition:animate="none">
+			<slot />
+		</main>
+		<noscript
+			><style>
+				.lake-environment .water-fallback {
+					display: block;
+				}
+				.lake-viewport {
+					overflow: auto;
+				}
+				.lake-world {
+					position: relative;
+					transform: translate(45px, 440px) scale(0.75);
+					transform-origin: 0 0;
+				}
+				.canvas-controls,
+				.timeline-position {
+					display: none;
+				}
+				body[data-view="home"] .lake-avatar,
+				body[data-view="home"] .lake-nav {
+					visibility: visible;
+				}
+			</style></noscript
+		>
+		<script>
+			import "../scripts/lake/app";
+		</script>
+	</body>
+</html>

@@ -22,8 +22,6 @@
 		"new-post": "node scripts/new-post.js",
 		"obsidian:build": "node scripts/obsidian/build-workbench.mjs",
 		"obsidian:test": "node --test scripts/obsidian/test.mjs",
-		"article-design": "node scripts/article-design.mjs",
-		"article-design:check": "node scripts/check-article-design.mjs",
 		"format": "prettier --write ./src",
 		"lint": "eslint ./src --fix",
 		"preinstall": "npx only-allow pnpm",

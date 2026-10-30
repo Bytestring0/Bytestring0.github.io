@@ -522,17 +522,6 @@ a:focus-visible {
   margin-bottom: 0;
 }
 
-#post-list-container .post-row + .post-row {
-  border-top: 1px solid rgb(var(--n-4));
-}
-
-#post-list-container .post-row-desc {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 @media (max-width: 768px) {
   #post-list-container,
   #post-list-container.grid-mode {
@@ -547,10 +536,6 @@ a:focus-visible {
 }
 
 #post-list-container .post-row-title {
-  overflow-wrap: anywhere;
-}
-
-#post-list-container .post-row-desc {
   overflow-wrap: anywhere;
 }
 
