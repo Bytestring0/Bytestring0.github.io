@@ -5,8 +5,24 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2026-11-03T18:13:06.943Z</updated>
+  <updated>2026-11-05T11:08:57.802Z</updated>
   <language>zh_CN</language>
+  <entry>
+    <title>睡不醒</title>
+    <link href="https://bytestring.top/posts/haiku/%E7%9D%A1%E4%B8%8D%E9%86%92/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/haiku/%E7%9D%A1%E4%B8%8D%E9%86%92/</id>
+    <published>2026-11-05T00:00:00.000Z</published>
+    <updated>2026-11-05T00:00:00.000Z</updated>
+    <summary></summary>
+    <content type="html"><![CDATA[<p>明天要学习</p>
+<p>事已至此先睡觉</p>
+<p>明天一定学</p>
+<p><img src="https://bytestring.top/_obsidian/883642b22a710999c0b02741.png" alt="image-1 (1).png" /></p>]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+    <category term="Haiku"></category>
+  </entry>
   <entry>
     <title>程序给我跑快点啊</title>
     <link href="https://bytestring.top/posts/haiku/%E7%A8%8B%E5%BA%8F%E7%BB%99%E6%88%91%E8%B7%91%E5%BF%AB%E7%82%B9%E5%95%8A/" rel="alternate" type="text/html"/>
@@ -14,9 +30,9 @@
     <published>2026-11-04T00:00:00.000Z</published>
     <updated>2026-11-04T00:00:00.000Z</updated>
     <summary></summary>
-    <content type="html"><![CDATA[<p>程序快点跑
-急急急急急急急
-明天有早八</p>
+    <content type="html"><![CDATA[<p>程序快点跑</p>
+<p>急急急急急急急</p>
+<p>明天有早八</p>
 <p><img src="https://bytestring.top/_obsidian/eee7a50f3f39d20589f65024.png" alt="image-1 1.png" /></p>]]></content>
     <author>
       <name>Bytestring</name>
