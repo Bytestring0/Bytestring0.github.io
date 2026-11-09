@@ -5,8 +5,24 @@
   <link href="https://bytestring.top/" rel="alternate" type="text/html"/>
   <link href="https://bytestring.top/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://bytestring.top/</id>
-  <updated>2026-11-09T05:32:15.562Z</updated>
+  <updated>2026-11-09T13:30:34.301Z</updated>
   <language>zh_CN</language>
+  <entry>
+    <title>猫猫</title>
+    <link href="https://bytestring.top/posts/haiku/%E7%8C%AB%E7%8C%AB/" rel="alternate" type="text/html"/>
+    <id>https://bytestring.top/posts/haiku/%E7%8C%AB%E7%8C%AB/</id>
+    <published>2026-11-09T00:00:00.000Z</published>
+    <updated>2026-11-09T00:00:00.000Z</updated>
+    <summary></summary>
+    <content type="html"><![CDATA[<p>捡只猫家人们</p>
+<p>这也太可爱了吧</p>
+<p>她想跟我回家</p>
+<p><img src="https://bytestring.top/_obsidian/c317eeb817e3342a299614ac.png" alt="image-1 (4).png" /></p>]]></content>
+    <author>
+      <name>Bytestring</name>
+    </author>
+    <category term="Haiku"></category>
+  </entry>
   <entry>
     <title>放假</title>
     <link href="https://bytestring.top/posts/haiku/%E6%94%BE%E5%81%87/" rel="alternate" type="text/html"/>
