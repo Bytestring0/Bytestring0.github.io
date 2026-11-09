@@ -16,6 +16,8 @@ const index = posts.map((post) => ({
 	text: post.data.encrypted
 		? ""
 		: `${post.data.description} ${post.body || ""}`
+				.replace(/!\[\[[^\]\r\n]+\]\]/g, " ")
+				.replace(/\[\[([^|\]\r\n]+)(?:\|([^\]\r\n]+))?\]\]/g, "$1 $2")
 				.replace(/!\[[^\]]*\]\([^)]*\)|<[^>]+>/g, " ")
 				.replace(/[#*`>|]/g, ""),
 }));

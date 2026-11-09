@@ -26,7 +26,8 @@ const categories = [
 const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 ---
 
-<section class="timeline-shell" aria-label="文章时间线">
+<section class="timeline-shell" aria-labelledby="timeline-heading">
+	<h1 id="timeline-heading" class="timeline-heading">文章</h1>
 	<div class="timeline-toolbar" data-no-pan>
 		<FilterMenu
 			kind="month"
@@ -99,15 +100,13 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 							data-date={post.data.published.toISOString()}
 							data-category={post.data.category || "未分类"}
 							data-tags={JSON.stringify(post.data.tags)}
-							style={`--item-x:${point.x}px;--item-y:${point.y}px;--lane:${point.lane};width:${CARD_WIDTH}px;height:${CARD_HEIGHT}px`}
+							data-lane={point.lane}
+							style={`--item-x:${point.x}px;--item-y:${point.y}px;width:${CARD_WIDTH}px;height:${CARD_HEIGHT}px`}
 						>
 							<>
-								<span
-									class="timeline-tether"
-									style={`--tether-height:${Math.abs(point.y + (point.y < 0 ? CARD_HEIGHT : 0))}px;--tether-top:${point.y < 0 ? CARD_HEIGHT : -point.y}px`}
-								/>
+								<span class="timeline-tether" aria-hidden="true" />
 								<a
-									class="timeline-card lake-glass"
+									class="timeline-card"
 									href={post.url}
 								>
 									<div class="card-meta">
@@ -128,7 +127,7 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 										post.data.description && (
 											<p>{post.data.description}</p>
 										)}
-									<Icon name="external" size={14} />
+									<Icon name="right" size={16} />
 								</a>
 							</>
 						</div>

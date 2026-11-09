@@ -317,18 +317,7 @@ function initFilters(signal: AbortSignal) {
 			const item = map.get(element.dataset.postId!)!;
 			element.style.setProperty("--item-x", `${item.x}px`);
 			element.style.setProperty("--item-y", `${item.y}px`);
-			const tether =
-				element.querySelector<HTMLElement>(".timeline-tether");
-			if (tether) {
-				tether.style.setProperty(
-					"--tether-height",
-					`${Math.abs(item.y + (item.y < 0 ? 156 : 0))}px`,
-				);
-				tether.style.setProperty(
-					"--tether-top",
-					`${item.y < 0 ? 156 : -item.y}px`,
-				);
-			}
+			element.dataset.lane = String(item.lane);
 		}
 		world!.dataset.worldWidth = String(model.width);
 		world!.querySelector<HTMLElement>(".timeline-axis")!.style.width =
@@ -337,11 +326,7 @@ function initFilters(signal: AbortSignal) {
 		document.querySelector<HTMLElement>(".timeline-empty")!.hidden =
 			selected.length > 0;
 		camera?.refresh();
-		if (!initial || category!.value || tag!.value) {
-			const last = model.items.at(-1);
-			if (last) camera?.focus(last.x + 141);
-			else camera?.fit();
-		}
+		if (!initial || category!.value || tag!.value) camera?.focusLatest();
 		const address = new URL(location.href);
 		for (const [key, value] of [
 			["category", category!.value],
@@ -377,7 +362,7 @@ function initHover(signal: AbortSignal) {
 			)
 				return;
 			const card = event.target.closest<HTMLElement>(
-				".timeline-card,.collection-card",
+				".collection-card",
 			);
 			if (!card || card === hovered) return;
 			hovered = card;
@@ -420,110 +405,13 @@ function arrival(signal: AbortSignal) {
 	const main = document.querySelector<HTMLElement>("#lake-content");
 	if (!main) return;
 	if (document.body.dataset.view === "reading") {
-		const paper = document.querySelector<HTMLElement>(".reader-panel");
-		if (!paper) return;
-		const animations: Animation[] = [];
-		const edge = document.createElement("div");
-		edge.className = "paper-unfold-edge";
-		edge.setAttribute("aria-hidden", "true");
-		const top = paper.getBoundingClientRect().top;
-		if (scrollY < 200) {
-			const height = Math.max(
-				100,
-				Math.min(
-					paper.offsetHeight,
-					innerHeight - Math.max(0, top) + 40,
-				),
-			);
-			paper.append(edge);
-			animations.push(
-				paper.animate(
-					[
-						{
-							clipPath: "inset(0 0 100% 0 round 20px)",
-							transform: "translateY(-18px)",
-							opacity: 0.7,
-						},
-						{
-							clipPath: `inset(0 0 calc(100% - ${height}px) 0 round 20px)`,
-							transform: "translateY(0)",
-							opacity: 1,
-						},
-					],
-					{
-						duration: 1050,
-						easing: "cubic-bezier(.22,.7,.18,1)",
-						fill: "both",
-					},
-				),
-			);
-			animations.push(
-				edge.animate(
-					[
-						{ transform: "translateY(-20px)", opacity: 0 },
-						{
-							transform: `translateY(${height - 20}px)`,
-							opacity: 0.65,
-						},
-					],
-					{
-						duration: 1050,
-						easing: "cubic-bezier(.22,.7,.18,1)",
-						fill: "both",
-					},
-				),
-			);
-		} else
-			animations.push(
-				paper.animate([{ opacity: 0.3 }, { opacity: 1 }], {
-					duration: 400,
-				}),
-			);
-		const outline = document.querySelector<HTMLElement>(".reader-outline");
-		if (outline)
-			animations.push(
-				outline.animate([{ opacity: 0 }, { opacity: 1 }], {
-					duration: 550,
-					delay: 260,
-					fill: "backwards",
-				}),
-			);
-		const clean = () => {
-			animations.forEach((animation) => animation.cancel());
-			edge.remove();
-		};
-		Promise.all(animations.map((animation) => animation.finished))
-			.then(clean)
-			.catch(() => edge.remove());
-		window.addEventListener("wheel", clean, {
-			once: true,
-			passive: true,
-			signal,
+		const animation = main.animate([{ opacity: 0.75 }, { opacity: 1 }], {
+			duration: 280,
+			easing: "ease-out",
 		});
-		window.addEventListener("touchstart", clean, {
+		signal.addEventListener("abort", () => animation.cancel(), {
 			once: true,
-			passive: true,
-			signal,
 		});
-		window.addEventListener(
-			"keydown",
-			(event) => {
-				if (
-					[
-						"PageDown",
-						"PageUp",
-						"ArrowDown",
-						"ArrowUp",
-						"Home",
-						"End",
-						" ",
-					].includes(event.key)
-				)
-					clean();
-			},
-			{ signal },
-		);
-		signal.addEventListener("abort", clean, { once: true });
 		return;
 	}
 	const elapsed = transition

@@ -23,7 +23,8 @@ export interface TimelineModel {
 }
 export const CARD_WIDTH = 282;
 export const CARD_HEIGHT = 156;
-const LANES = [-292, -110, 110, 292];
+const LANES = [-122, 122];
+const COLUMN_WIDTH = 318;
 /** Month widths expand with density, so cards never overlap or invent dates. */
 export function buildTimeline(input: ReadonlyArray<DatedItem>): TimelineModel {
 	const sorted = input
@@ -48,7 +49,7 @@ export function buildTimeline(input: ReadonlyArray<DatedItem>): TimelineModel {
 	let cursor = 100,
 		previousYear = "";
 	for (const [key, bucket] of buckets) {
-		const width = Math.max(560, Math.ceil(bucket.length / 4) * 332 + 104);
+		const width = Math.ceil(bucket.length / LANES.length) * COLUMN_WIDTH + 96;
 		months.push({
 			key,
 			x: cursor,
@@ -59,10 +60,10 @@ export function buildTimeline(input: ReadonlyArray<DatedItem>): TimelineModel {
 		bucket.forEach((item, i) =>
 			items.push({
 				id: item.id,
-				x: cursor + 40 + Math.floor(i / 4) * 332,
-				y: LANES[i % 4] - CARD_HEIGHT / 2,
+				x: cursor + 62 + Math.floor(i / LANES.length) * COLUMN_WIDTH,
+				y: LANES[i % LANES.length] - CARD_HEIGHT / 2,
 				month: key,
-				lane: i % 4,
+				lane: i % LANES.length,
 			}),
 		);
 		cursor += width;

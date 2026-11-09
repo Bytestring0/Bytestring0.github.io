@@ -272,9 +272,10 @@ export function initReading(signal: AbortSignal) {
 				link.href = `#${heading.id}`;
 				link.dataset.readingAnchor = "";
 				link.style.setProperty("--depth", heading.tagName.slice(1));
-				link.textContent = heading.textContent;
+				link.textContent = headingLabel(heading);
 				nav?.append(link);
 			}
+			if (toc && nav?.childElementCount) toc.hidden = false;
 			refresh();
 			await enhanceContent(signal).catch(() => {});
 			schedule();

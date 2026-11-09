@@ -60,7 +60,8 @@ const date = entry.data.published.toISOString().slice(0, 10);
 						href={`/categories/?category=${encodeURIComponent(entry.data.category || "未分类")}`}
 						>{entry.data.category || "未分类"}</a
 					><time datetime={date}>{date}</time><span
-						>{entry.data.author || profileConfig.name}</span>
+						>{entry.data.author || profileConfig.name}</span
+					>
 				</div><h1 data-pagefind-meta="title">{entry.data.title}</h1>{
 					!locked && entry.data.description && (
 						<p class="reader-description">
@@ -90,18 +91,27 @@ const date = entry.data.published.toISOString().slice(0, 10);
 				<nav class="reader-adjacent" aria-label="相邻文章">
 					{
 						previous && (
-							<a href={getPostUrl(previous)}>
+							<a
+								class="reader-previous"
+								href={getPostUrl(previous)}
+							>
 								<>
-									<small>上一篇</small>
+									<small>
+										<Icon name="left" size={13} />
+										上一篇
+									</small>
 									<span>{previous.data.title}</span>
 								</>
 							</a>
 						)
 					}{
 						next && (
-							<a href={getPostUrl(next)}>
+							<a class="reader-next" href={getPostUrl(next)}>
 								<>
-									<small>下一篇</small>
+									<small>
+										下一篇
+										<Icon name="right" size={13} />
+									</small>
 									<span>{next.data.title}</span>
 								</>
 							</a>
@@ -122,26 +132,32 @@ const date = entry.data.published.toISOString().slice(0, 10);
 			</footer>
 		</article>
 		<aside class="reader-outline">
-			<details open data-reader-toc>
-				<summary
-					><span>目录</span><span data-outline-current></span><Icon
-						name="chevron"
-						size={14}
-					/></summary
-				><nav>
-					{
-						tocHeadings.map((h) => (
-							<a
-								href={`#${h.slug}`}
-								data-reading-anchor
-								style={`--depth:${h.depth}`}
-							>
-								{h.text}
-							</a>
-						))
-					}
-				</nav>
-			</details><div class="outline-progress">
+			{
+				(tocHeadings.length > 0 || locked) && (
+					<details open data-reader-toc hidden={locked}>
+						<>
+							<summary>
+								<>
+									<span>目录</span>
+									<span data-outline-current />
+									<Icon name="chevron" size={14} />
+								</>
+							</summary>
+							<nav aria-label="文章目录">
+								{tocHeadings.map((h) => (
+									<a
+										href={`#${h.slug}`}
+										data-reading-anchor
+										style={`--depth:${h.depth}`}
+									>
+										{h.text.replace(/#$/, "")}
+									</a>
+								))}
+							</nav>
+						</>
+					</details>
+				)
+			}<div class="outline-progress">
 				<div
 					class="reading-progress"
 					role="progressbar"
@@ -155,7 +171,8 @@ const date = entry.data.published.toISOString().slice(0, 10);
 					type="button"
 					data-reading-top
 					aria-label="回到文章顶部"
-					><Icon name="up" size={15} /></button>
+					><Icon name="up" size={15} /></button
+				>
 			</div>
 		</aside>
 	</div>

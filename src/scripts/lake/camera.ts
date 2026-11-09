@@ -66,19 +66,20 @@ export class CanvasCamera {
 		this.refresh();
 		const saved = this.readPosition();
 		if (saved) {
-			this.tx = this.x = saved.x;
-			this.ty = this.y = saved.y;
+			this.tx = saved.x;
+			this.ty = saved.y + (this.height - saved.height) * 0.5;
 			this.targetScale = this.scale = saved.scale;
 		} else {
-			this.targetScale = this.scale = innerWidth < 700 ? 0.7 : 0.8;
 			const last = this.cards.at(-1);
-			this.tx = this.x =
-				this.width * 0.54 - ((last?.x || 0) + 141) * this.scale;
-			this.ty = this.y = this.height * 0.5;
-			this.limit();
-			this.x = this.tx;
-			this.y = this.ty;
+			const timeline = last?.element.matches(".timeline-item");
+			this.targetScale = this.scale = this.width < 700 ? 0.72 : 0.9;
+			this.tx = this.width * 0.54 - ((last?.x || 0) + 141) * this.scale;
+			this.ty = this.height * 0.5;
+			if (timeline) this.revealVertically(last.element);
 		}
+		this.limit();
+		this.x = this.tx;
+		this.y = this.ty;
 		this.removeFrame = clock.add(this.frame);
 		signal.addEventListener(
 			"abort",
@@ -176,6 +177,24 @@ export class CanvasCamera {
 	focusMonth(key: string) {
 		const month = this.months.find((item) => item.key === key);
 		if (month) this.focus(month.x + 250);
+	}
+	focusLatest() {
+		const last = this.cards.at(-1);
+		if (!last) {
+			this.fit();
+			return;
+		}
+		this.focus(last.x + 141);
+		this.revealVertically(last.element);
+		this.limit();
+	}
+	private revealVertically(card: HTMLElement) {
+		const top = parseFloat(card.style.getPropertyValue("--item-y"));
+		const gutter = 12;
+		const min = gutter - top * this.targetScale;
+		const max =
+			this.height - gutter - (top + card.offsetHeight) * this.targetScale;
+		this.ty = Math.max(min, Math.min(max, this.ty));
 	}
 	focus(x: number) {
 		if (this.targetScale < 0.55) this.targetScale = 0.8;
@@ -474,12 +493,12 @@ export class CanvasCamera {
 			);
 			if (
 				value &&
-				value.version === 2 &&
-				[value.x, value.y, value.scale].every(Number.isFinite) &&
+				value.version === 3 &&
+				[value.x, value.y, value.scale, value.height].every(Number.isFinite) &&
 				value.scale >= 0.13 &&
 				value.scale <= 1.65
 			)
-				return value as { x: number; y: number; scale: number };
+				return value as { x: number; y: number; scale: number; height: number };
 		} catch {}
 		return null;
 	}
@@ -488,10 +507,11 @@ export class CanvasCamera {
 			sessionStorage.setItem(
 				`lake-camera:${location.pathname}`,
 				JSON.stringify({
-					version: 2,
+					version: 3,
 					x: this.tx,
 					y: this.ty,
 					scale: this.targetScale,
+					height: this.height,
 				}),
 			);
 		} catch {}
