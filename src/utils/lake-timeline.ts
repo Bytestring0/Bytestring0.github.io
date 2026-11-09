@@ -49,7 +49,8 @@ export function buildTimeline(input: ReadonlyArray<DatedItem>): TimelineModel {
 	let cursor = 100,
 		previousYear = "";
 	for (const [key, bucket] of buckets) {
-		const width = Math.ceil(bucket.length / LANES.length) * COLUMN_WIDTH + 96;
+		const width =
+			Math.ceil(bucket.length / LANES.length) * COLUMN_WIDTH + 96;
 		months.push({
 			key,
 			x: cursor,
@@ -57,15 +58,20 @@ export function buildTimeline(input: ReadonlyArray<DatedItem>): TimelineModel {
 			yearStart: key.slice(0, 4) !== previousYear,
 		});
 		previousYear = key.slice(0, 4);
-		bucket.forEach((item, i) =>
+		// Pair from the latest post so the newest column stays full.
+		const firstSlot =
+			(LANES.length - (bucket.length % LANES.length)) % LANES.length;
+		bucket.forEach((item, i) => {
+			const slot = firstSlot + i;
+			const lane = slot % LANES.length;
 			items.push({
 				id: item.id,
-				x: cursor + 62 + Math.floor(i / LANES.length) * COLUMN_WIDTH,
-				y: LANES[i % LANES.length] - CARD_HEIGHT / 2,
+				x: cursor + 62 + Math.floor(slot / LANES.length) * COLUMN_WIDTH,
+				y: LANES[lane] - CARD_HEIGHT / 2,
 				month: key,
-				lane: i % LANES.length,
-			}),
-		);
+				lane,
+			});
+		});
 		cursor += width;
 	}
 	return { items, months, width: Math.max(620, cursor + 100), height: 840 };

@@ -361,9 +361,7 @@ function initHover(signal: AbortSignal) {
 				!(event.target instanceof Element)
 			)
 				return;
-			const card = event.target.closest<HTMLElement>(
-				".collection-card",
-			);
+			const card = event.target.closest<HTMLElement>(".collection-card");
 			if (!card || card === hovered) return;
 			hovered = card;
 			rect = card.getBoundingClientRect();

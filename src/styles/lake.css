@@ -567,7 +567,8 @@ body[data-view="home"] .nav-dock {
   position: absolute;
   top: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--line) 72px, var(--line) calc(100% - 72px), transparent);
+  --axis-ink: color-mix(in srgb, var(--accent) 33%, transparent);
+  background: linear-gradient(90deg, transparent, var(--axis-ink) 72px, var(--axis-ink) calc(100% - 72px), transparent);
 }
 .timeline-item,
 .collection-item {
@@ -2309,6 +2310,9 @@ body:not([data-view="home"]) .lake-nav > a[aria-current] .nav-surface:after {
     --timeline-toolbar-top: 74px;
     --timeline-filter-height: 42px;
     --timeline-controls-height: 42px;
+  }
+  .timeline-shell > .lake-viewport {
+    mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
   }
   .filter-menu {
     width: 130px;

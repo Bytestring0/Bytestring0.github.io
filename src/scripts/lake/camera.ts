@@ -71,11 +71,11 @@ export class CanvasCamera {
 			this.targetScale = this.scale = saved.scale;
 		} else {
 			const last = this.cards.at(-1);
-			const timeline = last?.element.matches(".timeline-item");
 			this.targetScale = this.scale = this.width < 700 ? 0.72 : 0.9;
 			this.tx = this.width * 0.54 - ((last?.x || 0) + 141) * this.scale;
 			this.ty = this.height * 0.5;
-			if (timeline) this.revealVertically(last.element);
+			if (last?.element.matches(".timeline-item"))
+				this.revealVertically(last.element);
 		}
 		this.limit();
 		this.x = this.tx;
@@ -383,26 +383,10 @@ export class CanvasCamera {
 		clock.wake();
 	};
 	private step(direction: number) {
-		const center = (this.width * 0.5 - this.tx) / this.targetScale;
-		let index = 0,
-			distance = Infinity;
-		this.months.forEach((month, i) => {
-			const d = Math.abs(month.x + 250 - center);
-			if (d < distance) {
-				distance = d;
-				index = i;
-			}
-		});
-		const month =
-			this.months[
-				Math.max(0, Math.min(this.months.length - 1, index + direction))
-			];
-		if (month) this.focus(month.x + 250);
-		else {
-			this.tx -= direction * 400;
-			this.limit();
-			clock.wake();
-		}
+		this.tx -= direction * this.width * 0.76;
+		this.velocityX = this.velocityY = 0;
+		this.limit();
+		clock.wake();
 	}
 	private frame = (_time: number, dt: number) => {
 		if (this.signal.aborted) return false;
@@ -494,11 +478,18 @@ export class CanvasCamera {
 			if (
 				value &&
 				value.version === 3 &&
-				[value.x, value.y, value.scale, value.height].every(Number.isFinite) &&
+				[value.x, value.y, value.scale, value.height].every(
+					Number.isFinite,
+				) &&
 				value.scale >= 0.13 &&
 				value.scale <= 1.65
 			)
-				return value as { x: number; y: number; scale: number; height: number };
+				return value as {
+					x: number;
+					y: number;
+					scale: number;
+					height: number;
+				};
 		} catch {}
 		return null;
 	}

@@ -11,7 +11,7 @@ interface Props {
 	filters?: boolean;
 }
 const posts = (await getSortedPostsList()).sort(
-	(a, b) => +a.data.published - +b.data.published,
+	(a, b) => +a.data.published - +b.data.published || a.id.localeCompare(b.id),
 );
 const model = buildTimeline(
 	posts.map((post) => ({
@@ -104,11 +104,11 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 							style={`--item-x:${point.x}px;--item-y:${point.y}px;width:${CARD_WIDTH}px;height:${CARD_HEIGHT}px`}
 						>
 							<>
-								<span class="timeline-tether" aria-hidden="true" />
-								<a
-									class="timeline-card"
-									href={post.url}
-								>
+								<span
+									class="timeline-tether"
+									aria-hidden="true"
+								/>
+								<a class="timeline-card" href={post.url}>
 									<div class="card-meta">
 										<time
 											datetime={post.data.published.toISOString()}

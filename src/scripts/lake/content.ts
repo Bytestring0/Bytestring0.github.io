@@ -145,17 +145,8 @@ export function initReading(signal: AbortSignal) {
 			const wrap = document.createElement("button");
 			wrap.type = "button";
 			wrap.textContent = "自动换行";
+			wrap.dataset.readerWrap = "";
 			wrap.setAttribute("aria-pressed", String(wrapped));
-			wrap.addEventListener(
-				"click",
-				() => {
-					const on = frame.classList.toggle("wrap-code");
-					pre.classList.toggle("wrap", on);
-					wrap.setAttribute("aria-pressed", String(on));
-					schedule();
-				},
-				{ signal },
-			);
 			const copy = document.createElement("button");
 			copy.type = "button";
 			copy.className = "copy-btn";
@@ -184,6 +175,22 @@ export function initReading(signal: AbortSignal) {
 		codeTools();
 		schedule();
 	}
+	flow.addEventListener(
+		"click",
+		(event) => {
+			const wrap = (event.target as Element)?.closest<HTMLButtonElement>(
+				"[data-reader-wrap]",
+			);
+			const frame = wrap?.closest(".frame");
+			const pre = frame?.querySelector("pre");
+			if (!wrap || !frame || !pre) return;
+			const on = frame.classList.toggle("wrap-code");
+			pre.classList.toggle("wrap", on);
+			wrap.setAttribute("aria-pressed", String(on));
+			schedule();
+		},
+		{ signal },
+	);
 	const resize = new ResizeObserver(schedule);
 	resize.observe(panel);
 	signal.addEventListener("abort", () => resize.disconnect(), { once: true });
